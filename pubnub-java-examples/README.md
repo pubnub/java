@@ -5,29 +5,18 @@
 
 www.pubnub.com - PubNub Real-time Push Service in the Cloud. 
 
-Please reference the demo app in 3.4/jars/PubnubDemoConsole.jar for an example of using PubNub
+Please reference the demo app in pubnub-java-examples/target/pubnub-java-examples-<version>.jar for an example of using PubNub once you build the project
 Asyncronously in your applications!
-
-Additional Java docs are available at 3.4/doc/index.html
-
-###To setup with your IDE:
-
-1. Add new project with 3.4/ as the root
-2. Set the new project source as 3.4/srcPubnubApi
-3. Add 3.4/Pubnub-Standardedition-3.4.jar and 3.4/libs/*.jar as project libaries
-4. You should be able to run PubnubDemoConsole and PubnubExample via your IDE
 
 ###To build from the CL, run:
 ```
-$ ant clean
-$ ant
+$ mvn clean package
 ```
 ###To run the DemoConsole:
 ```
-$ cd jars
-$ java -jar PubnubDemoConsole.jar
+$ cd pubnub-java-examples/target
+$ java -jar pubnub-java-examples-<version>.jar
 ```
-
 ###Heres an example of running PubnubDemoConsole:
 
 ```
