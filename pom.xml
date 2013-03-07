@@ -14,17 +14,20 @@
 	</scm>
 
 	<modules>
-		<!-- <module>pubnub-android</module>
+		<!-- These are commented out until those modules are mavenized. Once this is done, you can also uncomment the dependencies below
+		<module>pubnub-android</module>
 		<module>pubnub-blackberry</module>
 		<module>pubnub-gwt</module>
-		<module>pubnub-j2me</module> -->
+		<module>pubnub-j2me</module> 
+		-->
 		<module>pubnub-java</module>
 		<module>pubnub-java-examples</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- <dependency>
+			<!-- 
+			<dependency>
 				<groupId>com.pubnub</groupId>
 				<artifactId>pubnub-android</artifactId>
 				<version>${project.version}</version>
@@ -43,7 +46,8 @@
 				<groupId>com.pubnub</groupId>
 				<artifactId>pubnub-j2me</artifactId>
 				<version>${project.version}</version>
-			</dependency> -->
+			</dependency>
+			-->
 			<dependency>
 				<groupId>com.pubnub</groupId>
 				<artifactId>pubnub-java</artifactId>
