@@ -19,6 +19,7 @@
 		<module>pubnub-gwt</module>
 		<module>pubnub-j2me</module> -->
 		<module>pubnub-java</module>
+		<module>pubnub-java-examples</module>
 	</modules>
 
 	<dependencyManagement>
@@ -46,6 +47,11 @@
 			<dependency>
 				<groupId>com.pubnub</groupId>
 				<artifactId>pubnub-java</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pubnub</groupId>
+				<artifactId>pubnub-java-examples</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
