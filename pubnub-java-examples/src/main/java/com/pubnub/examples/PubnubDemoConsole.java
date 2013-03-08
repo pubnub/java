@@ -77,7 +77,7 @@ public class PubnubDemoConsole {
                 }
 
                 public void errorCallback(String channel, Object message) {
-                    notifyUser("PUBLISH : " + message);
+                    notifyUser("PUBLISH ERROR : " + message);
                 }
             });
         }
