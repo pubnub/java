@@ -48,3 +48,4 @@ pubnub-gwt/target
 pubnub-j2me/target
 pubnub-java/target
 pubnub-java-examples/target
+.gradle
