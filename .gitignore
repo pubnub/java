@@ -42,3 +42,10 @@ war/WEB-INF/deploy/
 war/WEB-INF/classes/
 
 
+pubnub-android/target
+pubnub-blackberry/target
+pubnub-gwt/target
+pubnub-j2me/target
+pubnub-java/target
+pubnub-java-examples/target
+.gradle
