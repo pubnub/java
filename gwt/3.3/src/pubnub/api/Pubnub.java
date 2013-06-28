@@ -44,6 +44,11 @@ public class Pubnub {
     private String SUBSCRIBE_KEY = "";
     private String SECRET_KEY = "";
     public String CIPHER_KEY = "";
+    public String INITIALIZATION_VECTOR = "";
+
+    /** The default initialization vector. */
+    private static final String DEFAULT_IV = "0123456789012345";
+
     private boolean SSL = false;
     private String sessionUUID = "";
     private String parameters = "";
@@ -69,10 +74,34 @@ public class Pubnub {
      * @param String
      *            Cipher Key.
      * @param boolean SSL Enabled.
+     *
+     * @param initialization_vector The initialization vector used to create the cipher.
      */
     public Pubnub(String publish_key, String subscribe_key, String secret_key,
-            String cipher_key, boolean ssl_on) {
-        this.init(publish_key, subscribe_key, secret_key, cipher_key, ssl_on);
+            String cipher_key, boolean ssl_on, String initialization_vector) {
+        this.init(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, initialization_vector);
+    }
+
+    /**
+     * PubNub 3.1 with Cipher Key
+     *
+     * Prepare PubNub State.
+     *
+     * @param String
+     *            Publish Key.
+     * @param String
+     *            Subscribe Key.
+     * @param String
+     *            Secret Key.
+     * @param String
+     *            Cipher Key.
+     * @param boolean SSL Enabled.
+     *
+     * .
+     */
+    public Pubnub(String publish_key, String subscribe_key, String secret_key,
+                  String cipher_key, boolean ssl_on) {
+        this.init(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, DEFAULT_IV);
     }
 
     /**
@@ -90,7 +119,7 @@ public class Pubnub {
      */
     public Pubnub(String publish_key, String subscribe_key, String secret_key,
             boolean ssl_on) {
-        this.init(publish_key, subscribe_key, secret_key, "", ssl_on);
+        this.init(publish_key, subscribe_key, secret_key, "", ssl_on, "");
     }
 
     /**
@@ -104,7 +133,7 @@ public class Pubnub {
      *            Subscribe Key.
      */
     public Pubnub(String publish_key, String subscribe_key) {
-        this.init(publish_key, subscribe_key, "", "", false);
+        this.init(publish_key, subscribe_key, "", "", false, "");
     }
 
     /**
@@ -120,7 +149,7 @@ public class Pubnub {
      *            Secret Key.
      */
     public Pubnub(String publish_key, String subscribe_key, String secret_key) {
-        this.init(publish_key, subscribe_key, secret_key, "", false);
+        this.init(publish_key, subscribe_key, secret_key, "", false, "");
     }
 
     /**
@@ -137,13 +166,15 @@ public class Pubnub {
      * @param String
      *            Cipher Key.
      * @param boolean SSL Enabled.
+     * @param String Initialization vector used to configure the cipher.
      */
     public void init(String publish_key, String subscribe_key,
-            String secret_key, String cipher_key, boolean ssl_on) {
+            String secret_key, String cipher_key, boolean ssl_on, String initialization_vector) {
         this.PUBLISH_KEY = publish_key;
         this.SUBSCRIBE_KEY = subscribe_key;
         this.SECRET_KEY = secret_key;
         this.CIPHER_KEY = cipher_key;
+        this.INITIALIZATION_VECTOR = initialization_vector;
         this.SSL = ssl_on;
 
         if (this.sessionUUID.equals(""))
@@ -192,7 +223,7 @@ public class Pubnub {
             JSONObject obj = (JSONObject) message;
             if (this.CIPHER_KEY.length() > 0) {
                 // Encrypt Message
-                PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+                PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                 message = pc.encrypt(obj);
             } else {
                 message = obj;
@@ -202,7 +233,7 @@ public class Pubnub {
             String obj = (String) message;
             if (this.CIPHER_KEY.length() > 0) {
                 // Encrypt Message
-                PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+                PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                 try {
                     message = pc.encrypt(obj);
                 } catch (Exception e) {
@@ -218,7 +249,7 @@ public class Pubnub {
 
             if (this.CIPHER_KEY.length() > 0) {
                 // Encrypt Message
-                PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+                PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                 message = pc.encryptJSONArray(obj);
             } else {
                 message = obj;
@@ -437,7 +468,7 @@ public class Pubnub {
 
                         if (this.CIPHER_KEY.length() > 0) {
                             // Decrypt Message
-                            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+                            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                             message = pc.decrypt(message);
                         }
                         if (callback != null)
@@ -448,7 +479,7 @@ public class Pubnub {
                         if (arr != null) {
                             if (this.CIPHER_KEY.length() > 0) {
                                 PubnubCrypto pc = new PubnubCrypto(
-                                        this.CIPHER_KEY);
+                                        this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                                 arr = pc.decryptJSONArray(arr);
                                 ;
                             }
@@ -458,7 +489,7 @@ public class Pubnub {
                             String msgs = messages.getString(0);
                             if (this.CIPHER_KEY.length() > 0) {
                                 PubnubCrypto pc = new PubnubCrypto(
-                                        this.CIPHER_KEY);
+                                        this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                                 msgs = pc.decrypt(msgs);
                             }
                             if (callback != null)
@@ -658,7 +689,7 @@ public class Pubnub {
 
                         if (this.CIPHER_KEY.length() > 0) {
                             // Decrypt Message
-                            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+                            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                             message = pc.decrypt(message);
                         }
                         if (callback != null)
@@ -669,7 +700,7 @@ public class Pubnub {
                         if (arr != null) {
                             if (this.CIPHER_KEY.length() > 0) {
                                 PubnubCrypto pc = new PubnubCrypto(
-                                        this.CIPHER_KEY);
+                                        this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                                 arr = pc.decryptJSONArray(arr);
                             }
                             if (callback != null)
@@ -678,7 +709,7 @@ public class Pubnub {
                             String msgs = messages.getString(0);
                             if (this.CIPHER_KEY.length() > 0) {
                                 PubnubCrypto pc = new PubnubCrypto(
-                                        this.CIPHER_KEY);
+                                        this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
                                 msgs = pc.decrypt(msgs);
                             }
                             if (callback != null)
@@ -717,7 +748,7 @@ public class Pubnub {
 
         if (this.CIPHER_KEY.length() > 0) {
             // Decrypt Messages
-            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
             return pc.decryptJSONArray(response);
         } else {
             return response;
@@ -767,7 +798,7 @@ public class Pubnub {
 
         if (this.CIPHER_KEY.length() > 0) {
             // Decrypt Messages
-            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
             return pc.decryptJSONArray(response);
         } else {
             return response;
@@ -804,7 +835,7 @@ public class Pubnub {
         JSONArray response = _request(url);
 
         if (this.CIPHER_KEY.length() > 0) {
-            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
             try {
                 return pc.decryptJSONArray(response.getJSONArray(0));
             } catch (JSONException e) {
@@ -1190,8 +1221,10 @@ class PubnubCrypto {
 
     private final String CIPHER_KEY;
 
-    public PubnubCrypto(String CIPHER_KEY) {
+    private final String INITIALIZATION_VECTOR;
+    public PubnubCrypto(String CIPHER_KEY, String INITIALIZATION_VECTOR) {
         this.CIPHER_KEY = CIPHER_KEY;
+        this.INITIALIZATION_VECTOR = INITIALIZATION_VECTOR;
     }
 
     /**
@@ -1336,7 +1369,7 @@ class PubnubCrypto {
      */
     private byte[] transform(boolean encrypt_or_decrypt, byte[] input_bytes) throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] iv_bytes = "0123456789012345".getBytes();
+        byte[] iv_bytes = INITIALIZATION_VECTOR.getBytes();
         byte[] key_bytes = md5(this.CIPHER_KEY);
 
         SecretKeySpec key = new SecretKeySpec(key_bytes, "AES");

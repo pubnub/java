@@ -5,27 +5,36 @@ import org.bouncycastle.util.SecureRandom;
 
 public class Pubnub extends PubnubCore {
 
+    /** The default initialization vector. */
+    private static final String DEFAULT_IV = "0123456789012345";
+
+    public Pubnub(String publish_key, String subscribe_key, String secret_key,
+                  String cipher_key, boolean ssl_on, String initialization_vector) {
+        super(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, initialization_vector );
+    }
+
+
     public Pubnub(String publish_key, String subscribe_key, String secret_key,
             String cipher_key, boolean ssl_on) {
-        super(publish_key, subscribe_key, secret_key, cipher_key, ssl_on);
+        super(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, DEFAULT_IV );
     }
 
     public Pubnub(String publish_key, String subscribe_key, String secret_key,
             boolean ssl_on) {
-        super(publish_key, subscribe_key, secret_key, "", ssl_on);
+        super(publish_key, subscribe_key, secret_key, "", ssl_on, "");
     }
 
 
     public Pubnub(String publish_key, String subscribe_key) {
-        super(publish_key, subscribe_key, "", "", false);
+        super(publish_key, subscribe_key, "", "", false, "");
     }
 
     public Pubnub(String publish_key, String subscribe_key, boolean ssl) {
-        super(publish_key, subscribe_key, "", "", ssl);
+        super(publish_key, subscribe_key, "", "", ssl, "");
     }
 
     public Pubnub(String publish_key, String subscribe_key, String secret_key) {
-        super(publish_key, subscribe_key, secret_key, "", false);
+        super(publish_key, subscribe_key, secret_key, "", false, "");
     }
 
     /**

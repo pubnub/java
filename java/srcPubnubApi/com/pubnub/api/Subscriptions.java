@@ -1,9 +1,9 @@
 package com.pubnub.api;
 
+import org.json.JSONArray;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
-
-import org.json.JSONArray;
 
 /**
  * @author PubnubCore

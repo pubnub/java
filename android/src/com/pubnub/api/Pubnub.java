@@ -11,6 +11,32 @@ import java.util.UUID;
  */
 
 public class Pubnub extends PubnubCore {
+
+    /** The default initialization vector. */
+    private static final String DEFAULT_IV = "0123456789012345";
+
+    /**
+     *
+     *
+     * Prepare PubNub State.
+     *
+     * @param String
+     *            Publish Key.
+     * @param String
+     *            Subscribe Key.
+     * @param String
+     *            Secret Key.
+     * @param String
+     *            Cipher Key.
+     * @param boolean SSL Enabled.
+     *
+     * @param initialization_vector The initialization vector used to create the cipher.
+     */
+    public Pubnub(String publish_key, String subscribe_key, String secret_key,
+                  String cipher_key, boolean ssl_on, String initialization_vector) {
+        super(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, initialization_vector);
+    }
+
     /**
      * Pubnub Constructor
      *
@@ -27,7 +53,7 @@ public class Pubnub extends PubnubCore {
      */
     public Pubnub(String publish_key, String subscribe_key, String secret_key,
             String cipher_key, boolean ssl_on) {
-        super(publish_key, subscribe_key, secret_key, cipher_key, ssl_on);
+        super(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, DEFAULT_IV );
     }
 
     /**
@@ -44,7 +70,7 @@ public class Pubnub extends PubnubCore {
      */
     public Pubnub(String publish_key, String subscribe_key, String secret_key,
             boolean ssl_on) {
-        super(publish_key, subscribe_key, secret_key, "", ssl_on);
+        super(publish_key, subscribe_key, secret_key, "", ssl_on, "");
     }
 
     /**
@@ -56,7 +82,7 @@ public class Pubnub extends PubnubCore {
      *            Subscribe Key
      */
     public Pubnub(String publish_key, String subscribe_key) {
-        super(publish_key, subscribe_key, "", "", false);
+        super(publish_key, subscribe_key, "", "", false, "");
     }
 
     /**
@@ -67,7 +93,7 @@ public class Pubnub extends PubnubCore {
      * @param ssl
      */
     public Pubnub(String publish_key, String subscribe_key, boolean ssl) {
-        super(publish_key, subscribe_key, "", "", ssl);
+        super(publish_key, subscribe_key, "", "", ssl, "");
     }
 
     /**
@@ -76,7 +102,7 @@ public class Pubnub extends PubnubCore {
      * @param secret_key
      */
     public Pubnub(String publish_key, String subscribe_key, String secret_key) {
-        super(publish_key, subscribe_key, secret_key, "", false);
+        super(publish_key, subscribe_key, secret_key, "", false, "");
     }
 
     /**

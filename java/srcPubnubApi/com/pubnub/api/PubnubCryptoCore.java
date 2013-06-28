@@ -30,20 +30,22 @@ abstract class PubnubCryptoCore {
     byte[] buf = new byte[16]; // input buffer
     byte[] obuf = new byte[512]; // output buffer
     byte[] key = null;
-    byte[] IV = null;
+    //byte[] IV = null;
+    String initialization_vector = "";
     public static int blockSize = 16;
     String CIPHER_KEY;
 
-    public PubnubCryptoCore(String CIPHER_KEY) {
+    public PubnubCryptoCore(String CIPHER_KEY, String INITIALIZATION_VECTOR) {
         this.CIPHER_KEY = CIPHER_KEY;
+        initialization_vector = INITIALIZATION_VECTOR;
     }
 
     public void InitCiphers() throws UnsupportedEncodingException {
 
         key = new String(Hex.encode(sha256(this.CIPHER_KEY.getBytes("UTF-8"))),
                 "UTF-8").substring(0, 32).toLowerCase().getBytes("UTF-8");
-        IV = "0123456789012345".getBytes("UTF-8");
 
+        byte[] iv = initialization_vector.getBytes("UTF-8");
         encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(
                 new AESEngine()));
 
@@ -52,7 +54,7 @@ abstract class PubnubCryptoCore {
 
         // create the IV parameter
         ParametersWithIV parameterIV = new ParametersWithIV(new KeyParameter(
-                key), IV);
+                key), iv);
 
         encryptCipher.init(true, parameterIV);
         decryptCipher.init(false, parameterIV);

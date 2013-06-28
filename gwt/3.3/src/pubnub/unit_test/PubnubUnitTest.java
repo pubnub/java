@@ -1,17 +1,16 @@
 package pubnub.unit_test;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-
 import pubnub.api.Callback;
 import pubnub.api.Pubnub;
+
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
 
 public class PubnubUnitTest {
 
@@ -21,7 +20,8 @@ public class PubnubUnitTest {
             "demo",
             "",
             "",
-            true
+            true,
+            ""
     );
     private String channel = "hello_world";
     private int limit = 1;
@@ -255,6 +255,7 @@ public class PubnubUnitTest {
     public void testEncryptedHistoryHashMapOfStringObject() {
         // Context setup
         pubnub.CIPHER_KEY = "enigma";
+        pubnub.INITIALIZATION_VECTOR = "ultra";
         JSONObject message = new JSONObject();
         try {
             message.put("text", "Hello World!");
@@ -344,6 +345,7 @@ public class PubnubUnitTest {
     {
         // Context setup for Detailed History
         pubnub.CIPHER_KEY = "enigma";
+        pubnub.INITIALIZATION_VECTOR = "ultra";
         int total_msg = 10;
         long starttime = (long) pubnub.time();
         HashMap<Long, String> inputs = new HashMap<Long, String>();
@@ -471,6 +473,7 @@ public class PubnubUnitTest {
     {
         // Context setup for Detailed History
         pubnub.CIPHER_KEY = "enigma";
+        pubnub.INITIALIZATION_VECTOR = "ultra";
         int total_msg = 10;
         long starttime = (long) pubnub.time();
         HashMap<Long, String> inputs = new HashMap<Long, String>();

@@ -1,14 +1,14 @@
 package com.pubnub.api;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Random;
-
 import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Random;
 
 /**
  * Pubnub object facilitates querying channels for messages and listening on
@@ -28,6 +28,7 @@ abstract class PubnubCore {
     private String SUBSCRIBE_KEY = "";
     private String SECRET_KEY = "";
     private String CIPHER_KEY = "";
+    private String INITIALIZATION_VECTOR = "";
     private volatile String AUTH_STR = null;
     private Hashtable params;
     private volatile boolean resumeOnReconnect;
@@ -195,8 +196,8 @@ abstract class PubnubCore {
      */
 
     public PubnubCore(String publish_key, String subscribe_key,
-            String secret_key, String cipher_key, boolean ssl_on) {
-        this.init(publish_key, subscribe_key, secret_key, cipher_key, ssl_on);
+            String secret_key, String cipher_key, boolean ssl_on, String initialization_vector ) {
+        this.init(publish_key, subscribe_key, secret_key, cipher_key, ssl_on, initialization_vector);
     }
 
     /**
@@ -214,8 +215,8 @@ abstract class PubnubCore {
      */
 
     public PubnubCore(String publish_key, String subscribe_key,
-            String secret_key, boolean ssl_on) {
-        this.init(publish_key, subscribe_key, secret_key, "", ssl_on);
+            String secret_key, boolean ssl_on ) {
+        this.init(publish_key, subscribe_key, secret_key, "", ssl_on, "");
     }
 
     /**
@@ -229,7 +230,7 @@ abstract class PubnubCore {
      */
 
     public PubnubCore(String publish_key, String subscribe_key) {
-        this.init(publish_key, subscribe_key, "", "", false);
+        this.init(publish_key, subscribe_key, "", "", false, "");
     }
 
     /**
@@ -243,7 +244,7 @@ abstract class PubnubCore {
      */
 
     public PubnubCore(String publish_key, String subscribe_key, boolean ssl) {
-        this.init(publish_key, subscribe_key, "", "", ssl);
+        this.init(publish_key, subscribe_key, "", "", ssl, "");
     }
 
     /**
@@ -259,7 +260,7 @@ abstract class PubnubCore {
      */
     public PubnubCore(String publish_key, String subscribe_key,
             String secret_key) {
-        this.init(publish_key, subscribe_key, secret_key, "", false);
+        this.init(publish_key, subscribe_key, secret_key, "", false, "");
     }
 
     /**
@@ -271,14 +272,16 @@ abstract class PubnubCore {
      * @param secret_key
      * @param cipher_key
      * @param ssl_on
+     * @param initialization_vector
      */
     private void init(String publish_key, String subscribe_key,
-            String secret_key, String cipher_key, boolean ssl_on) {
+            String secret_key, String cipher_key, boolean ssl_on, String initialization_vector) {
         this.PUBLISH_KEY = publish_key;
         this.SUBSCRIBE_KEY = subscribe_key;
         this.SECRET_KEY = secret_key;
         this.CIPHER_KEY = cipher_key;
         this.SSL = ssl_on;
+        this.INITIALIZATION_VECTOR = initialization_vector;
 
         if (UUID == null)
             UUID = uuid();
@@ -448,7 +451,7 @@ abstract class PubnubCore {
 
         if (this.CIPHER_KEY.length() > 0) {
             // Encrypt Message
-            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY);
+            PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.INITIALIZATION_VECTOR);
             try {
                 msgStr = "\"" + pc.encrypt(msgStr) + "\"";
             } catch (Exception e) {
@@ -1001,7 +1004,7 @@ abstract class PubnubCore {
 
         if (CIPHER_KEY.length() > 0) {
             for (int i = 0; i < messages.length(); i++) {
-                PubnubCrypto pc = new PubnubCrypto(CIPHER_KEY);
+                PubnubCrypto pc = new PubnubCrypto(CIPHER_KEY, INITIALIZATION_VECTOR);
                 try {
                     String message = pc.decrypt(messages.get(i).toString());
                     messages.put(i, stringToJSON(message));
@@ -1126,7 +1129,7 @@ abstract class PubnubCore {
                                                 && !_channel.name
                                                         .endsWith(PRESENCE_SUFFIX)) {
                                             PubnubCrypto pc = new PubnubCrypto(
-                                                    CIPHER_KEY);
+                                                    CIPHER_KEY, INITIALIZATION_VECTOR);
                                             try {
                                                 String message = pc
                                                         .decrypt(messages
@@ -1167,7 +1170,7 @@ abstract class PubnubCore {
                                                 && !_channel.name
                                                         .endsWith(PRESENCE_SUFFIX)) {
                                             PubnubCrypto pc = new PubnubCrypto(
-                                                    CIPHER_KEY);
+                                                    CIPHER_KEY, INITIALIZATION_VECTOR);
                                             try {
                                                 String message = pc
                                                         .decrypt(messages
