@@ -829,81 +829,6 @@ abstract class PubnubCore {
 
 
 
-    /**
-     *
-     * Read DetailedHistory for a channel.
-     *
-     * @param channel
-     *            Channel name for which detailed history is required
-     * @param start
-     *            Start time
-     * @param end
-     *            End time
-     * @param count
-     *            Upper limit on number of messages to be returned
-     * @param reverse
-     *            True if messages need to be in reverse order
-     * @param callback
-     *            Callback
-     */
-    public void detailedHistory(final String channel, long start, long end,
-                                int count, boolean reverse, final Callback callback) {
-        Hashtable parameters = PubnubUtil.hashtableClone(params);
-        if (count == -1)
-            count = 100;
-
-        parameters.put("count", String.valueOf(count));
-        parameters.put("reverse", String.valueOf(reverse));
-
-        if (start != -1)
-            parameters.put("start", Long.toString(start).toLowerCase());
-
-        if (end != -1)
-            parameters.put("end", Long.toString(end).toLowerCase());
-
-        String[] urlargs = { getPubnubUrl(), "v2", "history", "sub-key",
-                             this.SUBSCRIBE_KEY, "channel", PubnubUtil.urlEncode(channel)
-                           };
-
-        HttpRequest hreq = new HttpRequest(urlargs, parameters,
-        new ResponseHandler() {
-
-            public void handleResponse(HttpRequest hreq, String response) {
-                JSONArray respArr;
-                try {
-                    respArr = new JSONArray(response);
-                    decryptJSONArray((JSONArray) respArr.get(0));
-                    callback.successCallback(channel, respArr);
-                } catch (JSONException e) {
-                    callback.errorCallback(channel,
-                                           PubnubError.getErrorObject(PubnubError.PNERROBJ_JSON_ERROR, 3));
-                } catch (DataLengthException e) {
-                    callback.errorCallback(channel,
-                                           PubnubError.getErrorObject(PubnubError.PNERROBJ_DECRYPTION_ERROR, 6, response));
-                } catch (IllegalStateException e) {
-                    callback.errorCallback(channel,
-                                           PubnubError.getErrorObject(PubnubError.PNERROBJ_DECRYPTION_ERROR, 7, response));
-                } catch (InvalidCipherTextException e) {
-                    callback.errorCallback(channel,
-                                           PubnubError.getErrorObject(PubnubError.PNERROBJ_DECRYPTION_ERROR, 8, response));
-                } catch (IOException e) {
-                    callback.errorCallback(channel,
-                                           PubnubError.getErrorObject(PubnubError.PNERROBJ_DECRYPTION_ERROR, 9, response));
-                } catch (Exception e) {
-                    callback.errorCallback(channel,
-                                           PubnubError.getErrorObject(PubnubError.PNERROBJ_DECRYPTION_ERROR, 10, response + " : " + e.toString()));
-                }
-
-            }
-
-            public void handleError(HttpRequest hreq, PubnubError error) {
-                callback.errorCallback(channel, error);
-                return;
-            }
-
-        });
-        _request(hreq, nonSubscribeManager);
-    }
 
     /**
      *
@@ -920,7 +845,7 @@ abstract class PubnubCore {
      */
     public void detailedHistory(String channel, long start, boolean reverse,
                                 Callback callback) {
-        detailedHistory(channel, start, -1, -1, reverse, callback);
+        detailedHistory(channel, start, -1, -1, reverse, callback, false);
     }
 
     /**
@@ -938,7 +863,7 @@ abstract class PubnubCore {
      */
     public void detailedHistory(String channel, long start, long end,
                                 Callback callback) {
-        detailedHistory(channel, start, end, -1, false, callback);
+        detailedHistory(channel, start, end, -1, false, callback, false);
     }
 
     /**
@@ -959,7 +884,7 @@ abstract class PubnubCore {
      */
     public void detailedHistory(String channel, long start, long end,
                                 boolean reverse, Callback callback) {
-        detailedHistory(channel, start, end, -1, reverse, callback);
+        detailedHistory(channel, start, end, -1, reverse, callback, false);
     }
 
     /**
@@ -977,7 +902,7 @@ abstract class PubnubCore {
      */
     public void detailedHistory(String channel, int count, boolean reverse,
                                 Callback callback) {
-        detailedHistory(channel, -1, -1, count, reverse, callback);
+        detailedHistory(channel, -1, -1, count, reverse, callback, false);
     }
 
     /**
@@ -993,7 +918,27 @@ abstract class PubnubCore {
      */
     public void detailedHistory(String channel, boolean reverse,
                                 Callback callback) {
-        detailedHistory(channel, -1, -1, -1, reverse, callback);
+        detailedHistory(channel, -1, -1, -1, reverse, callback, false);
+    }
+
+
+
+        /**
+     *
+     * Read DetailedHistory for a channel.
+     *
+     * @param channel
+     *            Channel name for which detailed history is required
+     * @param reverse
+     *            True if messages need to be in reverse order
+     * @param timetoken
+     *            Include timetoken or not
+     * @param callback
+     *            Callback
+     */
+    public void detailedHistory(String channel, boolean reverse, boolean timetoken
+                                Callback callback) {
+        detailedHistory(channel, -1, -1, -1, reverse, callback, timetoken);
     }
 
     /**
@@ -1008,8 +953,27 @@ abstract class PubnubCore {
      *            Callback object
      */
     public void detailedHistory(String channel, int count, Callback callback) {
-        detailedHistory(channel, -1, -1, count, false, callback);
+        detailedHistory(channel, -1, -1, count, false, callback, false);
     }
+
+
+     /**
+     *
+     * Read DetailedHistory for a channel.
+     *
+     * @param channel
+     *            Channel name for which detailed history is required
+     * @param count
+     *            Maximum number of messages
+     * @param timetoken
+     *            Include timetoken or not
+     * @param callback
+     *            Callback object
+     */
+    public void detailedHistory(String channel, int count, boolean timetoken, Callback callback) {
+        detailedHistory(channel, -1, -1, count, false, callback, timetoken);
+    }
+
 
     /**
      * Read current time from PubNub Cloud.
