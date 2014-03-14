@@ -770,6 +770,8 @@ abstract class PubnubCore {
 
         parameters.put("count", String.valueOf(count));
         parameters.put("reverse", String.valueOf(reverse));
+        parameters.put("include_token", "true");
+
 
         if (start != -1)
             parameters.put("start", Long.toString(start).toLowerCase());
