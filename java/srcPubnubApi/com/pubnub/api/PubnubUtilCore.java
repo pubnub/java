@@ -72,6 +72,10 @@ class PubnubUtilCore {
      * @return String , string of tokens joined by delimiter
      */
     public static String joinString(String[] sourceArray, String delimiter) {
+
+        if (sourceArray == null || delimiter == null) {
+            return "";
+        }
         StringBuffer sb = new StringBuffer();
 
         for (int i = 0; i < sourceArray.length - 1; i++) {
@@ -114,10 +118,12 @@ class PubnubUtilCore {
      *            , Hashtable
      * @param delimiter
      *            , String
+     * @param exclude
+     *            , exclude channel if present as substring
      * @return , string array with hash keys string
      */
     public static synchronized String hashTableKeysToDelimitedString(
-        Hashtable ht, String delimiter) {
+        Hashtable ht, String delimiter, String exclude) {
 
         StringBuffer sb = new StringBuffer();
         boolean first = true;
@@ -127,6 +133,11 @@ class PubnubUtilCore {
 
             String s = (String) e.nextElement();
 
+            if (exclude != null) {
+                if (s.indexOf(exclude) != -1) {
+                    continue;
+                }
+            }
             if (first) {
                 sb.append(s);
                 first = false;
@@ -135,6 +146,22 @@ class PubnubUtilCore {
             }
         }
         return sb.toString();
+
+    }
+
+    /**
+     * Returns string keys in a hashtable as delimited string
+     *
+     * @param ht
+     *            , Hashtable
+     * @param delimiter
+     *            , String
+     * @return , string array with hash keys string
+     */
+    public static String hashTableKeysToDelimitedString(
+        Hashtable ht, String delimiter) {
+
+        return hashTableKeysToDelimitedString(ht, delimiter, null);
 
     }
 

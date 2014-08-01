@@ -50,9 +50,12 @@ class Subscriptions {
         return PubnubUtil.hashtableKeysToArray(channels);
     }
 
+    public String getChannelStringNoPresence() {
+        return PubnubUtil.hashTableKeysToDelimitedString(channels, ",", "-pnpres");
+    }
+
     public String getChannelString() {
         return PubnubUtil.hashTableKeysToDelimitedString(channels, ",");
-
     }
 
     public void invokeConnectCallbackOnChannels(Object message) {

@@ -31,10 +31,9 @@ public class Subscribe extends PubnubCommand {
 
             public void fieldChanged(Field field, int context) {
                 Hashtable args = new Hashtable();
-                args.put("channel", txtChannel.toString());
 
                 try {
-                    _pubnub.subscribe(args, new Callback() {
+                    _pubnub.subscribe(txtChannel.toString(), new Callback() {
                         public void connectCallback(String channel) {
                             notifyUser("CONNECT on channel:" + channel);
                         }

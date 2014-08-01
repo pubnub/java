@@ -36,7 +36,7 @@ public class PubnubDemoConsole {
         out.println(message.toString());
     }
 
-    private void publish(String channel) {
+    private void publish(String channel, boolean store) {
         notifyUser("Enter the message for publish. To exit loop enter QUIT");
         String message = "";
 
@@ -61,33 +61,33 @@ public class PubnubDemoConsole {
 
             try {
                 Integer i = Integer.parseInt(message);
-                pubnub.publish(channel, i, cb);
+                pubnub.publish(channel, i, store, cb);
                 continue;
             } catch (Exception e) {
 
             }
             try {
                 Double d = Double.parseDouble(message);
-                pubnub.publish(channel, d, cb);
+                pubnub.publish(channel, d, store, cb);
                 continue;
             } catch (Exception e) {
 
             }
             try {
                 JSONArray js = new JSONArray(message);
-                pubnub.publish(channel, js, cb);
+                pubnub.publish(channel, js, store, cb);
                 continue;
             } catch (Exception e) {
 
             }
             try {
                 JSONObject js = new JSONObject(message);
-                pubnub.publish(channel, js, cb);
+                pubnub.publish(channel, js, store, cb);
                 continue;
             } catch (Exception e) {
 
             }
-            pubnub.publish(channel, message, cb);
+            pubnub.publish(channel, message, store, cb);
         }
 
     }
@@ -118,26 +118,26 @@ public class PubnubDemoConsole {
                 }
 
                 @Override
-                public void successCallback(String channel, Object message) {
+                public void successCallback(String channel, Object message, String timetoken) {
                     //notifyUser("SUBSCRIBE : " + channel + " : "
                      //          + message.getClass() + " : " + message.toString());
                     if ( message instanceof JSONObject) {
                         notifyUser("SUBSCRIBE : " + channel + " : "
                                 + message.getClass() + " : " + message.toString());
                          try {
-							notifyUser( ((JSONObject)message).getString("data")) ;
-							notifyUser( ((JSONObject)message).getString("data2")) ;
-							notifyUser( ((JSONObject)message).getString("data3")) ;
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                          
+                            notifyUser( "TIMETOKEN: " + timetoken  + ", "+  ((JSONObject)message).getString("data")) ;
+                            notifyUser( "TIMETOKEN: " + timetoken  + ", "+  ((JSONObject)message).getString("data2")) ;
+                            notifyUser( "TIMETOKEN: " + timetoken  + ", "+  ((JSONObject)message).getString("data3")) ;
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
                     } else {
-                    	System.out.println("Message not a json object Discarding message :" + message);
+                        System.out.println("TIMETOKEN: " + timetoken  + ", "+  "Message not a json object : " + message);
                     }
-                    		
-                    
+
+
                 }
 
                 @Override
@@ -186,8 +186,8 @@ public class PubnubDemoConsole {
         }
     }
 
-    private void history(String channel) {
-        pubnub.history(channel, 2, new Callback() {
+    private void history(String channel, int count, boolean includeToken) {
+        pubnub.history(channel, includeToken, count, new Callback() {
             @Override
             public void successCallback(String channel, Object message) {
                 notifyUser("HISTORY : " + message);
@@ -290,7 +290,8 @@ public class PubnubDemoConsole {
                 break;
             case 2:
                 channelName = getStringFromConsole("Channel Name");
-                publish(channelName);
+                boolean store = getBooleanFromConsole("Store", true);
+                publish(channelName, store);
                 break;
             case 3:
                 channelName = getStringFromConsole("Channel Name");
@@ -298,7 +299,9 @@ public class PubnubDemoConsole {
                 break;
             case 4:
                 channelName = getStringFromConsole("Channel Name");
-                history(channelName);
+                int count = getIntFromConsole("Count");
+                boolean includeToken = getBooleanFromConsole("Include Timetokens");
+                history(channelName, count, includeToken);
                 break;
             case 5:
                 channelName = getStringFromConsole("Channel Name", true);
@@ -396,7 +399,18 @@ public class PubnubDemoConsole {
                 break;
             case 28:
                 int heartbeatInterval = getIntFromConsole("Pubnub Presence Heartbeat Interval ( in seconds ), Current value : " + pubnub.getHeartbeatInterval());
-                pubnub.setHeartbeatInterval(heartbeatInterval);
+                pubnub.setHeartbeatInterval(heartbeatInterval, new Callback(){
+
+                    @Override
+                    public void successCallback(String channel, Object message) {
+                        System.out.println(System.currentTimeMillis() / 1000 + " : " + message);
+                    }
+                    @Override
+                    public void errorCallback(String channel, PubnubError error) {
+                        System.out.println(System.currentTimeMillis() / 1000 + " : " + error);
+                    }
+
+                });
                 break;
             case 29:
                 getState();

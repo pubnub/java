@@ -20,6 +20,7 @@
         <pathelement location="libs/json-simple-1.1.1.jar"/>
         <pathelement location="libs/slf4j-api-1.7.5.jar"/>
         <pathelement location="libs/junit-4.11.jar"/>
+        <pathelement location="libs/commons-cli-1.2.jar"/>
         <pathelement location="jars/Pubnub-UnitTests-${VERSION}.jar"/>
     </path>
     <target name="build-all" depends="debug-build, build" />
@@ -82,7 +83,7 @@
         <antcall target="unsetDebugTrue" />
     </target>
 
-    <target depends="create-jar, create-test-jar, create-examples-jar, create-demo-console-jar, create-presence-test-jar, clean_bin, doc" name="build-jar"/>
+    <target depends="create-jar, create-test-jar, create-examples-jar, create-demo-console-jar, create-push-test-jar, create-presence-test-jar, clean_bin, doc" name="build-jar"/>
     <target depends="build-project" name="create-jar">
         <jar destfile="${jar_name}"
             basedir="bin"
@@ -148,7 +149,7 @@
                 <attribute name="Company" value="Pubnub" />
                 <attribute name="Project" value="pubnub-api" />
                 <attribute name="Java-Version" value="${java.version}" />
-                <attribute name="Rsrc-Class-Path" value="./ bcprov-jdk15on-1.47.jar json-simple-1.1.1.jar json-20090211.jar slf4j-api-1.7.5.jar slf4j-simple-1.7.5.jar" />
+                <attribute name="Rsrc-Class-Path" value="./ bcprov-jdk15on-1.47.jar commons-cli-1.2.jar json-simple-1.1.1.jar json-20090211.jar slf4j-api-1.7.5.jar slf4j-simple-1.7.5.jar" />
                 <attribute name="Class-Path" value="." />
                 <attribute name="Rsrc-Main-Class" value="@{jar.classname}" />
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
@@ -196,6 +197,9 @@
     </target>
     <target name="create-demo-console-jar">
         <create-jar jar.type="examples" jar.classname="com.pubnub.examples.PubnubDemoConsole" jar.filename="PubnubDemoConsole.jar" />
+    </target>
+    <target name="create-push-test-jar">
+        <create-jar jar.type="examples" jar.classname="com.pubnub.examples.PubnubPushSampleCode" jar.filename="PubnubPushTest.jar" />
     </target>
     <target name="create-presence-test-jar">
         <create-jar jar.type="examples" jar.classname="com.pubnub.examples.PubnubPresenceTest" jar.filename="PubnubPresenceTest.jar" />

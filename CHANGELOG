@@ -1,3 +1,8 @@
+6-25-14 - 3.6.1 - baee5
+. Fixed issue where a socket closed exception was thrown in some cases with presence
+. Added storage-optional publish flag
+. Added history return with TT
+
 3-13-14 3.6.0
 . new Presence features support
 

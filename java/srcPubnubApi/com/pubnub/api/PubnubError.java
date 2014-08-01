@@ -196,6 +196,17 @@ public class PubnubError {
      */
     public static final int         PNERR_INVALID_ARGUMENTS                     =       131;
 
+    /**
+     * Channel missing
+     *
+     */
+    public static final int         PNERR_CHANNEL_MISSING                     =       132;
+
+    /**
+     * Pubnub connection not set on sender
+     *
+     */
+    public static final int         PNERR_CONNECTION_NOT_SET                     =       133;
 
     // Error Objects
 
@@ -408,6 +419,18 @@ public class PubnubError {
             new PubnubError     (
             PNERR_INVALID_ARGUMENTS ,
             "INVALID ARGUMENTS."
+    );
+
+    static final PubnubError PNERROBJ_CHANNEL_MISSING                      =
+            new PubnubError     (
+            PNERR_CHANNEL_MISSING ,
+            "Channel Missing."
+    );
+
+    static final PubnubError PNERROBJ_CONNECTION_NOT_SET                       =
+            new PubnubError     (
+            PNERR_CONNECTION_NOT_SET ,
+            "Pubnub Connection not set"
     );
 
 

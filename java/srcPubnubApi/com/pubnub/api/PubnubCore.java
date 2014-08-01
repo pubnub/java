@@ -118,7 +118,7 @@ abstract class PubnubCore {
     }
 
     String[] getPresenceHeartbeatUrl() {
-        String channelString = subscriptions.getChannelString();
+        String channelString = subscriptions.getChannelStringNoPresence();
 
         if (channelString.length() <= 0) {
             return null;
@@ -130,9 +130,9 @@ abstract class PubnubCore {
     }
 
     private String getState() {
-    	return (subscriptions.state.length() > 0)?subscriptions.state.toString():null;
+        return (subscriptions.state.length() > 0)?subscriptions.state.toString():null;
     }
-    
+
     class PresenceHeartbeatTask extends TimedTask {
         private Callback callback;
 
@@ -147,16 +147,16 @@ abstract class PubnubCore {
             if (urlComponents == null)
                 return;
             //String[] urlComponents = { getPubnubUrl(), "time", "0"};
-            
+
             Hashtable parameters = PubnubUtil.hashtableClone(params);
             if (parameters.get("uuid") == null)
                 parameters.put("uuid", UUID);
-            
+
             String st  = getState();
             if (st != null) parameters.put("state", st);
-            
+
             if (HEARTBEAT > 0 && HEARTBEAT < 320 ) parameters.put("heartbeat", String.valueOf(HEARTBEAT));
-            
+
             HttpRequest hreq = new HttpRequest(urlComponents, parameters,
                     new ResponseHandler() {
                 public void handleResponse(HttpRequest hreq, String response) {
@@ -169,11 +169,11 @@ abstract class PubnubCore {
                                 PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
                         return;
                     }
-                    callback.successCallback(subscriptions.getChannelString(), response);
+                    callback.successCallback(subscriptions.getChannelStringNoPresence(), response);
                 }
 
                 public void handleError(HttpRequest hreq, PubnubError error) {
-                    callback.errorCallback(subscriptions.getChannelString(), error);
+                    callback.errorCallback(subscriptions.getChannelStringNoPresence(), error);
                     return;
                 }
             });
@@ -191,9 +191,9 @@ abstract class PubnubCore {
      *            Presence Expiry timeout in seconds
      */
     public void setPnExpires(int pnexpires, Callback callback) {
-    	setHeartbeat(pnexpires,callback);
+        setHeartbeat(pnexpires,callback);
     }
-    
+
     /**
      * This method sets presence expiry timeout.
      *
@@ -203,9 +203,10 @@ abstract class PubnubCore {
     public void setHeartbeat(int heartbeat, Callback callback) {
         Callback cb = getWrappedCallback(callback);
 
-        PRESENCE_HB_INTERVAL = (heartbeat > 0 && heartbeat < 5)?5:heartbeat;
-        PRESENCE_HB_INTERVAL = (PRESENCE_HB_INTERVAL - 3 >= 1)?PRESENCE_HB_INTERVAL:1;
-        
+        HEARTBEAT = (heartbeat > 0 && heartbeat < 5)?5:heartbeat;
+        if (PRESENCE_HB_INTERVAL == 0) {
+            PRESENCE_HB_INTERVAL = (HEARTBEAT - 3 >= 1)?HEARTBEAT - 3:1;
+        }
         if (PRESENCE_HEARTBEAT_TASK == 0) {
             PRESENCE_HEARTBEAT_TASK = timedTaskManager.addTask("Presence-Heartbeat",
                     new PresenceHeartbeatTask(PRESENCE_HB_INTERVAL, cb));
@@ -214,22 +215,24 @@ abstract class PubnubCore {
         } else {
             timedTaskManager.updateTask(PRESENCE_HEARTBEAT_TASK, PRESENCE_HB_INTERVAL);
         }
-        HEARTBEAT = heartbeat;
         disconnectAndResubscribe();
     }
 
     public void setPnExpires(int pnexpires) {
         setPnExpires(pnexpires, null);
     }
-    
+
     public void setHeartbeat(int heartbeat) {
         setHeartbeat(heartbeat, null);
     }
-    
+
     public void setHeartbeatInterval(int heartbeatInterval) {
-    	
-        Callback cb = getWrappedCallback(null);
-    	PRESENCE_HB_INTERVAL = heartbeatInterval;
+        setHeartbeatInterval(heartbeatInterval, null);
+    }
+    public void setHeartbeatInterval(int heartbeatInterval, Callback callback) {
+
+        Callback cb = getWrappedCallback(callback);
+        PRESENCE_HB_INTERVAL = heartbeatInterval;
         if (PRESENCE_HEARTBEAT_TASK == 0) {
             PRESENCE_HEARTBEAT_TASK = timedTaskManager.addTask("Presence-Heartbeat",
                     new PresenceHeartbeatTask(PRESENCE_HB_INTERVAL, cb));
@@ -238,14 +241,14 @@ abstract class PubnubCore {
         } else {
             timedTaskManager.updateTask(PRESENCE_HEARTBEAT_TASK, PRESENCE_HB_INTERVAL);
         }
-    	
-    }
-    
-    public int getHeartbeatInterval() {
-    	return PRESENCE_HB_INTERVAL;
+
     }
 
-    
+    public int getHeartbeatInterval() {
+        return PRESENCE_HB_INTERVAL;
+    }
+
+
     /**
      * Returns presence expiry timeout value
      * @return Current presence expiry timeout value
@@ -253,13 +256,13 @@ abstract class PubnubCore {
     public int getPnExpires() {
         return getHeartbeat();
     }
-    
+
     /**
      * Returns presence heartbeat value
      * @return Current presence heartbeat value
      */
     public int getHeartbeat() {
-        return PRESENCE_HB_INTERVAL;
+        return HEARTBEAT;
     }
 
     /**
@@ -614,6 +617,101 @@ abstract class PubnubCore {
      * @param callback
      *            object of sub class of Callback class
      */
+    public void publish(String channel, JSONObject message, boolean storeInHistory, Callback callback) {
+        Hashtable args = new Hashtable();
+        args.put("channel", channel);
+        args.put("message", message);
+        args.put("storeInHistory", (storeInHistory)?"":"0");
+        publish(args);
+    }
+
+    /**
+     * Send a message to a channel.
+     *
+     * @param channel
+     *            Channel name
+     * @param message
+     *            JSONOArray to be published
+     * @param callback
+     *            object of sub class of Callback class
+     */
+    public void publish(String channel, JSONArray message, boolean storeInHistory, Callback callback) {
+        Hashtable args = new Hashtable();
+        args.put("channel", channel);
+        args.put("message", message);
+        args.put("callback", callback);
+        args.put("storeInHistory", (storeInHistory)?"":"0");
+        publish(args);
+    }
+
+    /**
+     * Send a message to a channel.
+     *
+     * @param channel
+     *            Channel name
+     * @param message
+     *            String to be published
+     * @param callback
+     *            object of sub class of Callback class
+     */
+    public void publish(String channel, String message, boolean storeInHistory, Callback callback) {
+        Hashtable args = new Hashtable();
+        args.put("channel", channel);
+        args.put("message", message);
+        args.put("callback", callback);
+        args.put("storeInHistory", (storeInHistory)?"":"0");
+        publish(args);
+    }
+
+    /**
+     * Send a message to a channel.
+     *
+     * @param channel
+     *            Channel name
+     * @param message
+     *            Integer to be published
+     * @param callback
+     *            object of sub class of Callback class
+     */
+    public void publish(String channel, Integer message, boolean storeInHistory, Callback callback) {
+        Hashtable args = new Hashtable();
+        args.put("channel", channel);
+        args.put("message", message);
+        args.put("callback", callback);
+        args.put("storeInHistory", (storeInHistory)?"":"0");
+        publish(args);
+    }
+
+    /**
+     * Send a message to a channel.
+     *
+     * @param channel
+     *            Channel name
+     * @param message
+     *            Double to be published
+     * @param callback
+     *            object of sub class of Callback class
+     */
+    public void publish(String channel, Double message, boolean storeInHistory, Callback callback) {
+        Hashtable args = new Hashtable();
+        args.put("channel", channel);
+        args.put("message", message);
+        args.put("callback", callback);
+        args.put("storeInHistory", (storeInHistory)?"":"0");
+        publish(args);
+    }
+
+
+    /**
+     * Send a message to a channel.
+     *
+     * @param channel
+     *            Channel name
+     * @param message
+     *            JSONObject to be published
+     * @param callback
+     *            object of sub class of Callback class
+     */
     public void publish(String channel, JSONObject message, Callback callback) {
         Hashtable args = new Hashtable();
         args.put("channel", channel);
@@ -719,8 +817,11 @@ abstract class PubnubCore {
         final String channel = (String) args.get("channel");
         final Object message = args.get("message");
         final Callback callback = getWrappedCallback((Callback) args.get("callback"));
+        String storeInHistory = (String) args.get("storeInHistory");
         String msgStr = message.toString();
+        Hashtable parameters = PubnubUtil.hashtableClone(params);
 
+        if (storeInHistory != null && storeInHistory.length() > 0) parameters.put("store", storeInHistory);
 
         if (this.CIPHER_KEY.length() > 0) {
             // Encrypt Message
@@ -795,7 +896,7 @@ abstract class PubnubCore {
                 return;
             }
         }
-        HttpRequest hreq = new HttpRequest(urlComponents, params, new PublishResponseHandler());
+        HttpRequest hreq = new HttpRequest(urlComponents, parameters, new PublishResponseHandler());
 
         _request(hreq, nonSubscribeManager);
     }
@@ -865,11 +966,11 @@ abstract class PubnubCore {
         if (state != null) parameters.put("state", state.toString());
         Channel ch = subscriptions.getChannel(channel);
         if (ch != null) {
-        	try {
-				subscriptions.state.put(channel, state);
-			} catch (JSONException e) {
+            try {
+                subscriptions.state.put(channel, state);
+            } catch (JSONException e) {
 
-			}
+            }
         }
         HttpRequest hreq = new HttpRequest(urlargs, parameters,
                 new ResponseHandler() {
@@ -964,7 +1065,7 @@ abstract class PubnubCore {
      *
      * @param channel
      *            Channel name
-     * @param state 
+     * @param state
      *            state enabled ?
      * @param uuids
      *            enable / disable returning uuids in response ?
@@ -1005,6 +1106,30 @@ abstract class PubnubCore {
     }
 
     /**
+    *
+    * Read History for a channel.
+    *
+    * @param channel
+    *            Channel name for which history is required
+    * @param start
+    *            Start time
+    * @param end
+    *            End time
+    * @param count
+    *            Upper limit on number of messages to be returned
+    * @param reverse
+    *            True if messages need to be in reverse order
+    * @param callback
+    *            Callback
+    */
+   public void history(final String channel, long start, long end,
+           int count, boolean reverse, Callback callback) {
+       history(channel, start, end, count, reverse, false, callback);
+   }
+
+
+
+    /**
      *
      * Read History for a channel.
      *
@@ -1018,11 +1143,13 @@ abstract class PubnubCore {
      *            Upper limit on number of messages to be returned
      * @param reverse
      *            True if messages need to be in reverse order
+     * @param includeTimetoken
+     *            True/False whether to include timetokens in response
      * @param callback
      *            Callback
      */
     public void history(final String channel, long start, long end,
-            int count, boolean reverse, Callback callback) {
+            int count, boolean reverse, boolean includeTimetoken, Callback callback) {
         final Callback cb = getWrappedCallback(callback);
         Hashtable parameters = PubnubUtil.hashtableClone(params);
         if (count == -1)
@@ -1030,6 +1157,7 @@ abstract class PubnubCore {
 
         parameters.put("count", String.valueOf(count));
         parameters.put("reverse", String.valueOf(reverse));
+        parameters.put("include_token", String.valueOf(includeTimetoken));
 
         if (start != -1)
             parameters.put("start", Long.toString(start).toLowerCase());
@@ -1076,7 +1204,7 @@ abstract class PubnubCore {
                 return;
             }
         }
-        
+
         HttpRequest hreq = new HttpRequest(urlargs, parameters, new HistoryResponseHandler());
         _request(hreq, nonSubscribeManager);
     }
@@ -1116,6 +1244,23 @@ abstract class PubnubCore {
     public void history(String channel, int count, Callback callback) {
         history(channel, -1, -1, count, false, callback);
     }
+
+    /**
+    *
+    * Read History for a channel.
+    *
+    * @param channel
+    *            Channel name for which history is required
+    * @param includeTimetoken
+    *            True/False whether to include timetokens in response
+    * @param count
+    *            Maximum number of messages
+    * @param callback
+    *            Callback object
+    */
+   public void history(String channel, boolean includeTimetoken, int count, Callback callback) {
+       history(channel, -1, -1, count, false, includeTimetoken, callback);
+   }
 
 
     /**
@@ -1632,10 +1777,10 @@ abstract class PubnubCore {
 
         Hashtable params = PubnubUtil.hashtableClone(this.params);
         params.put("uuid", UUID);
-        
+
         String st  = getState();
         if (st != null) params.put("state", st);
-        
+
         if (HEARTBEAT > 5 && HEARTBEAT < 320) params.put("heartbeat", String.valueOf(HEARTBEAT));
         log.verbose("Subscribing with timetoken : " + _timetoken);
 

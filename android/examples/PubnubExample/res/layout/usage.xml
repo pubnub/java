@@ -26,6 +26,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:clickable="true"
+        android:id="@+id/clicklayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/optionmarginleft"
@@ -160,6 +162,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/option23" />
+        <TextView
+            android:id="@+id/option24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option24" />
+        <TextView
+            android:id="@+id/option25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option25" />
+        <TextView
+            android:id="@+id/option26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option26" />
+        <TextView
+            android:id="@+id/option27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option27" />
+        <TextView
+            android:id="@+id/option28"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option28" />
+        <TextView
+            android:id="@+id/option29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option29" />
+       	<TextView
+            android:id="@+id/option30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option30" />
+       	<TextView
+            android:id="@+id/option31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option31" />
     </LinearLayout>
 
 </LinearLayout>
