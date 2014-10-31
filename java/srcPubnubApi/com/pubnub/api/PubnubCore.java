@@ -631,6 +631,7 @@ abstract class PubnubCore {
         Hashtable args = new Hashtable();
         args.put("channel", channel);
         args.put("message", message);
+        args.put("callback", callback);
         args.put("storeInHistory", (storeInHistory)?"":"0");
         publish(args);
     }
