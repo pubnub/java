@@ -372,11 +372,15 @@ public class Pubnub extends PubnubCoreShared {
                             PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
                     return;
                 }
-                callback.successCallback("", jsarr);
+                if (callback != null) {
+                    callback.successCallback("", jsarr);
+                }
             }
 
             public void handleError(HttpRequest hreq, PubnubError error) {
-                callback.errorCallback("", error);
+                if (callback != null) {
+                    callback.errorCallback("", error);
+                }
                 return;
             }
         });
