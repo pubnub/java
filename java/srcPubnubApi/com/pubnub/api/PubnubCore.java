@@ -2574,9 +2574,11 @@ abstract class PubnubCore {
             try {
                 message = pc.decrypt(message.toString());
                 if (!isWorkerDead(hreq)) callback
-                        .successCallback(
-                                channel,
-                                PubnubUtil.parseJSON(PubnubUtil.stringToJSON(message.toString())));
+    			.successWrapperCallback(
+    					channel,
+    					PubnubUtil.parseJSON(
+    							PubnubUtil.stringToJSON(message.toString())),
+    							_timetoken);
             } catch (DataLengthException e) {
                 if (!isWorkerDead(hreq)) callback
                         .errorCallback(
@@ -2614,9 +2616,12 @@ abstract class PubnubCore {
                                         message.toString() + " : " + e.toString()));
             }
         } else {
-            if (!isWorkerDead(hreq)) callback.successCallback(
-                    channel,
-                    PubnubUtil.parseJSON(message));
+            if (!isWorkerDead(hreq)) callback
+            			.successWrapperCallback(
+            					channel,
+            					PubnubUtil.parseJSON(
+            							PubnubUtil.stringToJSON(message.toString())),
+            							_timetoken);
         }
     }
 
