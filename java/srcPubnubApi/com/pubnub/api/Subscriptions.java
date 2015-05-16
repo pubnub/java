@@ -1,7 +1,8 @@
 package com.pubnub.api;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -13,11 +14,11 @@ import java.util.Hashtable;
 class Subscriptions {
     private Hashtable items;
 
-    JSONObject state;
+    JsonObject state;
 
     public Subscriptions() {
         items    = new Hashtable();
-        state    = new JSONObject();
+        state    = new JsonObject();
     }
 
     public void addItem(SubscriptionItem item) {
@@ -59,11 +60,11 @@ class Subscriptions {
         return PubnubUtil.hashTableKeysToDelimitedString(items, ",");
     }
 
-    public void invokeConnectCallbackOnItems(Object message) {
+    public void invokeConnectCallbackOnItems(String message) {
         invokeConnectCallbackOnItems(getItemNames(), message);
     }
 
-    public void invokeDisconnectCallbackOnItems(Object message) {
+    public void invokeDisconnectCallbackOnItems(String message) {
         invokeDisconnectCallbackOnItems(getItemNames(), message);
     }
 
@@ -81,7 +82,7 @@ class Subscriptions {
         }
     }
 
-    public void invokeConnectCallbackOnItems(String[] items, Object message) {
+    public void invokeConnectCallbackOnItems(String[] items, String message) {
         synchronized (items) {
             for (int i = 0; i < items.length; i++) {
                 SubscriptionItem _item = (SubscriptionItem) this.items.get(items[i]);
@@ -89,12 +90,18 @@ class Subscriptions {
                     if (_item.connected == false) {
                         _item.connected = true;
                         if (_item.subscribed == false) {
-                            _item.callback.connectCallback(_item.name,
-                                    new JSONArray().put(1).put("Subscribe connected").put(message));
+                            final JsonArray jsonArray = new JsonArray();
+                            jsonArray.add(new JsonPrimitive(1));
+                            jsonArray.add(new JsonPrimitive("Subscribe connected"));
+                            jsonArray.add(new JsonPrimitive(message));
+                            _item.callback.connectCallback(_item.name, jsonArray);
                         } else {
                             _item.subscribed = true;
-                            _item.callback.reconnectCallback(_item.name,
-                                    new JSONArray().put(1).put("Subscribe reconnected").put(message));
+                            final JsonArray jsonArray = new JsonArray();
+                            jsonArray.add(new JsonPrimitive(1));
+                            jsonArray.add(new JsonPrimitive("Subscribe reconnected"));
+                            jsonArray.add(new JsonPrimitive(message));
+                            _item.callback.reconnectCallback(_item.name, jsonArray);
                         }
                     }
                 }
@@ -102,19 +109,22 @@ class Subscriptions {
         }
     }
 
-    public void invokeReconnectCallbackOnItems(Object message) {
+    public void invokeReconnectCallbackOnItems(String message) {
         invokeReconnectCallbackOnItems(getItemNames(), message);
     }
 
-    public void invokeReconnectCallbackOnItems(String[] items, Object message) {
+    public void invokeReconnectCallbackOnItems(String[] items, String message) {
         synchronized (items) {
             for (int i = 0; i < items.length; i++) {
                 SubscriptionItem _item = (SubscriptionItem) this.items.get(items[i]);
                 if (_item != null) {
                     _item.connected = true;
                     if ( _item.error ) {
-                        _item.callback.reconnectCallback(_item.name,
-                                new JSONArray().put(1).put("Subscribe reconnected").put(message));
+                        JsonArray jsonArray = new JsonArray();
+                        jsonArray.add(new JsonPrimitive(1));
+                        jsonArray.add(new JsonPrimitive("Subscribe reconnected"));
+                        jsonArray.add(new JsonPrimitive(message));
+                        _item.callback.reconnectCallback(_item.name, jsonArray);
                         _item.error = false;
                     }
                 }
@@ -122,15 +132,19 @@ class Subscriptions {
         }
     }
 
-    public void invokeDisconnectCallbackOnItems(String[] items, Object message) {
+    public void invokeDisconnectCallbackOnItems(String[] items, String message) {
         synchronized (items) {
             for (int i = 0; i < items.length; i++) {
                 SubscriptionItem _item = (SubscriptionItem) this.items.get(items[i]);
                 if (_item != null) {
                     if (_item.connected == true) {
                         _item.connected = false;
+                        JsonArray jsonArray = new JsonArray();
+                        jsonArray.add(new JsonPrimitive(0));
+                        jsonArray.add(new JsonPrimitive("Subscribe unable to connect"));
+                        jsonArray.add(new JsonPrimitive(message));
                         _item.callback.disconnectCallback(_item.name,
-                                new JSONArray().put(0).put("Subscribe unable to connect").put(message));
+                          jsonArray);
                     }
                 }
             }
