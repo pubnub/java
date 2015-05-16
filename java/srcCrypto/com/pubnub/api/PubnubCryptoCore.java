@@ -45,11 +45,7 @@ abstract class PubnubCryptoCore {
     public void InitCiphers() throws PubnubException {
 
         try {
-            System.out.println(this.CIPHER_KEY);
-            System.out.println(new String(hexEncode(sha256(this.CIPHER_KEY.getBytes("UTF-8")))));
 
-            System.out.println(new String(Hex.encode(sha256(this.CIPHER_KEY.getBytes("UTF-8"))),
-                     "UTF-8").substring(0, 32).toLowerCase());
             key = new String(Hex.encode(sha256(this.CIPHER_KEY.getBytes("UTF-8"))),
                              "UTF-8").substring(0, 32).toLowerCase().getBytes("UTF-8");
             encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(

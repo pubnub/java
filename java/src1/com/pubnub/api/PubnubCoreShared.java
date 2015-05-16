@@ -254,7 +254,7 @@ abstract class PubnubCoreShared extends PubnubCore {
         String sign_input = this.SUBSCRIBE_KEY + "\n" + this.PUBLISH_KEY + "\n" + "grant" + "\n" ;
 
         if (auth_key != null && auth_key.length() > 0)
-            sign_input += "auth=" + auth_key + "&"  ;
+            sign_input += "auth=" + PubnubUtil.urlEncode(auth_key) + "&"  ;
 
         sign_input += "channel=" + PubnubUtil.urlEncode(channel) + "&" + "pnsdk=" + PubnubUtil.urlEncode(getUserAgent()) + "&" + "r=" + r + "&" + "timestamp=" + timestamp
                             + ((ttl >= -1)?"&" + "ttl=" + ttl:"")
@@ -333,7 +333,7 @@ abstract class PubnubCoreShared extends PubnubCore {
         String sign_input = this.SUBSCRIBE_KEY + "\n" + this.PUBLISH_KEY + "\n" + "grant" + "\n";
 
         if (auth_key != null && auth_key.length() > 0)
-            sign_input += "auth=" + auth_key + "&"  ;
+            sign_input += "auth=" + PubnubUtil.urlEncode(auth_key) + "&"  ;
 
         sign_input += "channel-group=" + PubnubUtil.urlEncode(group) + "&"
                 + "m=" + m + "&"

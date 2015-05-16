@@ -1,10 +1,10 @@
 package com.pubnub.api;
 
-import java.util.Hashtable;
-import java.util.UUID;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import java.util.Hashtable;
 
 /**
  * Pubnub object facilitates querying channels for messages and listening on
@@ -118,8 +118,8 @@ public class Pubnub extends PubnubCoreShared {
     }
 
     protected String getUserAgent() {
-        return "(Android " + android.os.Build.VERSION.RELEASE +
-               "; " + android.os.Build.MODEL +
+        return "(Android " + Config.releaseVersion +
+               "; " + Config.deviceModel +
                " Build) PubNub-Java/Android/" + VERSION;
     }
 
@@ -181,25 +181,7 @@ public class Pubnub extends PubnubCoreShared {
         parameters.put("type", "gcm");
         parameters.put("add", PubnubUtil.joinString(channels, ","));
 
-        HttpRequest hreq = new HttpRequest(urlargs, parameters,
-                new ResponseHandler() {
-            public void handleResponse(HttpRequest hreq, String response) {
-                JSONArray jsarr;
-                try {
-                    jsarr = new JSONArray(response);
-                } catch (JSONException e) {
-                    handleError(hreq,
-                            PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
-                    return;
-                }
-                cb.successCallback("", jsarr);
-            }
-
-            public void handleError(HttpRequest hreq, PubnubError error) {
-                cb.errorCallback("", error);
-                return;
-            }
-        });
+        HttpRequest hreq = new HttpRequest(urlargs, parameters, new MyResponseHandler(cb));
 
         _request(hreq, nonSubscribeManager);
     }
@@ -263,25 +245,7 @@ public class Pubnub extends PubnubCoreShared {
         parameters.put("type", "gcm");
         parameters.put("remove", PubnubUtil.joinString(channels, ","));
 
-        HttpRequest hreq = new HttpRequest(urlargs, parameters,
-                new ResponseHandler() {
-            public void handleResponse(HttpRequest hreq, String response) {
-                JSONArray jsarr;
-                try {
-                    jsarr = new JSONArray(response);
-                } catch (JSONException e) {
-                    handleError(hreq,
-                            PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
-                    return;
-                }
-                cb.successCallback("", jsarr);
-            }
-
-            public void handleError(HttpRequest hreq, PubnubError error) {
-                cb.errorCallback("", error);
-                return;
-            }
-        });
+        HttpRequest hreq = new HttpRequest(urlargs, parameters, new MyResponseHandler(cb));
 
         _request(hreq, nonSubscribeManager);
     }
@@ -305,25 +269,7 @@ public class Pubnub extends PubnubCoreShared {
 
         parameters.put("type", "gcm");
 
-        HttpRequest hreq = new HttpRequest(urlargs, parameters,
-                new ResponseHandler() {
-            public void handleResponse(HttpRequest hreq, String response) {
-                JSONArray jsarr;
-                try {
-                    jsarr = new JSONArray(response);
-                } catch (JSONException e) {
-                    handleError(hreq,
-                            PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
-                    return;
-                }
-                cb.successCallback("", jsarr);
-            }
-
-            public void handleError(HttpRequest hreq, PubnubError error) {
-                cb.errorCallback("", error);
-                return;
-            }
-        });
+        HttpRequest hreq = new HttpRequest(urlargs, parameters, new MyResponseHandler(cb));
         _request(hreq, nonSubscribeManager);
     }
 
@@ -354,25 +300,32 @@ public class Pubnub extends PubnubCoreShared {
 
         parameters.put("type", "gcm");
 
-        HttpRequest hreq = new HttpRequest(urlargs, parameters,
-                new ResponseHandler() {
-            public void handleResponse(HttpRequest hreq, String response) {
-                JSONArray jsarr;
-                try {
-                    jsarr = new JSONArray(response);
-                } catch (JSONException e) {
-                    handleError(hreq,
-                            PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
+        HttpRequest hreq = new HttpRequest(urlargs, parameters, new MyResponseHandler(cb));
+        _request(hreq, nonSubscribeManager);
+    }
+
+    private static class MyResponseHandler extends ResponseHandler {
+        private final Callback cb;
+
+        public MyResponseHandler(Callback cb) {
+            this.cb = cb;
+        }
+
+        public void handleResponse(HttpRequest hreq, String response) {
+            try {
+                JsonElement elem = new JsonParser().parse(response);
+                if (elem.isJsonArray()) {
+                    cb.successCallback("", elem.getAsJsonArray());
                     return;
                 }
-                cb.successCallback("", jsarr);
+            } catch (JsonParseException ignored) {
             }
+            handleError(hreq,
+              PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
+        }
 
-            public void handleError(HttpRequest hreq, PubnubError error) {
-                cb.errorCallback("", error);
-                return;
-            }
-        });
-        _request(hreq, nonSubscribeManager);
+        public void handleError(HttpRequest hreq, PubnubError error) {
+            cb.errorCallback("", error);
+        }
     }
 }

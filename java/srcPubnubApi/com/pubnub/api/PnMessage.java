@@ -249,6 +249,32 @@ public class PnMessage extends JSONObject {
 
     /**
      * Publish Message
+     * @param pubnub
+     *         Pubnub object
+     * @param channel
+     *         Channel
+     * @param storeInHistory
+         	  Store in History
+     * @param callback
+     *         Callback object
+     * @throws PubnubException
+     *         Exception if either channel or pubnub object is not set
+     */
+    public void publish(Pubnub pubnub, String channel, boolean storeInHistory, Callback callback) throws PubnubException  {
+        this.channel = channel;
+        this.callback = callback;
+        this.pubnub = pubnub;
+        if (this.channel == null) {
+            throw new PubnubException(PubnubError.PNERROBJ_CHANNEL_MISSING);
+        }
+        if (this.pubnub == null) {
+            throw new PubnubException(PubnubError.PNERROBJ_CONNECTION_NOT_SET);
+        }
+        pubnub.publish(channel, this, storeInHistory, callback);
+    }
+
+    /**
+     * Publish Message
      * @throws PubnubException
      *         Exception if either channel or pubnub object is not set
      */
@@ -260,6 +286,23 @@ public class PnMessage extends JSONObject {
             throw new PubnubException(PubnubError.PNERROBJ_CONNECTION_NOT_SET);
         }
         pubnub.publish(channel, this, callback);
+    }
+    
+    /**
+     * Publish Message
+     * @param storeInHistory
+         	  Store in History
+     * @throws PubnubException
+     *         Exception if either channel or pubnub object is not set
+     */
+    public void publish(boolean storeInHistory) throws PubnubException {
+        if (this.channel == null) {
+            throw new PubnubException(PubnubError.PNERROBJ_CHANNEL_MISSING);
+        }
+        if (this.pubnub == null) {
+            throw new PubnubException(PubnubError.PNERROBJ_CONNECTION_NOT_SET);
+        }
+        pubnub.publish(channel, this, storeInHistory, callback);
     }
 
 }

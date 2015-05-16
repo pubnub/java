@@ -1,5 +1,7 @@
 package com.pubnub.api;
 
+import com.google.gson.JsonElement;
+
 /**
  * Abstract class to be subclassed by objects being passed as callbacks to
  * Pubnub APIs Default implementation for all methods is blank
@@ -18,7 +20,7 @@ public abstract class Callback {
      *            Message
      *
      */
-    public void successCallback(String channel, Object message) {
+    public void successCallback(String channel, JsonElement message) {
 
     }
 
@@ -32,11 +34,11 @@ public abstract class Callback {
      * @param timetoken
      *            Timetoken
      */
-    public void successCallback(String channel, Object message, String timetoken) {
+    public void successCallback(String channel, JsonElement message, String timetoken) {
 
     }
 
-    void successWrapperCallback(String channel, Object message, String timetoken) {
+    void successWrapperCallback(String channel, JsonElement message, String timetoken) {
         successCallback(channel, message);
         successCallback(channel, message, timetoken);
     }
@@ -73,7 +75,7 @@ public abstract class Callback {
      * @param channel
      *            Channel Name
      */
-    public void connectCallback(String channel, Object message) {
+    public void connectCallback(String channel, JsonElement message) {
     }
 
     /**
@@ -83,7 +85,7 @@ public abstract class Callback {
      * @param channel
      *            Channel Name
      */
-    public void reconnectCallback(String channel, Object message) {
+    public void reconnectCallback(String channel, JsonElement message) {
     }
 
     /**
@@ -92,7 +94,7 @@ public abstract class Callback {
      * @param channel
      *            Channel Name
      */
-    public void disconnectCallback(String channel, Object message) {
+    public void disconnectCallback(String channel, JsonElement message) {
     }
 
 }

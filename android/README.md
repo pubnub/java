@@ -19,8 +19,20 @@ Use PubNub Instead!
 
 Checkout the [walkthrough video](http://vimeo.com/95542286) first!
 
-To use Pubnub, simply copy the Pubnub-Android-3.7.x.jar and bcprov-jdk15on-1.47.jar files in to your project's libs directory.
+To use Pubnub, simply copy the Pubnub-Android-3.7.x.jar files in to your project's libs directory.
 
+If you are using Android studio, you can declare PubNub as dependency in your build.gradle file
+```
+dependencies {
+    compile 'com.pubnub:pubnub-android:3.7.+'
+}
+```
+or if you want to use debug version of sdk
+```
+dependencies {
+    compile 'com.pubnub:pubnub-android-debug:3.7.+'
+}
+```
 ### PubNub Android Sample App
 
 This app demonstrates all PubNub features and functionality.  It can be found in the examples/PubnubExample directory.
