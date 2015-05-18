@@ -1,9 +1,5 @@
 package com.pubnub.api;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -219,10 +215,9 @@ class PubnubUtilCore {
     /**
      * Parse Json, change json string to string
      *
-     * @param obj
-     *            JSON data in string format
+     * @param obj JSON data in string format
      *
-     * @return JSONArray or JSONObject or String
+     * @return JsonElement
      */
     static Object parseJSON(Object obj) {
         if (obj instanceof String) {
