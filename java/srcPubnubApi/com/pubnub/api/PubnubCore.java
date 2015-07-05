@@ -25,6 +25,7 @@ abstract class PubnubCore {
     private int HOSTNAME_SUFFIX = 1;
     private String DOMAIN = "pubnub.com";
     private String ORIGIN_STR = null;
+    private String OVERRIDED_ORIGIN = null;
     protected String PUBLISH_KEY = "";
     protected String SUBSCRIBE_KEY = "";
     protected String SECRET_KEY = "";
@@ -2664,7 +2665,7 @@ abstract class PubnubCore {
     }
 
     private void changeOrigin() {
-        this.ORIGIN_STR = null;
+        this.ORIGIN_STR = this.OVERRIDED_ORIGIN;
         this.HOSTNAME_SUFFIX = getRandom();
     }
 
@@ -2807,6 +2808,11 @@ abstract class PubnubCore {
         this.AUTH_STR = null;
         params.remove("auth");
         resubscribe();
+    }
+
+    public void overrideOrigin(String origin) {
+        this.OVERRIDED_ORIGIN = origin;
+        this.ORIGIN_STR = this.OVERRIDED_ORIGIN;
     }
 
 }
