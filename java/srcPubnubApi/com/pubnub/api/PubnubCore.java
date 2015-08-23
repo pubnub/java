@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 
 /**
@@ -838,7 +839,7 @@ abstract class PubnubCore {
             PubnubCrypto pc = new PubnubCrypto(this.CIPHER_KEY, this.IV);
             try {
                 if (message instanceof String) {
-                    msgStr = "\"" + msgStr + "\"";
+                    msgStr = stringAsJson(msgStr);
                 }
                 msgStr = "\"" + pc.encrypt(msgStr) + "\"";
             } catch (PubnubException e) {
@@ -847,7 +848,7 @@ abstract class PubnubCore {
             }
         } else {
             if (message instanceof String) {
-                msgStr = "\"" + msgStr + "\"";
+                msgStr = stringAsJson(msgStr);
             }
         }
 
@@ -900,6 +901,27 @@ abstract class PubnubCore {
 
         _request(hreq, nonSubscribeManager);
     }
+    
+	private final Pattern p1 = Pattern.compile("\\\\");
+	private final Pattern p2 = Pattern.compile("\"");
+
+	/**
+	 * converts a Java string into a valid JSON string literal (by escaping quotation marks and backslashes, 
+	 * and then surrounding with quotes)
+	 * <p>
+	 * NOTE: to be completely accurate, escaping is also required for tabs, newlines, backspaces, etc., but 
+	 * these aren't normally expected in a published text
+	 * 
+	 * @param text
+	 * 			the raw string for conversion
+	 * @return
+	 * 			JSON-compliant string literal
+	 */
+	protected String stringAsJson(String text) {
+		text = p1.matcher(text).replaceAll("\\\\\\\\"); // escape backslashes first
+		text = p2.matcher(text).replaceAll("\\\\\\\""); // escape quotation marks
+		return "\"" + text + "\"";
+	}
 
     /**
      *
