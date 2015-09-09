@@ -943,7 +943,7 @@ public class PubnubTest {
 
                     }
                 });
-                pubnub.publish(args);
+                pubnub.publish(args, new Callback() {});
             }
         }
         class SubscribeThread implements Runnable {
@@ -1059,7 +1059,7 @@ public class PubnubTest {
 
                     }
                 });
-                pubnub.publish(args);
+                pubnub.publish(args, new Callback() {});
             }
         }
         class SubscribeThread implements Runnable {
@@ -1206,7 +1206,7 @@ public class PubnubTest {
 
                         }
                     });
-                    pubnub.publish(args);
+                    pubnub.publish(args, new Callback() {});
                 }
             }
 
@@ -1352,7 +1352,7 @@ public class PubnubTest {
 
                         }
                     });
-                    pubnub.publish(args);
+                    pubnub.publish(args, new Callback() {});
                 }
             }
 
