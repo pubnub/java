@@ -12,6 +12,17 @@ public abstract class Callback {
     /**
      * This callback will be invoked when a message is received on the channel
      *
+     * @param message
+     *            Message
+     *
+     */
+    public void successCallback(Object message) {
+
+    }
+
+    /**
+     * This callback will be invoked when a message is received on the channel
+     *
      * @param channel
      *            Channel Name
      * @param message
@@ -36,7 +47,26 @@ public abstract class Callback {
 
     }
 
-    void successWrapperCallback(String channel, Object message, String timetoken) {
+    /**
+     * @deprecated as of version 3.7.4 and will be removed in 3.9.0.
+     *          Replaced by {@link #invokeSuccessCallbacks(String, Object, String)} instead.
+     */
+    public void successWrapperCallback(String channel, Object message, String timetoken) {
+        invokeSuccessCallbacks(channel, message, timetoken);
+    }
+
+    /**
+     * Invokes every given success callback.
+     *
+     * @param channel
+     *              Channel Name
+     * @param message
+     *              Message
+     * @param timetoken
+     *              Timetoken
+     */
+    protected void invokeSuccessCallbacks(String channel, Object message, String timetoken) {
+        successCallback(message);
         successCallback(channel, message);
         successCallback(channel, message, timetoken);
     }
@@ -50,7 +80,7 @@ public abstract class Callback {
      *            error
      */
     public void errorCallback(String channel, PubnubError error) {
-        errorCallback(channel,error.toString());
+        errorCallback(channel, error.toString());
     }
 
     /**
@@ -65,6 +95,39 @@ public abstract class Callback {
      */
     public void errorCallback(String channel, Object message) {
 
+    }
+
+    /**
+     * This callback will be invoked when an error occurs
+     *
+     * @param error
+     *            error
+     */
+    public void errorCallback(PubnubError error) {
+
+    }
+
+    /**
+     * Invokes every given error callback
+     *
+     * @param error
+     *          error
+     */
+    protected void invokeErrorCallbacks(PubnubError error) {
+        invokeErrorCallbacks(null, error);
+    }
+
+    /**
+     * Invokes every given error callback
+     *
+     * @param channel
+     *          Channel Name
+     * @param error
+     *          error
+     */
+    protected void invokeErrorCallbacks(String channel, PubnubError error) {
+        errorCallback(error);
+        errorCallback(channel, error);
     }
 
     /**
@@ -94,5 +157,4 @@ public abstract class Callback {
      */
     public void disconnectCallback(String channel, Object message) {
     }
-
 }

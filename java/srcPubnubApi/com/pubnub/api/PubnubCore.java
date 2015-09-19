@@ -2733,7 +2733,7 @@ abstract class PubnubCore {
             try {
                 message = pc.decrypt(message.toString());
                 if (!isWorkerDead(hreq)) callback
-                        .successWrapperCallback(
+                        .invokeSuccessCallbacks(
                                 channel,
                                 PubnubUtil.parseJSON(PubnubUtil.stringToJSON(message.toString())), timetoken);
             } catch (IllegalStateException e) {
@@ -2758,7 +2758,7 @@ abstract class PubnubCore {
                                         message.toString() + " : " + e.toString()));
             }
         } else {
-            if (!isWorkerDead(hreq)) callback.successWrapperCallback(
+            if (!isWorkerDead(hreq)) callback.invokeSuccessCallbacks(
                     channel,
                     PubnubUtil.parseJSON(message), timetoken);
         }
