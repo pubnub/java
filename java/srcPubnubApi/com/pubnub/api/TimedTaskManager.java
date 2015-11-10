@@ -104,7 +104,9 @@ public class TimedTaskManager {
 
     public int addTask(String name, TimedTask task) {
         TimedTaskWorker w = new TimedTaskWorker(name, task);
-        w.setThread(new Thread(w, name + "-" + ++count));
+        Thread thread = new Thread(w, name + "-" + ++count);
+        thread.setDaemon(true);
+        w.setThread(thread);
         _workers.add(w);
         log.verbose("Starting new worker " + w.getThread().getName());
         w.startWorker();
