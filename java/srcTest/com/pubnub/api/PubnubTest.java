@@ -231,6 +231,32 @@ public class PubnubTest {
         assertEquals(sendMessage, sbCb.getResponse());
     }
 
+    /**
+     * It is need to run JVM with option -Dfile.encoding=windows-1251(or something else latin incompatible encoding) in order to reproduce issue which covered by this test
+     */
+    @Test
+    public void testPublishNonLatinString() throws PubnubException, InterruptedException {
+        String channel = "java-unittest-" + Math.random();
+        final String sendMessage = "\u0440\u0443\u0441\u0441\u043a\u0438\u0439 " + Math.random();
+
+        final CountDownLatch latch = new CountDownLatch(2);
+
+        final PublishCallback pbCb = new PublishCallback(latch);
+        SubscribeCallback sbCb = new SubscribeCallback(latch) {
+            @Override
+            public void connectCallback(String channel, Object message) {
+                pubnub.publish(channel, sendMessage, pbCb);
+            }
+        };
+
+        pubnub.subscribe(channel, sbCb);
+
+        latch.await(10, TimeUnit.SECONDS);
+
+        assertEquals(1, pbCb.getResult());
+        assertEquals(sendMessage, sbCb.getResponse());
+    }
+
     @Test
     public void testPublishJSONArray() throws PubnubException, InterruptedException {
         String channel = "java-unittest-" + Math.random();

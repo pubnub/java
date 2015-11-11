@@ -76,7 +76,7 @@ class HttpClientCore extends HttpClient {
             n = in.read(bytes);
         }
 
-        return new String(out.toString());
+        return new String(out.toString("utf8"));
     }
 
     public HttpResponse fetch(String url) throws PubnubException, SocketTimeoutException {
