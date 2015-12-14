@@ -97,4 +97,39 @@ public class StateTest {
         assertEquals(state.getString("status"), result.getString("status"));
         assertEquals(state.getInt("age"), result.getInt("age"));
     }
+
+    @Test
+    public void testStateForChannelGroupUsingGroupGetter()
+            throws InterruptedException, PubnubException, JSONException {
+
+        JSONObject state = new JSONObject();
+        state.put("nickname", "jtester");
+        state.put("status", "online");
+        state.put("age", 32);
+
+        final CountDownLatch latch1 = new CountDownLatch(1);
+        final CountDownLatch latch2 = new CountDownLatch(1);
+        final CountDownLatch latch3 = new CountDownLatch(1);
+
+        final TestHelper.SimpleCallback cb1 = new TestHelper.SimpleCallback(latch1);
+        final TestHelper.SimpleCallback cb2 = new TestHelper.SimpleCallback(latch2);
+        final TestHelper.SimpleCallback cb3 = new TestHelper.SimpleCallback(latch3);
+
+        pubnub.setHeartbeat(6);
+
+        pubnub.channelGroupAddChannel(group, channel, cb1);
+        latch1.await(10, TimeUnit.SECONDS);
+
+        pubnub.channelGroupSetState(group, pubnub.getUUID(), state, cb2);
+        latch2.await(10, TimeUnit.SECONDS);
+
+        pubnub.channelGroupGetState(group, pubnub.getUUID(), cb3);
+        latch3.await(10, TimeUnit.SECONDS);
+
+        JSONObject result = (JSONObject) cb3.getResponse();
+
+        assertEquals(state.getString("nickname"), result.getString("nickname"));
+        assertEquals(state.getString("status"), result.getString("status"));
+        assertEquals(state.getInt("age"), result.getInt("age"));
+    }
 }

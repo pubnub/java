@@ -444,11 +444,13 @@ abstract class PubnubCoreAsync extends PubnubCore implements PubnubAsyncInterfac
         _setState(sub, channel, group, uuid, state, callback, true);
     }
 
-
     public void getState(String channel, String uuid, Callback callback) {
-        _getState(channel, uuid, callback, false);
+        _getState(channel, null, uuid, callback, false);
     }
 
+    public void channelGroupGetState(String group, String uuid, Callback callback) {
+        _getState(null, group, uuid, callback, false);
+    }
 
     public void channelGroupListNamespaces(Callback callback) {
         _channelGroupListNamespaces(callback, false);

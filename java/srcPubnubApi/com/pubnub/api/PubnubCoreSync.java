@@ -175,8 +175,12 @@ abstract class PubnubCoreSync extends PubnubCore implements PubnubSyncInterface 
 	}
 
 	public JSONObject getState(String channel, String uuid) {
-        return (JSONObject) _getState(channel, uuid, null, true);
+        return (JSONObject) _getState(channel, null, uuid, null, true);
 	}
+
+    public JSONObject channelGroupGetState(String group, String uuid) {
+        return (JSONObject) _getState(null, group, uuid, null, true);
+    }
 
 	public JSONObject hereNow(boolean state, boolean uuids) {
         return (JSONObject) _hereNow(null, null, state, uuids, null, true);

@@ -549,14 +549,17 @@ abstract class PubnubCore implements PubnubInterface {
     }
 
 
-    protected Object _getState(String channel, String uuid, Callback callback, boolean sync) {
+    protected Object _getState(String channel, String group, String uuid, Callback callback, boolean sync) {
         final Callback cb = getWrappedCallback(callback);
         Hashtable parameters = PubnubUtil.hashtableClone(params);
+        String encodedChannel = channel == null ? "," : PubnubUtil.urlEncode(channel);
 
         String[] urlArgs = { getPubnubUrl(), "v2", "presence", "sub-key",
-                this.SUBSCRIBE_KEY, "channel", PubnubUtil.urlEncode(channel),
+                this.SUBSCRIBE_KEY, "channel", encodedChannel,
                 "uuid", PubnubUtil.urlEncode(uuid)
         };
+
+        if (group != null) parameters.put("channel-group", group);
 
         HttpRequest hreq = new HttpRequest(urlArgs, parameters,
                 new ResponseHandler() {
