@@ -241,6 +241,7 @@ abstract class PubnubCoreShared extends PubnubCore {
                          boolean write, int ttl, Callback callback) {
         final Callback cb = getWrappedCallback(callback);
         Hashtable parameters = PubnubUtil.hashtableClone(params);
+        parameters.remove("auth");
 
         String r = (read) ? "1" : "0";
         String w = (write) ? "1" : "0";
