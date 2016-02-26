@@ -8,13 +8,6 @@
 
   <packaging>jar</packaging>
   <name>pubnub-android</name>
-  <dependencies>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.4</version>
-      </dependency>
-  </dependencies>
   <description>PubNub is a cross-platform client-to-client (1:1 and 1:many) push service in the cloud, capable of broadcasting real-time messages to millions of web and mobile clients simultaneously, in less than a quarter second!</description>
   <url>https://github.com/pubnub/java</url>
   <licenses>
