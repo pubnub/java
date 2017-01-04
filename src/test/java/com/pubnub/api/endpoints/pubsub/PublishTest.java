@@ -10,6 +10,8 @@ import com.pubnub.api.endpoints.TestHarness;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -268,6 +270,39 @@ public class PublishTest extends TestHarness {
                 .willReturn(aResponse().withBody("[1,\"Sent\",\"14598111595318003\"]")));
 
         instance.channel("coolChannel").message(testPojo).sync();
+
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
+        assertEquals(1, requests.size());
+        assertEquals("myUUID", requests.get(0).queryParameter("uuid").firstValue());
+
+    }
+
+    @Test
+    public void testJSONObject() throws PubNubException, InterruptedException {
+        JSONObject testMessage = new JSONObject();
+        testMessage.put("hi", "test");
+
+        stubFor(get(urlPathEqualTo("/publish/myPublishKey/mySubscribeKey/0/coolChannel/0/%7B%22hi%22%3A%22test%22%7D"))
+                .willReturn(aResponse().withBody("[1,\"Sent\",\"14598111595318003\"]")));
+
+        instance.channel("coolChannel").message(testMessage.toMap()).sync();
+
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
+        assertEquals(1, requests.size());
+        assertEquals("myUUID", requests.get(0).queryParameter("uuid").firstValue());
+
+    }
+
+    @Test
+    public void testJSONList() throws PubNubException, InterruptedException {
+        JSONArray testMessage = new JSONArray();
+        testMessage.put("hi");
+        testMessage.put("hi2");
+
+        stubFor(get(urlPathEqualTo("/publish/myPublishKey/mySubscribeKey/0/coolChannel/0/%5B%22hi%22%2C%22hi2%22%5D"))
+                .willReturn(aResponse().withBody("[1,\"Sent\",\"14598111595318003\"]")));
+
+        instance.channel("coolChannel").message(testMessage.toList()).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
