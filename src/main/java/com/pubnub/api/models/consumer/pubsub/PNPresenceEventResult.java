@@ -32,5 +32,6 @@ public class PNPresenceEventResult {
     private List<String> join;
     private List<String> leave;
     private List<String> timeout;
+    private boolean hereNowRefresh;
 
 }

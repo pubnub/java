@@ -137,6 +137,8 @@ public class SubscribeMessageWorker implements Runnable {
                 strippedPresenceSubscription = PubNubUtil.replaceLast(subscriptionMatch, "-pnpres", "");
             }
 
+            JsonElement isHereNowRefresh = message.getPayload().getAsJsonObject().get("here_now_refresh");
+
             PNPresenceEventResult pnPresenceEventResult = PNPresenceEventResult.builder()
                     .event(presencePayload.getAction())
                     // deprecated
@@ -153,6 +155,7 @@ public class SubscribeMessageWorker implements Runnable {
                     .join(getDelta(message.getPayload().getAsJsonObject().get("join")))
                     .leave(getDelta(message.getPayload().getAsJsonObject().get("leave")))
                     .timeout(getDelta(message.getPayload().getAsJsonObject().get("timeout")))
+                    .hereNowRefresh(isHereNowRefresh != null ? isHereNowRefresh.getAsBoolean() : false)
                     .build();
 
             listenerManager.announce(pnPresenceEventResult);

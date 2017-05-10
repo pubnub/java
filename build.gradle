@@ -10,7 +10,7 @@ plugins {
     id 'findbugs'
 }
 group = 'com.pubnub'
-version = '4.6.2'
+version = '4.6.3'
 
 description = """"""
 
@@ -154,7 +154,10 @@ javadoc {
     dependsOn delombok
     source = delombok.outputDir
     destinationDir = file("docs")
+    options.optionFiles << file('javadoc.options')
 }
+
+
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'

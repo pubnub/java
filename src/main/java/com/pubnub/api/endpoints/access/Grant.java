@@ -73,7 +73,7 @@ public class Grant extends Endpoint<Envelope<AccessManagerGrantPayload>, PNAcces
         if (this.getPubnub().getConfiguration().getPublishKey() == null || this.getPubnub().getConfiguration().getPublishKey().isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PUBLISH_KEY_MISSING).build();
         }
-        if (channels.size() == 0 && channelGroups.size() == 0) {
+        if (authKeys.size() > 0 && channels.size() == 0 && channelGroups.size() == 0) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_AND_GROUP_MISSING).build();
         }
     }

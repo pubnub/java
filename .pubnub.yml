@@ -1,8 +1,15 @@
 name: java
-version: 4.6.2
+version: 4.6.3
 schema: 1
 scm: github.com/pubnub/java
 changelog:
+  - version: v4.6.3
+    date:
+    changes:
+      - type: feature
+        text: add delta here_now_refresh on interval action.
+      - type: bug
+        text: Allow channel and channelGroup null for Audit when AuthKeys is null.
   - version: v4.6.2
     date:
     changes:
