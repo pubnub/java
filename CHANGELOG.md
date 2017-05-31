@@ -1,4 +1,14 @@
 
+## [v4.6.2](https://github.com/pubnub/java/tree/v4.6.2)
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.6.1...v4.6.2)
+
+- 🌟set a name for Subscription Manager Consumer Thead.
+
+
+
+
 ## [v4.6.1](https://github.com/pubnub/java/tree/v4.6.1)
 
 
