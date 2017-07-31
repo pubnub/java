@@ -6,14 +6,15 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.endpoints.vendor.AppEngineFactory;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.interceptors.SignatureInterceptor;
-import lombok.Getter;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import lombok.Getter;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
 
 public class RetrofitManager {
 
@@ -32,15 +33,17 @@ public class RetrofitManager {
 
         this.signatureInterceptor = new SignatureInterceptor(pubNubInstance);
 
-        this.transactionClientInstance = createOkHttpClient(
-                this.pubnub.getConfiguration().getNonSubscribeRequestTimeout(),
-                this.pubnub.getConfiguration().getConnectTimeout()
-        );
+        if (!pubNubInstance.getConfiguration().isGoogleAppEngineNetworking()) {
+            this.transactionClientInstance = createOkHttpClient(
+                    this.pubnub.getConfiguration().getNonSubscribeRequestTimeout(),
+                    this.pubnub.getConfiguration().getConnectTimeout()
+            );
 
-        this.subscriptionClientInstance = createOkHttpClient(
-                this.pubnub.getConfiguration().getSubscribeTimeout(),
-                this.pubnub.getConfiguration().getConnectTimeout()
-        );
+            this.subscriptionClientInstance = createOkHttpClient(
+                    this.pubnub.getConfiguration().getSubscribeTimeout(),
+                    this.pubnub.getConfiguration().getConnectTimeout()
+            );
+        }
 
         this.transactionInstance = createRetrofit(this.transactionClientInstance);
         this.subscriptionInstance = createRetrofit(this.subscriptionClientInstance);
@@ -95,19 +98,28 @@ public class RetrofitManager {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
         if (pubnub.getConfiguration().isGoogleAppEngineNetworking()) {
-            retrofitBuilder.callFactory(new AppEngineFactory.Factory());
+            retrofitBuilder.callFactory(new AppEngineFactory.Factory(pubnub));
         }
 
-        return retrofitBuilder
+        retrofitBuilder = retrofitBuilder
                 .baseUrl(pubnub.getBaseUrl())
-                .addConverterFactory(this.pubnub.getMapper().getConverterFactory())
-                .client(client)
-                .build();
+                .addConverterFactory(this.pubnub.getMapper().getConverterFactory());
+
+        if (!pubnub.getConfiguration().isGoogleAppEngineNetworking()) {
+             retrofitBuilder = retrofitBuilder
+                     .client(client);
+        }
+
+        return retrofitBuilder.build();
     }
 
     public void destroy() {
-        closeExecutor(this.transactionClientInstance);
-        closeExecutor(this.subscriptionClientInstance);
+        if (this.transactionClientInstance != null) {
+            closeExecutor(this.transactionClientInstance);
+        }
+        if (this.subscriptionClientInstance != null) {
+            closeExecutor(this.subscriptionClientInstance);
+        }
     }
 
     private void closeExecutor(OkHttpClient client) {
