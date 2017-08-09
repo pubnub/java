@@ -1,6 +1,5 @@
 package com.pubnub.api;
 
-
 import com.google.gson.JsonElement;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,4 +28,3 @@ public class PubNubError {
     private String errorString;
 
 }
-
