@@ -59,7 +59,6 @@ public class PNConfiguration {
     private String origin;
     private int subscribeTimeout;
 
-
     /**
      * In seconds, how long the server will consider this client to be online before issuing a leave event.
      */
@@ -121,7 +120,6 @@ public class PNConfiguration {
      */
     @Setter
     private String filterExpression;
-
 
     /**
      * Reconnection policy which will be used if/when networking goes down
