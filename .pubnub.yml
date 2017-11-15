@@ -1,10 +1,17 @@
 name: java
-version: 4.14.0
+version: 4.15.0
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-4.14.0-all.jar
+  - build/libs/pubnub-gson-4.15.0-all.jar
 changelog:
+  - version: v4.15.0
+    date: 2017-11-15
+    changes:
+      - type: improvement
+        text: update gson dependency
+      - type: bug
+        text: make listeners thread safe
   - version: v4.14.0
     date: 2017-10-25
     changes:
