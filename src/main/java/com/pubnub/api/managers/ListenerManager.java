@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ListenerManager {
 
-    private List<SubscribeCallback> listeners;
-    private PubNub pubnub;
+    private final List<SubscribeCallback> listeners;
+    private final PubNub pubnub;
 
     public ListenerManager(PubNub pubnubInstance) {
         this.listeners = new ArrayList<>();
@@ -20,11 +20,23 @@ public class ListenerManager {
     }
 
     public void addListener(SubscribeCallback listener) {
-        listeners.add(listener);
+        synchronized (listeners) {
+            listeners.add(listener);
+        }
     }
 
     public void removeListener(SubscribeCallback listener) {
-        listeners.remove(listener);
+        synchronized (listeners) {
+            listeners.remove(listener);
+        }
+    }
+
+    private List<SubscribeCallback> getListeners() {
+        List<SubscribeCallback> tempCallbackList = new ArrayList<>();
+        synchronized (listeners) {
+            tempCallbackList.addAll(listeners);
+        }
+        return tempCallbackList;
     }
 
     /**
@@ -33,22 +45,19 @@ public class ListenerManager {
      * @param status PNStatus which will be broadcast to listeners.
      */
     public void announce(PNStatus status) {
-        for (SubscribeCallback subscribeCallback : listeners) {
+        for (SubscribeCallback subscribeCallback : getListeners()) {
             subscribeCallback.status(this.pubnub, status);
         }
     }
 
     public void announce(PNMessageResult message) {
-        List<SubscribeCallback> tempCallbackList = new ArrayList<>();
-        tempCallbackList.addAll(listeners);
-        for (SubscribeCallback subscribeCallback : tempCallbackList) {
+        for (SubscribeCallback subscribeCallback : getListeners()) {
             subscribeCallback.message(this.pubnub, message);
         }
-        tempCallbackList.clear();
     }
 
     public void announce(PNPresenceEventResult presence) {
-        for (SubscribeCallback subscribeCallback : listeners) {
+        for (SubscribeCallback subscribeCallback : getListeners()) {
             subscribeCallback.presence(this.pubnub, presence);
         }
     }
