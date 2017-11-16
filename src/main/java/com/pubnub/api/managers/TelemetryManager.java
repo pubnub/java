@@ -97,7 +97,7 @@ public class TelemetryManager {
         }, interval, interval);
     }
 
-    private void stopCleanUpTimer() {
+    public void stopCleanUpTimer() {
         if (this.timer != null) {
             this.timer.cancel();
             this.timer = null;
