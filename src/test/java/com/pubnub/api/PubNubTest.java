@@ -81,7 +81,7 @@ public class PubNubTest {
     }
 
     @Test(expected = PubNubException.class)
-    public void testDecryptNull_B() throws PubNubException {
+    public void testDecryptNullB() throws PubNubException {
         pubnub = new PubNub(pnConfiguration);
         Assert.assertEquals("test1", pubnub.decrypt(null, "cipherKey").trim());
     }
@@ -102,7 +102,7 @@ public class PubNubTest {
     }
 
     @Test(expected = PubNubException.class)
-    public void testEncryptNull_B() throws PubNubException {
+    public void testEncryptNullB() throws PubNubException {
         pubnub = new PubNub(pnConfiguration);
         Assert.assertEquals("test1", pubnub.encrypt(null, "chiperKey"));
     }
