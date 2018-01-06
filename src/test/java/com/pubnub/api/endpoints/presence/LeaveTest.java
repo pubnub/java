@@ -72,7 +72,7 @@ public class LeaveTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub-key/mySubscribeKey/channel/coolChannel,coolChannel2/leave"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"action\": \"leave\"}")));
 
-        instance.channels(Arrays.asList("coolChannel", "coolChannel2")).channelGroups(Arrays.asList("cg1")) .sync();
+        instance.channels(Arrays.asList("coolChannel", "coolChannel2")).channelGroups(Collections.singletonList("cg1")) .sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -97,7 +97,8 @@ public class LeaveTest extends TestHarness {
             }
         });
 
-
+        List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
+        assertEquals(2, requests.size());
         Awaitility.await().atMost(2, TimeUnit.SECONDS).untilAtomic(statusArrived, org.hamcrest.core.IsEqual.equalTo(true));
     }
 

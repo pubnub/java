@@ -1,6 +1,7 @@
 package com.pubnub.api.endpoints;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.models.consumer.history.PNDeleteMessagesResult;
@@ -10,11 +11,13 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -62,6 +65,9 @@ public class DeleteMessagesEndpointTest extends TestHarness {
                 .willReturn(aResponse().withBody("{\"status\": 403, \"error\": False, \"error_message\": \"wut\"}")));
 
         pubnub.getConfiguration().setAuthKey("authKey");
+
+        List<LoggedRequest> requests = fin
+        assertEquals(2, requests.size());
 
         try {
             partialHistory.channels(Collections.singletonList("mychannel,my_channel")).sync();
