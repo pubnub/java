@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -42,7 +43,7 @@ public class SubscribeEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/coolChannel/0"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\",\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1},\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\",\"d\":{\"text\":\"Enter Message Here\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        SubscribeEnvelope subscribeEnvelope = instance.channels(Arrays.asList("coolChannel")).sync();
+        SubscribeEnvelope subscribeEnvelope = instance.channels(Collections.singletonList("coolChannel")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -94,7 +95,7 @@ public class SubscribeEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/coolChannel,coolChannel2/0"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\",\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1},\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\",\"d\":{\"text\":\"Enter Message Here\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        instance.channels(Arrays.asList("coolChannel", "coolChannel2")).channelGroups(Arrays.asList("cg1")) .sync();
+        instance.channels(Arrays.asList("coolChannel", "coolChannel2")).channelGroups(Collections.singletonList("cg1")) .sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -120,7 +121,7 @@ public class SubscribeEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/,/0"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\",\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1},\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\",\"d\":{\"text\":\"Enter Message Here\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        instance.channelGroups(Arrays.asList("cg1")).sync();
+        instance.channelGroups(Collections.singletonList("cg1")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -133,7 +134,7 @@ public class SubscribeEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/,/0"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\",\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1},\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\",\"d\":{\"text\":\"Enter Message Here\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        instance.channelGroups(Arrays.asList("cg1")).timetoken(1337L).sync();
+        instance.channelGroups(Collections.singletonList("cg1")).timetoken(1337L).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -151,7 +152,7 @@ public class SubscribeEndpointTest extends TestHarness {
                 .withQueryParam("channel-group", matching("cg1"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\",\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1},\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\",\"d\":{\"text\":\"Enter Message Here\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        instance.channelGroups(Arrays.asList("cg1")).filterExpression("this=1&that=cool").sync();
+        instance.channelGroups(Collections.singletonList("cg1")).filterExpression("this=1&that=cool").sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -163,7 +164,7 @@ public class SubscribeEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/,/0"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\",\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1},\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\",\"d\":{\"text\":\"Enter Message Here\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        instance.channelGroups(Arrays.asList("cg1")).region("10").sync();
+        instance.channelGroups(Collections.singletonList("cg1")).region("10").sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
