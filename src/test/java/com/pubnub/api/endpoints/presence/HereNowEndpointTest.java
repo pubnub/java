@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -149,7 +150,7 @@ public class HereNowEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub_key/mySubscribeKey/channel/game1"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"occupancy\": 3}")));
 
-        PNHereNowResult response =  partialHereNow.channels(Arrays.asList("game1")).includeState(false).includeUUIDs(false).sync();
+        PNHereNowResult response =  partialHereNow.channels(Collections.singletonList("game1")).includeState(false).includeUUIDs(false).sync();
 
         assertEquals(response.getTotalChannels(), 1);
         assertEquals(response.getTotalOccupancy(), 3);
@@ -166,7 +167,7 @@ public class HereNowEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub_key/mySubscribeKey/channel/game1"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"uuids\": [\"a3ffd012-a3b9-478c-8705-64089f24d71e\"], \"occupancy\": 1}")));
 
-        PNHereNowResult response =  partialHereNow.channels(Arrays.asList("game1")).includeState(false).sync();
+        PNHereNowResult response =  partialHereNow.channels(Collections.singletonList("game1")).includeState(false).sync();
 
         assertEquals(response.getTotalChannels(), 1);
         assertEquals(response.getTotalOccupancy(), 1);
@@ -184,7 +185,7 @@ public class HereNowEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub_key/mySubscribeKey/channel/game1"))
                 .willReturn(aResponse().withBody("{\"status\":200,\"message\":\"OK\",\"service\":\"Presence\",\"uuids\":[{\"uuid\":\"a3ffd012-a3b9-478c-8705-64089f24d71e\",\"state\":{\"age\":10}}],\"occupancy\":1}")));
 
-        PNHereNowResult response =  partialHereNow.channels(Arrays.asList("game1")).includeState(true).sync();
+        PNHereNowResult response =  partialHereNow.channels(Collections.singletonList("game1")).includeState(true).sync();
 
         assertEquals(response.getTotalChannels(), 1);
         assertEquals(response.getTotalOccupancy(), 1);
@@ -205,7 +206,7 @@ public class HereNowEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub_key/mySubscribeKey/channel/game1"))
                 .willReturn(aResponse().withBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"channels\":{}, \"total_channels\":0, \"total_occupancy\":0},\"service\":\"Presence\"}")));
 
-        PNHereNowResult response =  partialHereNow.channelGroups(Arrays.asList("grp1")).channels(Arrays.asList("game1")).includeState(true).sync();
+        PNHereNowResult response =  partialHereNow.channelGroups(Collections.singletonList("grp1")).channels(Collections.singletonList("game1")).includeState(true).sync();
 
         assertEquals(response.getTotalOccupancy(), 0);
     }

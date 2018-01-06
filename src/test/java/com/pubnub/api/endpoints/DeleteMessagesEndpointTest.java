@@ -9,7 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -39,7 +39,7 @@ public class DeleteMessagesEndpointTest extends TestHarness {
         stubFor(delete(urlPathEqualTo("/v3/history/sub-key/mySubscribeKey/channel/mychannel,my_channel"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"error\": False, \"error_message\": \"\"}")));
 
-        PNDeleteMessagesResult response = partialHistory.channels(Arrays.asList("mychannel,my_channel")).sync();
+        PNDeleteMessagesResult response = partialHistory.channels(Collections.singletonList("mychannel,my_channel")).sync();
 
         assertNotNull(response);
     }
@@ -51,7 +51,7 @@ public class DeleteMessagesEndpointTest extends TestHarness {
 
         pubnub.getConfiguration().setAuthKey("authKey");
 
-        PNDeleteMessagesResult response = partialHistory.channels(Arrays.asList("mychannel,my_channel")).sync();
+        PNDeleteMessagesResult response = partialHistory.channels(Collections.singletonList("mychannel,my_channel")).sync();
 
         assertNotNull(response);
     }
@@ -64,7 +64,7 @@ public class DeleteMessagesEndpointTest extends TestHarness {
         pubnub.getConfiguration().setAuthKey("authKey");
 
         try {
-            partialHistory.channels(Arrays.asList("mychannel,my_channel")).sync();
+            partialHistory.channels(Collections.singletonList("mychannel,my_channel")).sync();
         } catch (PubNubException ex) {
             assert(ex.getErrormsg().equals("wut"));
         }

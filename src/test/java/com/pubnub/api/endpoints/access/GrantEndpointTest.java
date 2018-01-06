@@ -185,7 +185,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel-groups\":\"cg1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channelGroups(Arrays.asList("cg1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channelGroups(Collections.singletonList("cg1")).sync();
 
         assertEquals(0, result.getChannels().size());
         assertEquals(1, result.getChannelGroups().size());
@@ -215,7 +215,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel-groups\":\"cg1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channelGroups(Arrays.asList("cg1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channelGroups(Collections.singletonList("cg1")).sync();
 
         assertEquals(0, result.getChannels().size());
         assertEquals(1, result.getChannelGroups().size());
@@ -247,7 +247,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}},\"channel-groups\":\"cg1\"},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).channelGroups(Arrays.asList("cg1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).channelGroups(Arrays.asList("cg1")).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(1, result.getChannelGroups().size());
@@ -281,7 +281,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}},\"channel-groups\":\"cg1\"},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channels(Arrays.asList("ch1")).channelGroups(Arrays.asList("cg1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channels(Collections.singletonList("ch1")).channelGroups(Arrays.asList("cg1")).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(1, result.getChannelGroups().size());
@@ -318,7 +318,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channels\":{\"ch1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"ch2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}}},\"channel-groups\":\"cg1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}\n")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1", "ch2")).channelGroups(Arrays.asList("cg1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channels(Arrays.asList("ch1", "ch2")).channelGroups(Arrays.asList("cg1")).sync();
 
         assertEquals(2, result.getChannels().size());
         assertEquals(1, result.getChannelGroups().size());
@@ -354,7 +354,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channels\":{\"ch1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}}},\"ch2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}}}},\"channel-groups\":\"cg1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}\n")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channels(Arrays.asList("ch1", "ch2")).channelGroups(Arrays.asList("cg1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channels(Arrays.asList("ch1", "ch2")).channelGroups(Collections.singletonList("cg1")).sync();
 
         assertEquals(2, result.getChannels().size());
         assertEquals(1, result.getChannelGroups().size());
@@ -392,7 +392,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel-groups\":{\"cg1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"cg2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}}}},\"service\":\"Access Manager\",\"status\":200}\n")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channelGroups(Arrays.asList("cg1", "cg2")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channelGroups(Arrays.asList("cg1", "cg2")).sync();
 
         assertEquals(0, result.getChannels().size());
         assertEquals(2, result.getChannelGroups().size());
@@ -458,7 +458,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}},\"channel-groups\":{\"cg1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"cg2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}}}},\"service\":\"Access Manager\",\"status\":200}\n")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channelGroups(Arrays.asList("cg1", "cg2")).channels(Arrays.asList("ch1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channelGroups(Arrays.asList("cg1", "cg2")).channels(Arrays.asList("ch1")).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(2, result.getChannelGroups().size());
@@ -494,7 +494,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}},\"channel-groups\":{\"cg1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}}},\"cg2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0},\"key2\":{\"r\":0,\"w\":0,\"m\":0}}}}},\"service\":\"Access Manager\",\"status\":200}\n")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channelGroups(Arrays.asList("cg1", "cg2")).channels(Arrays.asList("ch1")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1", "key2")).channelGroups(Arrays.asList("cg1", "cg2")).channels(Collections.singletonList("ch1")).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(2, result.getChannelGroups().size());
@@ -532,7 +532,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"channel-group+auth\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channels\":{\"ch1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"ch2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}}},\"channel-groups\":{\"cg1\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"cg2\":{\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}}}},\"service\":\"Access Manager\",\"status\":200}\n")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channelGroups(Arrays.asList("cg1", "cg2")).channels(Arrays.asList("ch1", "ch2")).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channelGroups(Arrays.asList("cg1", "cg2")).channels(Arrays.asList("ch1", "ch2")).sync();
 
         assertEquals(2, result.getChannels().size());
         assertEquals(2, result.getChannelGroups().size());
@@ -612,7 +612,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("ttl", matching("1334"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"user\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).ttl(1334).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).ttl(1334).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(0, result.getChannelGroups().size());
@@ -642,7 +642,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"user\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).read(true).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).read(true).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(0, result.getChannelGroups().size());
@@ -672,7 +672,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("0"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"user\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).write(true).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).write(true).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(0, result.getChannelGroups().size());
@@ -702,7 +702,7 @@ public class GrantEndpointTest extends TestHarness {
                 .withQueryParam("m", matching("1"))
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"payload\":{\"level\":\"user\",\"subscribe_key\":\"sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f\",\"ttl\":1,\"channel\":\"ch1\",\"auths\":{\"key1\":{\"r\":0,\"w\":0,\"m\":0}}},\"service\":\"Access Manager\",\"status\":200}")));
 
-        PNAccessManagerGrantResult result = partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).manage(true).sync();
+        PNAccessManagerGrantResult result = partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).manage(true).sync();
 
         assertEquals(1, result.getChannels().size());
         assertEquals(0, result.getChannelGroups().size());
@@ -775,7 +775,7 @@ public class GrantEndpointTest extends TestHarness {
         pubnub.getConfiguration().setSecretKey(null);
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("ULS configuration failed. Secret Key not configured.", e.getPubnubError().getMessage());
@@ -787,7 +787,7 @@ public class GrantEndpointTest extends TestHarness {
         pubnub.getConfiguration().setSecretKey("");
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("ULS configuration failed. Secret Key not configured.", e.getPubnubError().getMessage());
@@ -799,7 +799,7 @@ public class GrantEndpointTest extends TestHarness {
         pubnub.getConfiguration().setSubscribeKey(null);
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("ULS configuration failed. Subscribe Key not configured.", e.getPubnubError().getMessage());
@@ -811,7 +811,7 @@ public class GrantEndpointTest extends TestHarness {
         pubnub.getConfiguration().setSubscribeKey("");
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("ULS configuration failed. Subscribe Key not configured.", e.getPubnubError().getMessage());
@@ -823,7 +823,7 @@ public class GrantEndpointTest extends TestHarness {
         pubnub.getConfiguration().setPublishKey(null);
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("ULS configuration failed. Publish Key not configured.", e.getPubnubError().getMessage());
@@ -836,7 +836,7 @@ public class GrantEndpointTest extends TestHarness {
         pubnub.getConfiguration().setPublishKey("");
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("ULS configuration failed. Publish Key not configured.", e.getPubnubError().getMessage());
@@ -846,7 +846,7 @@ public class GrantEndpointTest extends TestHarness {
     @Test
     public void testMissingChannelsAndChannelGroup() {
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).sync();
             throw new RuntimeException("should never reach here");
         } catch (PubNubException e) {
             assertEquals("Channel and Group Missing.", e.getPubnubError().getMessage());
@@ -868,7 +868,7 @@ public class GrantEndpointTest extends TestHarness {
                 .willReturn(aResponse().withBody("{\"message\":\"Success\",\"service\":\"Access Manager\",\"status\":200}")));
 
         try {
-            partialGrant.authKeys(Arrays.asList("key1")).channels(Arrays.asList("ch1")).sync();
+            partialGrant.authKeys(Collections.singletonList("key1")).channels(Collections.singletonList("ch1")).sync();
         } catch (PubNubException e) {
             assertEquals("Parsing Error", e.getPubnubError().getMessage());
         }

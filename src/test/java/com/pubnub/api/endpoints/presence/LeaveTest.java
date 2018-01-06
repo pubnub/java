@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,7 +46,7 @@ public class LeaveTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub-key/mySubscribeKey/channel/coolChannel/leave"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"action\": \"leave\"}")));
 
-        instance.channels(Arrays.asList("coolChannel")).sync();
+        instance.channels(Collections.singletonList("coolChannel")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -86,7 +87,7 @@ public class LeaveTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub-key/mySubscribeKey/channel/coolChannel,coolChannel2/leave"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"action\": \"leave\"}")));
 
-        instance.channels(Arrays.asList("coolChannel", "coolChannel2")).channelGroups(Arrays.asList("cg1")) .async(new PNCallback<Boolean>() {
+        instance.channels(Arrays.asList("coolChannel", "coolChannel2")).channelGroups(Collections.singletonList("cg1")) .async(new PNCallback<Boolean>() {
             @Override
             public void onResponse(Boolean result, PNStatus status) {
                 assertEquals(status.getAffectedChannels().get(0), "coolChannel");
@@ -119,7 +120,7 @@ public class LeaveTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub-key/mySubscribeKey/channel/,/leave"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"action\": \"leave\"}")));
 
-        instance.channelGroups(Arrays.asList("cg1")).sync();
+        instance.channelGroups(Collections.singletonList("cg1")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -162,7 +163,7 @@ public class LeaveTest extends TestHarness {
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"action\": \"leave\"}")));
 
         pubnub.getConfiguration().setAuthKey("myKey");
-        instance.channels(Arrays.asList("coolChannel")).sync();
+        instance.channels(Collections.singletonList("coolChannel")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
