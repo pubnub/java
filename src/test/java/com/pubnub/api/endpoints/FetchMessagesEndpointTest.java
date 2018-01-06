@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -45,7 +45,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v3/history/sub-key/mySubscribeKey/channel/mychannel,my_channel"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"error\": false, \"error_message\": \"\", \"channels\": {\"my_channel\":[{\"message\":\"hihi\",\"timetoken\":\"14698320467224036\"},{\"message\":\"Hey\",\"timetoken\":\"14698320468265639\"}],\"mychannel\":[{\"message\":\"sample message\",\"timetoken\":\"14369823849575729\"}]}}")));
 
-        PNFetchMessagesResult response = partialHistory.channels(Arrays.asList("mychannel,my_channel")).maximumPerChannel(25).sync();
+        PNFetchMessagesResult response = partialHistory.channels(Collections.singletonList("mychannel,my_channel")).maximumPerChannel(25).sync();
 
         Assert.assertEquals(response.getChannels().size(), 2);
         Assert.assertEquals(response.getChannels().containsKey("mychannel"), true);
@@ -61,7 +61,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
 
         pubnub.getConfiguration().setAuthKey("authKey");
 
-        PNFetchMessagesResult response = partialHistory.channels(Arrays.asList("mychannel,my_channel")).maximumPerChannel(25).sync();
+        PNFetchMessagesResult response = partialHistory.channels(Collections.singletonList("mychannel,my_channel")).maximumPerChannel(25).sync();
 
         Assert.assertEquals(response.getChannels().size(), 2);
         Assert.assertEquals(response.getChannels().containsKey("mychannel"), true);
@@ -81,7 +81,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v3/history/sub-key/mySubscribeKey/channel/mychannel,my_channel"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"error\": false, \"error_message\": \"\", \"channels\": {\"my_channel\":[{\"message\":\"jC/yJ2y99BeYFYMQ7c53pg==\",\"timetoken\":\"14797423056306675\"}],\"mychannel\":[{\"message\":\"jC/yJ2y99BeYFYMQ7c53pg==\",\"timetoken\":\"14797423056306675\"}]}}")));
 
-        PNFetchMessagesResult response = partialHistory.channels(Arrays.asList("mychannel,my_channel")).maximumPerChannel(25).sync();
+        PNFetchMessagesResult response = partialHistory.channels(Collections.singletonList("mychannel,my_channel")).maximumPerChannel(25).sync();
 
         Assert.assertEquals(response.getChannels().size(), 2);
         Assert.assertEquals(response.getChannels().containsKey("mychannel"), true);

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
@@ -48,7 +49,7 @@ public class HeartbeatEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub-key/mySubscribeKey/channel/ch1/heartbeat"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}")));
 
-        partialHeartbeat.channels(Arrays.asList("ch1")).sync();
+        partialHeartbeat.channels(Collections.singletonList("ch1")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -81,7 +82,7 @@ public class HeartbeatEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/v2/presence/sub-key/mySubscribeKey/channel/,/heartbeat"))
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}")));
 
-        partialHeartbeat.channelGroups(Arrays.asList("cg1")).sync();
+        partialHeartbeat.channelGroups(Collections.singletonList("cg1")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -149,7 +150,7 @@ public class HeartbeatEndpointTest extends TestHarness {
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}")));
 
         pubnub.getConfiguration().setAuthKey("myKey");
-        partialHeartbeat.channels(Arrays.asList("ch1")).sync();
+        partialHeartbeat.channels(Collections.singletonList("ch1")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -164,7 +165,7 @@ public class HeartbeatEndpointTest extends TestHarness {
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}")));
 
         pubnub.getConfiguration().setSubscribeKey(null);
-        partialHeartbeat.channels(Arrays.asList("ch1")).sync();
+        partialHeartbeat.channels(Collections.singletonList("ch1")).sync();
     }
 
     @Test(expected=PubNubException.class)
@@ -175,7 +176,7 @@ public class HeartbeatEndpointTest extends TestHarness {
                 .willReturn(aResponse().withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}")));
 
         pubnub.getConfiguration().setSubscribeKey("");
-        partialHeartbeat.channels(Arrays.asList("ch1")).sync();
+        partialHeartbeat.channels(Collections.singletonList("ch1")).sync();
     }
 
 }
