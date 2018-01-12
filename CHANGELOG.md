@@ -1,4 +1,15 @@
 
+## [v4.18.0](https://github.com/pubnub/java/tree/v4.18.0)
+  January-11-2017
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.17.0...v4.18.0)
+
+
+- ⭐lock down okHTTP version to support latest android version
+
+
+
 ## [v4.17.0](https://github.com/pubnub/java/tree/v4.17.0)
   December-19-2017
 
