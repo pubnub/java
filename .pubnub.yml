@@ -410,23 +410,26 @@ features:
 supported-platforms:
   - version: PubNub Java SDK
     platforms:
-      - Windows 10 (7u85 and above)
+      - Windows 10 (8u51 and above)
       - Windows 8.x (Desktop)
       - Windows 7 SP1
       - Windows Vista SP2
-      - Windows Server 2008 SP2 and 2008 R2 SP1 (64-bit)
-      - Windows Server 2012 (64-bit) and 2012 R2 (64-bit)
-      - Intel-based Mac running Mac OS X 10.7.3 (Lion) or later.
+      - Windows Server 2008 R2 SP1 (64-bit)
+      - Windows Server 2012 and 2012 R2 (64-bit)
+      - Intel-based Mac running Mac OS X 10.8.3+, 10.9+
       - Oracle Linux 5.5+
-      - Oracle Linux 6.x (32-bit), 6.x (64-bit)3
-      - Oracle Linux 7.x (64-bit)3 (7u67 and above)
-      - Red Hat Enterprise Linux 5.5+, 6.x (32-bit), 6.x (64-bit)3
-      - Red Hat Enterprise Linux 7.x (64-bit)3 (7u67 and above)
-      - Suse Linux Enterprise Server 10 SP2, 11.x
-      - Suse Linux Enterprise Server 12.x (7u75 and above)
-      - Ubuntu Linux 10.04 and above
+      - Oracle Linux 6.x
+      - Oracle Linux 7.x (64-bit) (8u20 and above)
+      - Red Hat Enterprise Linux 5.5+, 6.x
+      - Red Hat Enterprise Linux 7.x (64-bit) (8u20 and above)
+      - Suse Linux Enterprise Server 10 SP2+, 11.x
+      - Suse Linux Enterprise Server 12.x (64-bit) (8u31 and above)
+      - Ubuntu Linux 12.04 LTS, 13.x
+      - Ubuntu Linux 14.x (8u25 and above)
+      - Ubuntu Linux 15.04 (8u45 and above)
+      - Ubuntu Linux 15.10 (8u65 and above)
     editors:
-      - Java7+
+      - Java8+
   - version: PubNub Android SDK
     platforms:
       - Android 2.3.1+
