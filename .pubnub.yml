@@ -37,7 +37,7 @@ changelog:
       - type: feature
         text: Enforce a minimum presence timeout value
       - type: feature
-        text: Disable presence heratbeats by default
+        text: Disable presence heartbeats by default
   - version: v4.23.0
     date: 2019-05-08
     changes:
