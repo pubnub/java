@@ -14,3 +14,4 @@
 ## Communication
 
 - If you **need help** or have a **general question**, contact <support@pubnub.com>
+commit some new text.
