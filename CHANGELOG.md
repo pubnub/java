@@ -1,6 +1,165 @@
+## [v4.29.2](https://github.com/pubnub/java/tree/v4.29.2)
+  December-03-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.29.1...v4.29.2)
+
+
+- ⭐Disable Okhttp retry on failure
+
+
+## [v4.29.1](https://github.com/pubnub/java/tree/v4.29.1)
+  October-23-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.29.0...v4.29.1)
+
+
+- ⭐Made the SDK more Kotlin-friendly
+- ⭐Categorized canceled requests as such
+- ⭐Removed the ‘audit’ method
+
+
+## [v4.29.0](https://github.com/pubnub/java/tree/v4.29.0)
+  October-09-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.28.0...v4.29.0)
+
+
+- ⭐Implemented the Message Actions API
+- ⭐Added includeMeta() to history()
+- ⭐Added includeMeta() to fetchMessages()
+- ⭐Added includeMessageActions() to fetchMessages()
+
+
+## [v4.28.0](https://github.com/pubnub/java/tree/v4.28.0)
+  October-02-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.27.0...v4.28.0)
+
+
+- ⭐Added PAMv3 support
+- ⭐Added Token manager (TMS)
+- ⭐Upgraded grant() and audit() to /v2/ endpoints
+- ⭐Implemented the delete permission for grant() requests
+- ⭐Implemented the v2 signature to be used for signing most requests
+
+
+## [v4.27.0](https://github.com/pubnub/java/tree/v4.27.0)
+  August-27-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.26.1...v4.27.0)
+
+
+- ⭐Added Objects API support
+
+
+## [v4.26.1](https://github.com/pubnub/java/tree/v4.26.1)
+  August-14-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.26.0...v4.26.1)
+
+
+- ⭐Introduced serialization class for Signals API
+
+
+## [v4.26.0](https://github.com/pubnub/java/tree/v4.26.0)
+  August-10-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.25.0...v4.26.0)
+
+
+- ⭐Implemented Signals API
+- ⭐Exposed OkHttp logging interceptor library
+
+
+## [v4.25.0](https://github.com/pubnub/java/tree/v4.25.0)
+  June-10-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.24.0...v4.25.0)
+
+
+- ⭐Enabled app level grants
+- ⭐Implemented custom encoding of the auth key for APIs where it wasn’t encoded automatically
+- ⭐Attached state data to Subscribe API and removed it from heartbeats
+
+
+## [v4.24.0](https://github.com/pubnub/java/tree/v4.24.0)
+  May-22-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.23.0...v4.24.0)
+
+
+- ⭐Enforced a minimum presence timeout value
+- ⭐Disabled presence heartbeats by default
+- ⭐Exposed Gson dependency
+
+
+## [v4.23.0](https://github.com/pubnub/java/tree/v4.23.0)
+  May-08-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.22.0...v4.23.0)
+
+
+- ⭐Fixed reconnection logic by allowing it solely for network issues
+
+
+## [v4.22.0](https://github.com/pubnub/java/tree/v4.22.0)
+  April-26-2019
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.21.0...v4.22.0)
+
+
+- ⭐Implemented Message Counts API
+- ⭐Performed a major update of 3rd party libraries (e.g. Retrofit, OkHttp, Gson)
+- ⭐Refactored and updated unit tests
+- ⭐Replaced compile with implementation for 3rd party libraries.
+
+
+## [v4.21.0](https://github.com/pubnub/java/tree/v4.21.0)
+  October-30-2018
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.20.0...v4.21.0)
+
+
+- ⭐Implemented a feature where you can add optional query params to every request
+- ⭐Updated developer setup documentation
+- ⭐Improved code checkstyle rules
+
+
+## [v4.20.0](https://github.com/pubnub/java/tree/v4.20.0)
+  September-04-2018
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.19.0...v4.20.0)
+
+
+- ⭐Fix a bug where the global-here-now response was incorrectly interpreted
+
+
+## [v4.19.0](https://github.com/pubnub/java/tree/v4.20.0)
+  April-04-2018
+
+
+  [Full Changelog](https://github.com/pubnub/java/compare/v4.18.0...v4.19.0)
+
+
+- ⭐Fix an issue where end of channel history was interpreted as an error
+
+
 
 ## [v4.18.0](https://github.com/pubnub/java/tree/v4.18.0)
-  January-11-2017
+  January-11-2018
 
 
   [Full Changelog](https://github.com/pubnub/java/compare/v4.17.0...v4.18.0)
