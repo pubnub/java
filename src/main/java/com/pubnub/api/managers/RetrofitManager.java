@@ -112,6 +112,7 @@ public class RetrofitManager {
     private OkHttpClient createOkHttpClient(int requestTimeout, int connectTimeOut) {
         PNConfiguration pnConfiguration = pubnub.getConfiguration();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.retryOnConnectionFailure(false);
         httpClient.readTimeout(requestTimeout, TimeUnit.SECONDS);
         httpClient.connectTimeout(connectTimeOut, TimeUnit.SECONDS);
 
