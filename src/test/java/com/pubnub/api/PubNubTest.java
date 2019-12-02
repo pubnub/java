@@ -98,7 +98,7 @@ public class PubNubTest {
         pubnub = new PubNub(pnConfiguration);
         String version = pubnub.getVersion();
         int timeStamp = pubnub.getTimestamp();
-        Assert.assertEquals("4.29.1", version);
+        Assert.assertEquals("4.29.2", version);
         Assert.assertTrue(timeStamp > 0);
     }
 
