@@ -28,7 +28,7 @@ proguard/
 *.iws
 .idea/
 
-*.class
+*.class name
 
 # gwt caches and compiled units #
 war/gwt_bree/
