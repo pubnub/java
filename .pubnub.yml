@@ -101,7 +101,7 @@ changelog:
       - type: bugfix
         text: Custom encode auth key where it's not encoded automatically
       - type: feature
-        text: Move state param from heartbeat to subcribe calls
+        text: Move state param from heartbeat to subscribe calls
   - version: v4.24.0
     date: 2019-05-21
     changes:
@@ -171,7 +171,7 @@ changelog:
     date: 2017-10-25
     changes:
       - type: improvement
-        text: add support to supress leave events
+        text: add support to suppress leave events
   - version: v4.13.0
     date: 2017-10-23
     changes:
@@ -308,7 +308,7 @@ changelog:
     date:
     changes:
       - type: improvement
-        text: Swapping out logger for slf4japi and removing final methods
+        text: Swapping out logger for slf4j API and removing final methods
   - version: v4.2.2
     date: 2016-12-09
     changes:
@@ -334,7 +334,7 @@ changelog:
     date: 2016-10-12
     changes:
       - type: improvement
-        text: destory now correctly forces the producer thread to shut down; stop is now deprecated for disconnect
+        text: destroy now correctly forces the producer thread to shut down; stop is now deprecated for disconnect
       - type: improvement
         text: support for sending instance id for presence detection (disabled by default)
       - type: improvement
@@ -355,7 +355,7 @@ changelog:
     date: 2016-09-13
     changes:
       - type: bug
-        text: fixing parsing of origination payload within the psv2 enevelope
+        text: fixing parsing of origination payload within the psv2 envelope
   - version: v4.0.11
     date: 2016-09-09
     changes:
@@ -406,7 +406,7 @@ changelog:
     date: 2016-06-15
     changes:
       - type: feature
-        text: fire() method and no-replicaton options.
+        text: fire() method and no-replication options.
   - version: v4.0.2
     date: 2016-06-15
     changes:
