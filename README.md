@@ -1,6 +1,6 @@
 
 
-### PubNub Java-based SDKs for Java / Android
+### PubNub Java-based SDKs for Java / Android Sample Project
 
 [![Build Status](https://travis-ci.org/pubnub/java.svg?branch=master)](https://travis-ci.org/pubnub/java)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/164fd518c314417e896b3de494ab75df)](https://www.codacy.com/app/PubNub/java?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pubnub/java&amp;utm_campaign=Badge_Grade)
