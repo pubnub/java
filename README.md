@@ -10,6 +10,11 @@
 
 ### [Documentation](https://www.pubnub.com/docs/java/pubnub-java-sdk-v4)
 
+## Installation
+- Download eclipse IDE
+
 ## Communication
 
 - If you **need help** or have a **general question**, contact <support@pubnub.com>
+
+
