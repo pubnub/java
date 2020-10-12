@@ -1,0 +1,39 @@
+//package specialCodings;
+//import java.util.Scanner;
+//import java.math.BigInteger;
+//public class FactorialOfLargeNum {
+//	
+//	public static void main(String [] args)
+//	{
+//		BigInteger val = new BigInteger("1");
+//		Scanner scn = new Scanner (System.in);
+//		System.out.print("enter num to get its factorial ");
+//		int num = scn.nextInt();
+//		for(int i=1; i<=num; i++)
+//		{
+//			val = val.multiply(BigInteger.valueOf(i));
+//		}
+//		System.out.println("Factorial of "+num+"= "+val);
+//		
+//	}
+//
+//}
+package specialCodings;
+import java.util.*;
+import java.lang.*;
+import java.math.BigInteger;
+import java.io.*;
+
+public class FactorialOfLargeNum {
+	public static void main (String[] args) {
+		BigInteger val = new BigInteger("1");
+		Scanner scan = new Scanner (System.in);
+		System.out.println("Enter a number to get its fectorial::");
+		int num = scan.nextInt();
+		for(int i=1; i<=num; i++)
+		{
+			val = val.multiply(BigInteger.valueOf(i));
+		}
+		System.out.println("Factorial of "+num+" = "+val);
+	}
+}
