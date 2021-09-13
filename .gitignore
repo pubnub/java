@@ -51,3 +51,7 @@ out
 gradlew.bat
 
 /src/integrationTest/resources/config.properties
+
+# GitHub Actions #
+##################
+.github/.release
