@@ -1,0 +1,24 @@
+{
+  ".pubnub.yml": [
+    { "pattern": "^version: (.+)$", "cleared": true },
+    { "pattern": "^\\s+\\-\\s+build/libs/pubnub-gson-(.*)-all.jar$", "cleared": true },
+    { "pattern": "\\s+package-name: pubnub-gson-((\\d+\\.?){2,})(-all)?$", "cleared": true },
+    { "pattern": "/releases/download/(.*)/pubnub-gson-.*-all.jar$", "cleared": false },
+    { "pattern": "/releases/download/.*/pubnub-gson-(.*)-all.jar$", "cleared": true },
+    { "pattern": "/pubnub/pubnub-gson/(.*)/pubnub-gson-.*.jar$", "cleared": true },
+    { "pattern": "/pubnub/pubnub-gson/.*/pubnub-gson-(.*).jar$", "cleared": true }
+  ],
+  "build.gradle": [
+    { "pattern": "^version\\s=\\s'(.*)'$", "cleared": true }
+  ],
+  "README.md": [
+    { "pattern": "^\\s{2,}<version>(.+)<\\/version>$", "cleared": true },
+    { "pattern": "^\\s{2,}implementation 'com\\.pubnub:pubnub-gson:(.+)'$", "cleared": true }
+  ],
+  "src/main/java/com/pubnub/api/PubNub.java": [
+    { "pattern": "private static final String SDK_VERSION.*\"(.*)\";$", "cleared": true }
+  ],
+  "src/test/java/com/pubnub/api/PubNubTest.java": [
+    { "pattern": "assertEquals\\(\"(.*)\", version\\);$", "cleared": true }
+  ]
+}
