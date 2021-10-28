@@ -1,24 +1,64 @@
 {
   ".pubnub.yml": [
-    { "pattern": "^version: (.+)$", "cleared": true },
-    { "pattern": "^\\s+\\-\\s+build/libs/pubnub-gson-(.*)-all.jar$", "cleared": true },
-    { "pattern": "\\s+package-name: pubnub-gson-((\\d+\\.?){2,})(-all)?$", "cleared": true },
-    { "pattern": "/releases/download/(.*)/pubnub-gson-.*-all.jar$", "cleared": false },
-    { "pattern": "/releases/download/.*/pubnub-gson-(.*)-all.jar$", "cleared": true },
-    { "pattern": "/pubnub/pubnub-gson/(.*)/pubnub-gson-.*.jar$", "cleared": true },
-    { "pattern": "/pubnub/pubnub-gson/.*/pubnub-gson-(.*).jar$", "cleared": true }
+    { "pattern": "^version: (v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$", "cleared": false },
+    {
+      "pattern": "^\\s+\\-\\s+build/libs/pubnub-gson-(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)-all.jar$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    },
+    {
+      "pattern": "\\s+package-name: pubnub-gson-(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)(-all)?$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    },
+    { "pattern": "/releases/download/(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)/pubnub-gson-.*-all.jar$", "cleared": false },
+    {
+      "pattern": "/releases/download/.*/pubnub-gson-(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)-all.jar$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    },
+    {
+      "pattern": "/pubnub/pubnub-gson/(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)/pubnub-gson-.*.jar$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    },
+    {
+      "pattern": "/pubnub/pubnub-gson/.*/pubnub-gson-(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?).jar$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    }
   ],
   "build.gradle": [
-    { "pattern": "^version\\s=\\s'(.*)'$", "cleared": true }
+    {
+      "pattern": "^version\\s=\\s'(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)'$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    }
   ],
   "README.md": [
-    { "pattern": "^\\s{2,}<version>(.+)<\\/version>$", "cleared": true },
-    { "pattern": "^\\s{2,}implementation 'com\\.pubnub:pubnub-gson:(.+)'$", "cleared": true }
+    {
+      "pattern": "^\\s{2,}<version>(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)<\\/version>$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    },
+    {
+      "pattern": "^\\s{2,}implementation 'com\\.pubnub:pubnub-gson:(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)'$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    }
   ],
   "src/main/java/com/pubnub/api/PubNub.java": [
-    { "pattern": "private static final String SDK_VERSION.*\"(.*)\";$", "cleared": true }
+    {
+      "pattern": "private static final String SDK_VERSION.*\"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\";$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    }
   ],
   "src/test/java/com/pubnub/api/PubNubTest.java": [
-    { "pattern": "assertEquals\\(\"(.*)\", version\\);$", "cleared": true }
+    {
+      "pattern": "assertEquals\\(\"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\", version\\);$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    }
   ]
 }
