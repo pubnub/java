@@ -15,10 +15,10 @@ interface ContractTestConfig : Config {
     @Config.Key("pamSecKey")
     fun pamSecKey(): String?
 
-    @Config.Key("server.hostPort")
+    @Config.Key("serverHostPort")
     fun serverHostPort(): String
 
-    @Config.Key("server.mock")
+    @Config.Key("serverMock")
     fun serverMock(): Boolean
 }
 

@@ -1,0 +1,40 @@
+name: run_acceptance_tests
+
+on: [push]
+
+jobs:
+  build:
+    name: Perform Acceptance BDD tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Checkout mock-server action
+        uses: actions/checkout@v2
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: github-actions
+          token: ${{ secrets.GH_TOKEN }}
+          path: client-engineering-deployment-tools
+      - name: Run mock server action
+        uses: ./client-engineering-deployment-tools/actions/mock-server
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Run acceptance tests
+        run: |
+          export pubKey=somePubKey
+          export subKey=someSubKey
+          export pamPubKey=somePamPubKey
+          export pamSubKey=somePamSubKey
+          export pamSecKey=someSecKey
+          export featuresDir=sdk-specifications/features/access
+          export cucumberTags=@feature=access
+          export serverHostPort=localhost:8090
+          export serverMock=true
+          ./gradlew cucumber
+      - name: Expose acceptance tests reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: acceptance-test-reports
+          path: ./build/reports/cucumber-reports
+

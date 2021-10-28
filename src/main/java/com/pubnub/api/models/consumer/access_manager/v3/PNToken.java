@@ -16,6 +16,7 @@ public class PNToken {
     private final long timestamp;
     private final long ttl;
     private final String authorizedUUID;
+    private final Object meta;
     @NonNull
     private final PNTokenResources resources;
     @NonNull
@@ -28,8 +29,9 @@ public class PNToken {
             @JsonProperty("ttl") final long ttl,
             @JsonProperty("res") final PNTokenResources res,
             @JsonProperty("pat") final PNTokenResources pat,
-            @JsonProperty("uuid") final String uuid) {
-        return new PNToken(v, t, ttl, uuid, res, pat);
+            @JsonProperty("uuid") final String uuid,
+            @JsonProperty("meta") final Object meta) {
+        return new PNToken(v, t, ttl, uuid, meta, res, pat);
     }
 
     @Data

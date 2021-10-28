@@ -4,8 +4,8 @@ subKey: <<PASTE_SUBSCRIBE_KEY_HERE>>
 pamPubKey: <<PASTE_PAM_PUBLISH_KEY_HERE>>
 pamSubKey: <<PASTE_PAM_SUBSCRIBE_KEY_HERE>>
 pamSecKey: <<PASTE_PAM_SECRET_KEY_HERE>>
-features.dir: <<PATH TO FEATURES>>
-cucumber.tags: <<TAG FILTER>>
-server.hostPort: localhost:8090
+featuresDir: <<PATH TO FEATURES>>
+cucumberTags: <<TAG FILTER>>
+serverHostPort: localhost:8090
 #server.hostPort: ps.pndsn.com
-server.mock: true
+serverMock: true

@@ -12,7 +12,7 @@ plugins {
 }
 group = 'com.pubnub'
 
-version = '5.2.0'
+version = '5.2.1'
 
 description = """"""
 
@@ -34,16 +34,31 @@ task cucumber() {
     group = "verification"
     doLast {
         javaexec {
-            def localProperties = new Properties()
-            localProperties.load(new FileInputStream(rootProject.file("test.properties")))
-
+            Properties localProperties = new Properties()
+            try {
+                localProperties.load(new FileInputStream(rootProject.file("test.properties")))
+            }
+            catch (Exception e) {
+                localProperties.putAll(System.getenv())
+            }
             main = "io.cucumber.core.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
 
             if (localProperties['cucumber.tags'] != null) {
-                args = ['--tags', localProperties['cucumber.tags'], '--plugin', 'pretty', '--glue', 'com.pubnub.contract', localProperties['features.dir']]
+                args = ['--tags', localProperties['cucumberTags'],
+                        '--plugin', 'pretty',
+                        '--plugin', 'json:build/reports/cucumber-reports/Cucumber.json',
+                        '--plugin', 'junit:build/reports/cucumber-reports/Cucumber.xml',
+                        '--plugin', 'html:build/reports/cucumber-reports/Cucumber.html',
+                        '--glue', 'com.pubnub.contract',
+                        localProperties['featuresDir']]
             } else {
-                args = ['--plugin', 'pretty', '--glue', 'com.pubnub.contract', localProperties['features.dir']]
+                args = ['--plugin', 'pretty',
+                        '--plugin', 'json:build/reports/cucumber-reports/Cucumber.json',
+                        '--plugin', 'junit:build/reports/cucumber-reports/Cucumber.xml',
+                        '--plugin', 'html:build/reports/cucumber-reports/Cucumber.html',
+                        '--glue', 'com.pubnub.contract',
+                        localProperties['featuresDir']]
             }
         }
     }

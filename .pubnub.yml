@@ -1,9 +1,9 @@
 name: java
-version: 5.2.0
+version: 5.2.1
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-5.2.0-all.jar
+  - build/libs/pubnub-gson-5.2.1-all.jar
 sdks:
   - 
       type: library
@@ -234,6 +234,13 @@ sdks:
                   is-required: Required
 
 changelog:
+  - version: v5.2.1
+    date: 2021-10-06
+    changes:
+      - type: feature
+        text: "Acceptance tests plugged into CI pipeline."
+      - type: bug
+        text: "Meta field exposed correctly in PNToken class."
   - version: v5.2.0
     date: 2021-09-08
     changes:
@@ -748,8 +755,9 @@ features:
     - ACCESS-GRANT-MANAGE
     - ACCESS-GRANT-DELETE
     - ACCESS-SECRET-KEY-ALL-ACCESS
-    - ACCESS-GRANT-V3
-    - ACCESS-TOKEN-MANAGEMENT
+    - ACCESS-GRANT-TOKEN
+    - ACCESS-PARSE-TOKEN
+    - ACCESS-SET-TOKEN
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS

@@ -1,7 +1,13 @@
+## [v5.2.1](https://github.com/pubnub/java/releases/tag/v5.2.1)
+October-06-2021
+
+[Full Changelog](https://github.com/pubnub/java/compare/v5.2.0...v5.2.1)
+
+- 🌟️ Acceptance tests plugged into CI pipeline. 
+- 🐛 Meta field exposed correctly in PNToken class. 
+
 ## [v5.2.0](https://github.com/pubnub/java/releases/tag/v5.2.0)
 September-08-2021
-
-[Full Changelog](https://github.com/pubnub/java/compare/v5.1.1...v5.2.0)
 
 - 🌟️ Extend grantToken method to enable control of Objects API permission. Enhance granularity of permission control to enable permissions per UUID. 
 
