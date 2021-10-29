@@ -7,6 +7,7 @@ public interface PubSubOperation {
     PubSubOperation NO_OP = new NoOpOperation();
     PubSubOperation DISCONNECT = new DisconnectOperation();
     PubSubOperation STATUS_ANNOUNCED = new ConnectedStatusAnnouncedOperation();
+    PubSubOperation RECONNECT = new ReconnectOperation();
 
     @Data
     class NoOpOperation implements PubSubOperation {
@@ -28,4 +29,12 @@ public interface PubSubOperation {
 
         }
     }
+
+    @Data
+    class ReconnectOperation implements PubSubOperation {
+        private ReconnectOperation() {
+
+        }
+    }
+
 }

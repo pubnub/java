@@ -18,9 +18,11 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import retrofit2.Response;
 
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.pubnub.api.managers.subscription.utils.SubscriptionTestUtils.pubnub;
 import static com.pubnub.api.managers.subscription.utils.SubscriptionTestUtils.retrofitManagerMock;
@@ -63,6 +65,30 @@ public class FastSubscriptionManagerTest {
         await().atMost(2, SECONDS).untilAsserted(() -> {
             verify(subscriptionManager, atLeast(2)).startSubscribeLoop(any());
         });
+    }
+
+    @Test
+    public void reconnectRestartsTheLoopRegardlessOfState() {
+        AtomicInteger numberOfCalls = new AtomicInteger(0);
+        final ResponseSupplier<SubscribeEnvelope> responseSupplier = requestDetails -> {
+            numberOfCalls.incrementAndGet();
+            return new ResponseHolder<>(new SocketException(
+                    "socket exception"));
+        };
+
+        final RetrofitManager retrofitManagerMock = retrofitManagerMock(responseSupplier);
+
+        final SubscriptionManager subscriptionManager = subscriptionManagerUnderTest(retrofitManagerMock);
+
+        final SubscribeOperation subscribeOperation = SubscribeOperation.builder()
+                .channels(singletonList("ch1"))
+                .channelGroups(emptyList())
+                .build();
+
+        subscriptionManager.adaptSubscribeBuilder(subscribeOperation);
+
+        subscriptionManager.reconnect();
+        await().atMost(1, SECONDS).untilAsserted(() -> assertEquals(2, numberOfCalls.get()));
     }
 
     @Test

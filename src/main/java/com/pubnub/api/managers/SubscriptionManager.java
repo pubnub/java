@@ -39,7 +39,6 @@ public class SubscriptionManager {
     private static final int HEARTBEAT_INTERVAL_MULTIPLIER = 1000;
 
     private volatile boolean connected;
-    private volatile boolean httpRequestPending = false;
 
     PubNub pubnub;
     private final TelemetryManager telemetryManager;
@@ -93,7 +92,7 @@ public class SubscriptionManager {
         final ReconnectionCallback reconnectionCallback = new ReconnectionCallback() {
             @Override
             public void onReconnection() {
-                reconnect(PubSubOperation.NO_OP);
+                reconnect(PubSubOperation.RECONNECT);
                 StateManager.SubscriptionStateData subscriptionStateData = subscriptionState.subscriptionStateData(true);
                 PNStatus pnStatus = PNStatus.builder()
                         .error(false)
@@ -134,10 +133,10 @@ public class SubscriptionManager {
     }
 
     public void reconnect() {
-        reconnect(PubSubOperation.NO_OP);
+        reconnect(PubSubOperation.RECONNECT);
     }
 
-    private void reconnect(PubSubOperation pubSubOperation) {
+    private synchronized void reconnect(PubSubOperation pubSubOperation) {
         connected = true;
         this.startSubscribeLoop(pubSubOperation);
         this.registerHeartbeatTimer(PubSubOperation.NO_OP);
@@ -269,10 +268,9 @@ public class SubscriptionManager {
             return;
         }
         boolean subscriptionLoopStateChanged = subscriptionState.handleOperation(pubSubOperations);
-        if (!subscriptionLoopStateChanged && httpRequestPending) {
+        if (!subscriptionLoopStateChanged) {
             return;
         }
-
         stopSubscribeLoop();
 
         for (PubSubOperation pubSubOperation : pubSubOperations) {
@@ -294,7 +292,6 @@ public class SubscriptionManager {
             return;
         }
 
-        httpRequestPending = true;
         subscribeCall = new Subscribe(pubnub, this.retrofitManager, tokenManager)
                 .channels(subscriptionStateData.getChannels())
                 .channelGroups(subscriptionStateData.getChannelGroups())
@@ -304,7 +301,6 @@ public class SubscriptionManager {
                 .state(subscriptionStateData.getStatePayload());
 
         subscribeCall.async((result, status) -> {
-            httpRequestPending = false;
             if (status.isError()) {
                 handleError(status, pubSubOperations);
             } else {

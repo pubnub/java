@@ -99,6 +99,8 @@ public class StateManager {
                 changeTemporary((ChangeTemporaryUnavailableOperation) pubSubOperation);
             } else if (pubSubOperation instanceof PubSubOperation.ConnectedStatusAnnouncedOperation) {
                 shouldAnnounce = false;
+            } else if (pubSubOperation instanceof PubSubOperation.ReconnectOperation) {
+                stateChanged = true;
             }
         }
         return stateChanged;
