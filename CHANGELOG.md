@@ -1,3 +1,9 @@
+## v5.2.2
+November 04 2021
+
+#### Fixed
+- Reconnect always restarts the subscription connection.
+
 ## [v5.2.1](https://github.com/pubnub/java/releases/tag/v5.2.1)
 October-06-2021
 
