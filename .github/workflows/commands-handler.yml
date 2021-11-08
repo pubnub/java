@@ -24,3 +24,4 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           listener: client-engineering-bot
+          jira-api-key: ${{ secrets.JIRA_API_KEY }}

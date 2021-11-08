@@ -62,6 +62,6 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           source-folder: docs
-          command: "gradlew javadoc"
+          jira-api-key: ${{ secrets.JIRA_API_KEY }}
           last-service: true
 
