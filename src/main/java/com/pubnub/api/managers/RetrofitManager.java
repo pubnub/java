@@ -107,6 +107,20 @@ public class RetrofitManager {
                             this.pubnub.getConfiguration().getConnectTimeout()
                     ).retryOnConnectionFailure(false)
             );
+
+            this.pubnub.addListener(new SubscribeCallback.BaseSubscribeCallback() {
+                @Override
+                public void status(@NotNull final PubNub pubnub, @NotNull final PNStatus pnStatus) {
+                    if (pnStatus.getCategory() == PNStatusCategory.PNReconnectedCategory) {
+                        Executors.newSingleThreadExecutor().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                transactionClientInstance.connectionPool().evictAll();
+                            }
+                        });
+                    }
+                }
+            });
         }
 
         this.transactionInstance = createRetrofit(this.transactionClientInstance);
@@ -127,20 +141,6 @@ public class RetrofitManager {
         this.messageActionService = transactionInstance.create(MessageActionService.class);
         this.filesService = transactionInstance.create(FilesService.class);
         this.s3Service = noSignatureInstance.create(S3Service.class);
-
-        this.pubnub.addListener(new SubscribeCallback.BaseSubscribeCallback() {
-            @Override
-            public void status(@NotNull final PubNub pubnub, @NotNull final PNStatus pnStatus) {
-                if (pnStatus.getCategory() == PNStatusCategory.PNReconnectedCategory) {
-                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            transactionClientInstance.connectionPool().evictAll();
-                        }
-                    });
-                }
-            }
-        });
     }
 
     private OkHttpClient.Builder prepareOkHttpClient(int requestTimeout, int connectTimeOut) {
