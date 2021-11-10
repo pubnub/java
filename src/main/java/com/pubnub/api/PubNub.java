@@ -114,8 +114,8 @@ public class PubNub {
         this.mapper = new MapperManager();
         this.telemetryManager = new TelemetryManager();
         this.basePathManager = new BasePathManager(initialConfig);
-        this.retrofitManager = new RetrofitManager(this);
         this.listenerManager = new ListenerManager(this);
+        this.retrofitManager = new RetrofitManager(this);
         this.stateManager = new StateManager(this.configuration);
         this.tokenManager = new TokenManager();
         final ReconnectionManager reconnectionManager = new ReconnectionManager(this);

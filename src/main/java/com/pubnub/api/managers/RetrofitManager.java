@@ -3,9 +3,12 @@ package com.pubnub.api.managers;
 
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.callbacks.*;
 import com.pubnub.api.endpoints.vendor.AppEngineFactory;
 import com.pubnub.api.enums.PNLogVerbosity;
+import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.interceptors.SignatureInterceptor;
+import com.pubnub.api.models.consumer.*;
 import com.pubnub.api.services.AccessManagerService;
 import com.pubnub.api.services.ChannelGroupService;
 import com.pubnub.api.services.ChannelMetadataService;
@@ -23,11 +26,11 @@ import com.pubnub.api.services.UUIDMetadataService;
 import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jetbrains.annotations.*;
 import retrofit2.Retrofit;
 
-import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class RetrofitManager {
 
@@ -124,6 +127,20 @@ public class RetrofitManager {
         this.messageActionService = transactionInstance.create(MessageActionService.class);
         this.filesService = transactionInstance.create(FilesService.class);
         this.s3Service = noSignatureInstance.create(S3Service.class);
+
+        this.pubnub.addListener(new SubscribeCallback.BaseSubscribeCallback() {
+            @Override
+            public void status(@NotNull final PubNub pubnub, @NotNull final PNStatus pnStatus) {
+                if (pnStatus.getCategory() == PNStatusCategory.PNReconnectedCategory) {
+                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            transactionClientInstance.connectionPool().evictAll();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private OkHttpClient.Builder prepareOkHttpClient(int requestTimeout, int connectTimeOut) {
