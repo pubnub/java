@@ -1,3 +1,9 @@
+## v5.2.3
+November 17 2021
+
+#### Fixed
+- Eviction of OkHttp connection pool after reestablishing connection (affects transactional calls).
+
 ## v5.2.2
 November 04 2021
 
