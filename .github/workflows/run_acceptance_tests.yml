@@ -20,21 +20,31 @@ jobs:
         uses: ./client-engineering-deployment-tools/actions/mock-server
         with:
           token: ${{ secrets.GH_TOKEN }}
-      - name: Run acceptance tests
+      - name: Run acceptance tests (optional)
         run: |
           export pubKey=somePubKey
           export subKey=someSubKey
           export pamPubKey=somePamPubKey
           export pamSubKey=somePamSubKey
           export pamSecKey=someSecKey
-          export featuresDir=sdk-specifications/features/access
-          export cucumberTags=@feature=access
           export serverHostPort=localhost:8090
           export serverMock=true
-          ./gradlew cucumber
+          ./gradlew cucumber --tests RunBetaCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
+        continue-on-error: true
+      - name: Run acceptance tests (required)
+        run: |
+          export pubKey=somePubKey
+          export subKey=someSubKey
+          export pamPubKey=somePamPubKey
+          export pamSubKey=somePamSubKey
+          export pamSecKey=someSecKey
+          export serverHostPort=localhost:8090
+          export serverMock=true
+          ./gradlew cucumber --tests RunMainCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
       - name: Expose acceptance tests reports
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: acceptance-test-reports
           path: ./build/reports/cucumber-reports
-
+          retention-days: 7

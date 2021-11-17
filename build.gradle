@@ -12,7 +12,7 @@ plugins {
 }
 group = 'com.pubnub'
 
-version = '5.2.2'
+version = '5.3.0'
 
 description = """"""
 
@@ -21,47 +21,6 @@ targetCompatibility = 1.8
 
 
 configurations.all {
-}
-
-configurations {
-    cucumberRuntime {
-        extendsFrom testImplementation
-    }
-}
-
-task cucumber() {
-    dependsOn assemble, testClasses
-    group = "verification"
-    doLast {
-        javaexec {
-            Properties localProperties = new Properties()
-            try {
-                localProperties.load(new FileInputStream(rootProject.file("test.properties")))
-            }
-            catch (Exception e) {
-                localProperties.putAll(System.getenv())
-            }
-            main = "io.cucumber.core.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-
-            if (localProperties['cucumber.tags'] != null) {
-                args = ['--tags', localProperties['cucumberTags'],
-                        '--plugin', 'pretty',
-                        '--plugin', 'json:build/reports/cucumber-reports/Cucumber.json',
-                        '--plugin', 'junit:build/reports/cucumber-reports/Cucumber.xml',
-                        '--plugin', 'html:build/reports/cucumber-reports/Cucumber.html',
-                        '--glue', 'com.pubnub.contract',
-                        localProperties['featuresDir']]
-            } else {
-                args = ['--plugin', 'pretty',
-                        '--plugin', 'json:build/reports/cucumber-reports/Cucumber.json',
-                        '--plugin', 'junit:build/reports/cucumber-reports/Cucumber.xml',
-                        '--plugin', 'html:build/reports/cucumber-reports/Cucumber.html',
-                        '--glue', 'com.pubnub.contract',
-                        localProperties['featuresDir']]
-            }
-        }
-    }
 }
 
 lombok {
@@ -239,5 +198,16 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from "$buildDir/delombok"
 }
+
+task cucumber(type: Test) {
+    systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    systemProperty "cucumber.features", System.getProperty("cucumber.features")
+    systemProperty "cucumber.plugins", System.getProperty("cucumber.plugins")
+}
+
+test {
+    exclude '**/contract/*.class'
+}
+
 
 build.finalizedBy(shadowJar)
