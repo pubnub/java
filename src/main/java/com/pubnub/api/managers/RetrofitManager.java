@@ -1,14 +1,13 @@
 package com.pubnub.api.managers;
 
-
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.callbacks.*;
+import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.endpoints.vendor.AppEngineFactory;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.interceptors.SignatureInterceptor;
-import com.pubnub.api.models.consumer.*;
+import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.services.AccessManagerService;
 import com.pubnub.api.services.ChannelGroupService;
 import com.pubnub.api.services.ChannelMetadataService;
@@ -26,11 +25,13 @@ import com.pubnub.api.services.UUIDMetadataService;
 import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class RetrofitManager {
 
@@ -108,10 +109,14 @@ public class RetrofitManager {
                     ).retryOnConnectionFailure(false)
             );
 
+            //Because our users can think that PNStatusCategory.PNReconnectedCategory is about the whole
+            //PubNub library and not only about the subscription loop just for safety we're going to
+            //evict possibly broken connections for transactional calls
             this.pubnub.addListener(new SubscribeCallback.BaseSubscribeCallback() {
                 @Override
                 public void status(@NotNull final PubNub pubnub, @NotNull final PNStatus pnStatus) {
                     if (pnStatus.getCategory() == PNStatusCategory.PNReconnectedCategory) {
+                        //On Android this callback is run on main thread therefore this thread is necessary
                         Executors.newSingleThreadExecutor().execute(new Runnable() {
                             @Override
                             public void run() {
