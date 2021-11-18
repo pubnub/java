@@ -104,7 +104,7 @@ public class PubNub {
     private static final int TIMESTAMP_DIVIDER = 1000;
     private static final int MAX_SEQUENCE = 65535;
 
-    private static final String SDK_VERSION = "5.3.0";
+    private static final String SDK_VERSION = "5.2.3";
     private final ListenerManager listenerManager;
     private final StateManager stateManager;
 
@@ -115,8 +115,8 @@ public class PubNub {
         this.mapper = new MapperManager();
         this.telemetryManager = new TelemetryManager();
         this.basePathManager = new BasePathManager(initialConfig);
-        this.retrofitManager = new RetrofitManager(this);
         this.listenerManager = new ListenerManager(this);
+        this.retrofitManager = new RetrofitManager(this);
         this.stateManager = new StateManager(this.configuration);
         this.tokenManager = new TokenManager();
         final ReconnectionManager reconnectionManager = new ReconnectionManager(this);

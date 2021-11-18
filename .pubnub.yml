@@ -1,9 +1,9 @@
 name: java
-version: v5.2.2
+version: v5.2.3
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-5.2.2-all.jar
+  - build/libs/pubnub-gson-5.2.3-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: git release
-              package-name: pubnub-gson-5.2.2
-              location: https://github.com/pubnub/java/releases/download/v5.2.2/pubnub-gson-5.2.2-all.jar
+              package-name: pubnub-gson-5.2.3
+              location: https://github.com/pubnub/java/releases/download/v5.2.3/pubnub-gson-5.2.3-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-5.2.2
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/5.2.2/pubnub-gson-5.2.2.jar
+              package-name: pubnub-gson-5.2.3
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/5.2.3/pubnub-gson-5.2.3.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,11 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2021-11-17
+    version: v5.2.3
+    changes:
+      - type: bug
+        text: "Eviction of OkHttp connection pool after reestablishing connection (affects transactional calls)."
   - date: 2021-11-04
     version: v5.2.2
     changes:
