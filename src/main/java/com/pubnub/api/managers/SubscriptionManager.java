@@ -325,7 +325,7 @@ public class SubscriptionManager {
                 final PubSubOperation statusAnnouncedOperation;
                 if (subscriptionStateData.isShouldAnnounce()) {
                     PNStatus pnStatus = createPublicStatus(status)
-                            .category(PNStatusCategory.PNConnectedCategory)
+                            .category(subscriptionStateData.getAnnounceStatus())
                             .error(false)
                             .build();
                     listenerManager.announce(pnStatus);
