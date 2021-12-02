@@ -93,20 +93,13 @@ public class RevokeToken extends Endpoint<RevokeTokenResponse, PNRevokeTokenResu
     }
 
     private String repairEncoding(String token) throws PubNubException {
-        String[] parts = token.split(" ");
-
-        List<String> encodedParts = new ArrayList<>(parts.length);
-
-        for (String part : parts) {
-            try {
-                encodedParts.add(URLEncoder.encode(part, "utf-8"));
-            } catch (UnsupportedEncodingException e) {
-                throw PubNubException.builder()
-                        .pubnubError(PubNubErrorBuilder.PNERROBJ_PUBNUB_ERROR)
-                        .cause(e)
-                        .build();
-            }
+        try {
+            return URLEncoder.encode(token, "utf-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw PubNubException.builder()
+                    .pubnubError(PubNubErrorBuilder.PNERROBJ_PUBNUB_ERROR)
+                    .cause(e)
+                    .build();
         }
-        return PubNubUtil.joinString(encodedParts, "%20");
     }
 }
