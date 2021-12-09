@@ -1,9 +1,9 @@
 name: java
-version: v5.2.3
+version: v5.2.4
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-5.2.3-all.jar
+  - build/libs/pubnub-gson-5.2.4-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: git release
-              package-name: pubnub-gson-5.2.3
-              location: https://github.com/pubnub/java/releases/download/v5.2.3/pubnub-gson-5.2.3-all.jar
+              package-name: pubnub-gson-5.2.4
+              location: https://github.com/pubnub/java/releases/download/v5.2.4/pubnub-gson-5.2.4-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-5.2.3
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/5.2.3/pubnub-gson-5.2.3.jar
+              package-name: pubnub-gson-5.2.4
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/5.2.4/pubnub-gson-5.2.4.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,11 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2021-12-09
+    version: v5.2.4
+    changes:
+      - type: bug
+        text: "Emit PNReconnectedCategory in case of successful manual reconnection."
   - date: 2021-11-17
     version: v5.2.3
     changes:
