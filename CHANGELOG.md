@@ -1,3 +1,9 @@
+## v5.2.4
+December 09 2021
+
+#### Fixed
+- Emit PNReconnectedCategory in case of successful manual reconnection.
+
 ## v5.2.3
 November 17 2021
 

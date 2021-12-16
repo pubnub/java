@@ -4,34 +4,45 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.builder.dto.ChangeTemporaryUnavailableOperation;
 import com.pubnub.api.builder.dto.PubSubOperation;
 import com.pubnub.api.builder.dto.SubscribeOperation;
+import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.managers.subscription.utils.RequestDetails;
 import com.pubnub.api.managers.subscription.utils.ResponseHolder;
 import com.pubnub.api.managers.subscription.utils.ResponseSupplier;
 import com.pubnub.api.managers.token_manager.TokenManager;
+import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.server.SubscribeEnvelope;
 import com.pubnub.api.models.server.SubscribeMetadata;
 import com.pubnub.api.services.SubscribeService;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import org.awaitility.core.ThrowingRunnable;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import retrofit2.Response;
 
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static com.pubnub.api.managers.subscription.utils.SubscriptionTestUtils.pubnub;
 import static com.pubnub.api.managers.subscription.utils.SubscriptionTestUtils.retrofitManagerMock;
 import static com.pubnub.api.managers.subscription.utils.SubscriptionTestUtils.telemetryManager;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -251,6 +262,76 @@ public class FastSubscriptionManagerTest {
                 verify(spiedSubscribeService, times(2)).subscribe(any(), any(), any());
             }
         });
+    }
+
+    @Test
+    public void sendReconnectedOnManualReconnect() {
+        long timeToken = System.currentTimeMillis();
+        final ResponseSupplier<SubscribeEnvelope> responseSupplier = new ResponseSupplier<SubscribeEnvelope>() {
+            private boolean first = true;
+
+            @Override
+            public ResponseHolder<SubscribeEnvelope> get(final RequestDetails requestDetails) {
+                try {
+                    MILLISECONDS.sleep(100);
+                } catch (InterruptedException e) {
+                }
+                if (first) {
+                    first = false;
+                    return new ResponseHolder<>(Response.error(500, ResponseBody.create(MediaType.parse("application/json"), "{}")));
+                }
+                final SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope(emptyList(),
+                        new SubscribeMetadata(timeToken, FAKE_REGION));
+                return new ResponseHolder<>(Response.success(200, subscribeEnvelope));
+            }
+        };
+        final RetrofitManager retrofitManagerMock = retrofitManagerMock(responseSupplier);
+        final SubscriptionManager subscriptionManager = subscriptionManagerUnderTest(retrofitManagerMock);
+
+        final SubscribeOperation subscribeOperation = SubscribeOperation.builder()
+                .channels(singletonList("ch2"))
+                .channelGroups(singletonList("group2"))
+                .build();
+
+        subscriptionManager.adaptSubscribeBuilder(subscribeOperation);
+        subscriptionManager.reconnect();
+        ArgumentCaptor<PNStatus> statusArgumentCaptor = ArgumentCaptor.forClass(PNStatus.class);
+        await().atMost(1, SECONDS).untilAsserted(() -> verify(listenerManagerMock, times(2)).announce(statusArgumentCaptor.capture()));
+
+        List<PNStatusCategory> statusCategories = statusArgumentCaptor.getAllValues().stream().map(PNStatus::getCategory).collect(Collectors.toList());
+        MatcherAssert.assertThat(statusCategories, Matchers.hasItem(PNStatusCategory.PNReconnectedCategory));
+    }
+
+    @Test
+    public void reconnectUsesTT0ForFastUserNotification() {
+        final ResponseSupplier<SubscribeEnvelope> responseSupplier = requestDetails -> {
+            final SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope(emptyList(),
+                    new SubscribeMetadata(System.currentTimeMillis(), FAKE_REGION));
+            try {
+                MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+            }
+            return new ResponseHolder<>(Response.success(200, subscribeEnvelope));
+        };
+
+        final RetrofitManager retrofitManagerMock = retrofitManagerMock(responseSupplier);
+        final SubscribeService spiedSubscribeService = retrofitManagerMock.getSubscribeService();
+        final SubscriptionManager subscriptionManager = subscriptionManagerUnderTest(retrofitManagerMock);
+
+        final SubscribeOperation subscribeOperation = SubscribeOperation.builder()
+                .channels(singletonList("ch2"))
+                .channelGroups(singletonList("group2"))
+                .timetoken(42L)
+                .build();
+
+        subscriptionManager.adaptSubscribeBuilder(subscribeOperation);
+        await().atMost(1, SECONDS).untilAsserted(() -> verify(spiedSubscribeService, atLeast(2)).subscribe(any(), any(), any()));
+        subscriptionManager.reconnect();
+        ArgumentCaptor<Map<String, String>> queryParamsCaptor = ArgumentCaptor.forClass(Map.class);
+        await().atMost(1, SECONDS).untilAsserted(() -> verify(spiedSubscribeService, atLeast(1)).subscribe(any(), any(), queryParamsCaptor.capture()));
+
+        List<String> statusCategories = queryParamsCaptor.getAllValues().stream().map((map) -> map.get("tt")).collect(Collectors.toList());
+        MatcherAssert.assertThat(statusCategories, Matchers.hasItem("0"));
     }
 
     @NotNull
