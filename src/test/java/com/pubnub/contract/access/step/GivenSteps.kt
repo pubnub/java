@@ -75,8 +75,6 @@ class GivenSteps(private val grantTokenState: GrantTokenState,
         grant_permission(permissionType)
     }
 
-    //DELETE http://localhost:8090/v3/pam/sub-c-067a9e98-fb50-11eb-bc10-56aa1f324334/grant/A8TlaF6egF9dE6a0DzVpnEyftEt7Nl?pnsdk=PubNub-Kotlin%2F6.2.0&requestid=6cc73a57-d282-4685-bef1-7448895b8821&uuid=pn-6ecefeb0-4625-4dc2-b2da-ffea6c784678
-    //DELETE http://localhost:8090/v3/pam/sub-c-067a9e98-fb50-11eb-bc10-56aa1f324334/grant/A8TlaF6egF9dE6a0DzVpnEyftEt7Nl%2?pnsdk=PubNub-Java-Unified%2F5.2.2&requestid=38d10490-ae69-41a2-8f2c-ad20d9ffd65f&uuid=pn-35808916-ba0e-4cd0-adc0-7abaa87e4275
     @Given("a token")
     fun a_token() {
         val characters: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') + '_'
@@ -154,6 +152,4 @@ class GivenSteps(private val grantTokenState: GrantTokenState,
             }
         }
     }
-
-
 }
