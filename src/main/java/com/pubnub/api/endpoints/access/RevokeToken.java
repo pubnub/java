@@ -2,7 +2,6 @@ package com.pubnub.api.endpoints.access;
 
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.enums.PNOperationType;
@@ -18,7 +17,6 @@ import retrofit2.Response;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
