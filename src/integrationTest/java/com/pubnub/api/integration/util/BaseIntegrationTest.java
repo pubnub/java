@@ -128,8 +128,8 @@ public abstract class BaseIntegrationTest {
         client.forceDestroy();
     }
 
-    protected PNConfiguration getBasicPnConfiguration() {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+    protected PNConfiguration getBasicPnConfiguration() throws PubNubException {
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         if (!needsServer()) {
             pnConfiguration.setSubscribeKey(SUB_KEY);
             pnConfiguration.setPublishKey(PUB_KEY);
@@ -144,8 +144,8 @@ public abstract class BaseIntegrationTest {
         return pnConfiguration;
     }
 
-    private PNConfiguration getServerPnConfiguration() {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+    private PNConfiguration getServerPnConfiguration() throws PubNubException {
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey(PAM_SUB_KEY);
         pnConfiguration.setPublishKey(PAM_PUB_KEY);
         pnConfiguration.setSecretKey(PAM_SEC_KEY);

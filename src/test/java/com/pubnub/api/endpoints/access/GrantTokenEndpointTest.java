@@ -24,6 +24,9 @@ public class GrantTokenEndpointTest extends TestHarness {
 
     private final PubNub pubnub = this.createPubNubInstance();
 
+    public GrantTokenEndpointTest() throws PubNubException {
+    }
+
     @Before
     public void beforeEach() throws IOException {
         pubnub.getConfiguration().setSecretKey("secretKey").setIncludeInstanceIdentifier(true);
@@ -66,7 +69,7 @@ public class GrantTokenEndpointTest extends TestHarness {
     @Test
     public void validate_SubscribeKeyMissing() {
         try {
-            new PubNub(new PNConfiguration().setSecretKey("secret")).grantToken()
+            new PubNub(new PNConfiguration(PubNub.generateUUID()).setSecretKey("secret")).grantToken()
                     .ttl(1)
                     .channelGroups(Collections.singletonList(ChannelGroupGrant.id("test").read()))
                     .sync();

@@ -10,7 +10,7 @@ import static com.pubnub.api.enums.PNReconnectionPolicy.NONE;
 public class ReconnectionProblemWithoutReconnectionPolicy extends AbstractReconnectionProblem {
     @Override
     protected PubNub privilegedClientPubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey(itPamTestConfig.pamSubKey());
         pnConfiguration.setPublishKey(itPamTestConfig.pamPubKey());
         pnConfiguration.setSubscribeTimeout(SUBSCRIBE_TIMEOUT);

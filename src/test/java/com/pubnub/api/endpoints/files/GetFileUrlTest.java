@@ -95,8 +95,8 @@ public class GetFileUrlTest {
         Assert.assertThat(queryParamNames, Matchers.containsInAnyOrder("auth", "signature", "timestamp"));
     }
 
-    private PNConfiguration config() {
-        PNConfiguration config = new PNConfiguration();
+    private PNConfiguration config() throws PubNubException {
+        PNConfiguration config = new PNConfiguration(PubNub.generateUUID());
         config.setPublishKey("pk");
         config.setSubscribeKey("sk");
         return config;

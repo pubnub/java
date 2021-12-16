@@ -42,7 +42,7 @@ public class HereNowEndpointTest extends TestHarness {
     private HereNow partialHereNow;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialHereNow = pubnub.hereNow();
         wireMockRule.start();

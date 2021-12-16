@@ -13,7 +13,8 @@ class RunMainCucumberTest
 
 @RunWith(Cucumber::class)
 @CucumberOptions(
-        tags = "not @skip and not @na=ruby and @beta",
+        features = ["../service-contract-mock/contract/features/access"],
+        //tags = "not @skip and not @na=ruby and @beta",
         plugin = ["pretty", "summary", "junit:build/reports/cucumber-reports/beta.xml"]
 )
 class RunBetaCucumberTest

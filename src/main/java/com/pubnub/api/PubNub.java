@@ -137,6 +137,11 @@ public class PubNub {
     }
 
     @NotNull
+    public static String generateUUID() {
+        return "pn-" + UUID.randomUUID();
+    }
+
+    @NotNull
     public String getBaseUrl() {
         return this.basePathManager.getBasePath();
     }

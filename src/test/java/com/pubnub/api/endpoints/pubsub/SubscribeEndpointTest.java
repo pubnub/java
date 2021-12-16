@@ -41,7 +41,7 @@ public class SubscribeEndpointTest extends TestHarness {
     private Subscribe instance;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         RetrofitManager retrofitManager = new RetrofitManager(pubnub);
         instance = new Subscribe(pubnub, retrofitManager, new TokenManager());

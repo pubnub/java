@@ -55,6 +55,9 @@ public class HistoryBatchEndpointTest {
     private final TelemetryManager telemetryManager = mock(TelemetryManager.class);
     private final ArgumentCaptor<Map<String, String>> optionsCaptor = ArgumentCaptor.forClass(Map.class);
 
+    public HistoryBatchEndpointTest() throws PubNubException {
+    }
+
     @Test
     public void forSingleChannelFetchMessagesAlwaysPassMaxWhenItIsInBound() throws PubNubException {
         //given
@@ -335,8 +338,8 @@ public class HistoryBatchEndpointTest {
         return retrofitManager;
     }
 
-    private PubNub pubNubMock() {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+    private PubNub pubNubMock() throws PubNubException {
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey(SUBSCRIBE_KEY);
 
         final PubNub pubnub = mock(PubNub.class);

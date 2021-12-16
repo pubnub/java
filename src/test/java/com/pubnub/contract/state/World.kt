@@ -7,7 +7,7 @@ import com.pubnub.api.PubNubException
 import com.pubnub.api.enums.PNLogVerbosity
 
 class World {
-    val configuration: PNConfiguration by lazy { PNConfiguration().apply {
+    val configuration: PNConfiguration by lazy { PNConfiguration(PubNub.generateUUID()).apply {
         origin = CONTRACT_TEST_CONFIG.serverHostPort()
         isSecure = false
         logVerbosity = PNLogVerbosity.BODY

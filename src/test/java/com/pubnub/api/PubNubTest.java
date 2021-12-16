@@ -13,8 +13,8 @@ public class PubNubTest {
     private PNConfiguration pnConfiguration;
 
     @Before
-    public void beforeEach() throws IOException {
-        pnConfiguration = new PNConfiguration();
+    public void beforeEach() throws IOException, PubNubException {
+        pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey("demo");
         pnConfiguration.setPublishKey("demo");
         pnConfiguration.setUseRandomInitializationVector(false);

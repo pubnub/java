@@ -46,7 +46,7 @@ public class GrantEndpointTest extends TestHarness {
     private String uuid = "myUUID";
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialGrant = pubnub.grant();
         pubnub.getConfiguration().setSecretKey("secretKey").setIncludeInstanceIdentifier(true);

@@ -21,7 +21,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509ExtendedTrustManager;
 import java.net.Proxy;
 import java.net.ProxySelector;
-import java.util.UUID;
+
+import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_UUID_NULL_OR_EMPTY;
 
 @Getter
 @Setter
@@ -95,6 +96,12 @@ public class PNConfiguration {
     private String secretKey;
     private String cipherKey;
     private String authKey;
+
+    public void setUuid(@NotNull String uuid) throws PubNubException {
+        PubNubUtil.requirePN(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+        this.uuid = uuid;
+    }
+
     private String uuid;
     /**
      * If proxies are forcefully caching requests, set to true to allow the client to randomize the subdomain.
@@ -206,14 +213,17 @@ public class PNConfiguration {
     @Deprecated
     @Setter
     private boolean managePresenceListManually;
+
     /**
      * Initialize the PNConfiguration with default values
+     *
+     * @param uuid
      */
-    public PNConfiguration() {
+    public PNConfiguration(@NotNull String uuid) throws PubNubException {
+        PubNubUtil.requirePN(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
         setPresenceTimeoutWithCustomInterval(PRESENCE_TIMEOUT, 0);
 
-        uuid = "pn-" + UUID.randomUUID().toString();
-
+        this.uuid = uuid;
         nonSubscribeRequestTimeout = NON_SUBSCRIBE_REQUEST_TIMEOUT;
         subscribeTimeout = SUBSCRIBE_TIMEOUT;
         connectTimeout = CONNECT_TIMEOUT;

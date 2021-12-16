@@ -55,7 +55,7 @@ public class ModifyPushChannelsForDeviceTest extends TestHarness {
     private RemoveChannelsFromPush instanceRemove;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         instance = pubnub.removeAllPushNotificationsFromDeviceWithPushToken();
         instanceAdd = pubnub.addPushNotificationsOnChannels();
