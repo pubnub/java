@@ -290,7 +290,7 @@ public class PubNubUtil {
         return collection == null || collection.isEmpty();
     }
 
-    public static void requirePN(boolean value, PubNubError error) throws PubNubException {
+    public static void require(boolean value, PubNubError error) throws PubNubException {
         if (!value) {
             throw PubNubException.builder().pubnubError(error).build();
         }

@@ -98,7 +98,7 @@ public class PNConfiguration {
     private String authKey;
 
     public void setUuid(@NotNull String uuid) throws PubNubException {
-        PubNubUtil.requirePN(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+        PubNubUtil.require(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
         this.uuid = uuid;
     }
 
@@ -220,7 +220,7 @@ public class PNConfiguration {
      * @param uuid
      */
     public PNConfiguration(@NotNull String uuid) throws PubNubException {
-        PubNubUtil.requirePN(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+        PubNubUtil.require(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
         setPresenceTimeoutWithCustomInterval(PRESENCE_TIMEOUT, 0);
 
         this.uuid = uuid;
