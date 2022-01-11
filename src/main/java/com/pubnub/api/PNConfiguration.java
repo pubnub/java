@@ -98,7 +98,7 @@ public class PNConfiguration {
     private String authKey;
 
     public void setUuid(@NotNull String uuid) throws PubNubException {
-        PubNubUtil.require(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+        PubNubUtil.require(uuid != null && !uuid.trim().isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
         this.uuid = uuid;
     }
 
