@@ -1,3 +1,9 @@
+## v6.0.0
+January 12 2022
+
+#### Modified
+- BREAKING CHANGES: uuid is required parameter in PNConfiguration constructor.
+
 ## v5.3.0
 December 16 2021
 
