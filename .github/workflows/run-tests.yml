@@ -8,6 +8,12 @@ jobs:
   tests:
     name: Integration and Unit tests
     runs-on: ubuntu-latest
+    env:
+      SUB_KEY: ${{ secrets.SUB_KEY }}
+      PUB_KEY: ${{ secrets.PUB_KEY }}
+      PAM_SUB_KEY: ${{ secrets.PAM_SUB_KEY }}
+      PAM_PUB_KEY: ${{ secrets.PAM_PUB_KEY }}
+      PAM_SEC_KEY: ${{ secrets.PAM_SEC_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
