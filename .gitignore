@@ -52,6 +52,8 @@ gradlew.bat
 
 /src/integrationTest/resources/config.properties
 
+.travis/
+
 # GitHub Actions #
 ##################
 .github/.release
