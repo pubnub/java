@@ -7,7 +7,7 @@
 
 This is the official PubNub Java SDK repository.
 
-PubNub takes care of the infrastructure and APIs needed for the realtime communication layer of your application. Work on your app's logic and let PubNub handle sending and receiving data across the world in less than 100ms.
+PubNub takes care of the infrastructure and APIs needed for the realtime communication layer of your application. Let PubNub handle sending and receiving data from your app across the world in less than 100ms.
 
 ## Get keys
 
