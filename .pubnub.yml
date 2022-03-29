@@ -1,5 +1,5 @@
 name: java
-version: v6.0.0
+version: 6.0.0
 schema: 1
 scm: github.com/pubnub/java
 files:
