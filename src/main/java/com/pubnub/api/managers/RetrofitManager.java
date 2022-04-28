@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class RetrofitManager {
 
 
-
     private PubNub pubnub;
 
     private SignatureInterceptor signatureInterceptor;
@@ -81,8 +80,6 @@ public class RetrofitManager {
         this.signatureInterceptor = new SignatureInterceptor(pubNubInstance);
 
         if (!pubNubInstance.getConfiguration().isGoogleAppEngineNetworking()) {
-
-
             this.transactionClientInstance = createOkHttpClient(
                     prepareOkHttpClient(
                             this.pubnub.getConfiguration().getNonSubscribeRequestTimeout(),
