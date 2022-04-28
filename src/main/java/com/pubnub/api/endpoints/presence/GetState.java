@@ -69,7 +69,7 @@ public class GetState extends Endpoint<Envelope<JsonElement>, PNGetStateResult> 
 
         String selectedUUID = uuid != null ? uuid : this.getPubnub().getConfiguration().getUuid();
 
-        return this.getRetrofit().getPresenceService().getState(
+        return this.getRetrofit().getExtendedPresenceService().getState(
                 this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);
     }
 

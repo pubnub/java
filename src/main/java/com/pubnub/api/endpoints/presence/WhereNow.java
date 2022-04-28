@@ -51,7 +51,7 @@ public class WhereNow extends Endpoint<Envelope<WhereNowPayload>, PNWhereNowResu
 
     @Override
     protected Call<Envelope<WhereNowPayload>> doWork(Map<String, String> params) {
-        return this.getRetrofit().getPresenceService().whereNow(this.getPubnub().getConfiguration().getSubscribeKey(),
+        return this.getRetrofit().getExtendedPresenceService().whereNow(this.getPubnub().getConfiguration().getSubscribeKey(),
                 this.uuid != null ? this.uuid : this.getPubnub().getConfiguration().getUuid(), params);
     }
 
@@ -77,5 +77,4 @@ public class WhereNow extends Endpoint<Envelope<WhereNowPayload>, PNWhereNowResu
     protected boolean isAuthRequired() {
         return true;
     }
-
 }
