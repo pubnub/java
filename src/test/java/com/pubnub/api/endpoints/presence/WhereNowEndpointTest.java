@@ -42,7 +42,7 @@ public class WhereNowEndpointTest extends TestHarness {
     private WhereNow partialWhereNow;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialWhereNow = pubnub.whereNow();
         wireMockRule.start();

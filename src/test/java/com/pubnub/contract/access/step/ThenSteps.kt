@@ -82,6 +82,11 @@ class ThenSteps(
         assertPermissions(permissionType)
     }
 
+    @Then("I get confirmation that token has been revoked")
+    fun i_get_confirmation_that_token_has_been_revoked() {
+        MatcherAssert.assertThat(world.pnException, Matchers.nullValue())
+    }
+
     private fun assertPermissions(permissionType: PermissionType) {
         val permissions = grantTokenState.currentResourcePermissions!!
         when (permissionType) {

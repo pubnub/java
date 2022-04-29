@@ -44,7 +44,7 @@ public class PubNubUtil {
             builder.append(delim);
         }
 
-        return builder.toString().substring(0, builder.toString().length() - 1);
+        return builder.substring(0, builder.toString().length() - delim.length());
 
     }
 
@@ -52,10 +52,10 @@ public class PubNubUtil {
         StringBuilder builder = new StringBuilder();
         for (Long l : val) {
             builder.append(Long.toString(l).toLowerCase());
-            builder.append(",");
+            builder.append(delim);
         }
 
-        return builder.toString().substring(0, builder.toString().length() - 1);
+        return builder.substring(0, builder.toString().length() - delim.length());
 
     }
 
@@ -288,6 +288,12 @@ public class PubNubUtil {
 
     public static <T> boolean isNullOrEmpty(final Collection<T> collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    public static void require(boolean value, PubNubError error) throws PubNubException {
+        if (!value) {
+            throw PubNubException.builder().pubnubError(error).build();
+        }
     }
 
 }

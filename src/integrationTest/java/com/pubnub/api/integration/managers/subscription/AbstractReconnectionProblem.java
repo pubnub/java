@@ -181,7 +181,7 @@ public abstract class AbstractReconnectionProblem {
     protected abstract PubNub privilegedClientPubNub();
 
     private PubNub adminPubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey(itPamTestConfig.pamSubKey());
         pnConfiguration.setPublishKey(itPamTestConfig.pamPubKey());
         pnConfiguration.setSecretKey(itPamTestConfig.pamSecKey());

@@ -35,7 +35,7 @@ public class HeartbeatEndpointTest extends TestHarness {
     private PubNub pubnub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         RetrofitManager retrofitManager = new RetrofitManager(pubnub);
         partialHeartbeat = new Heartbeat(pubnub, null, retrofitManager, new TokenManager());

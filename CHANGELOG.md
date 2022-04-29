@@ -1,3 +1,21 @@
+## v6.0.0
+January 12 2022
+
+#### Modified
+- BREAKING CHANGES: uuid is required parameter in PNConfiguration constructor.
+
+## v5.3.0
+December 16 2021
+
+#### Added
+- Add revoke token feature.
+
+## v5.2.4
+December 09 2021
+
+#### Fixed
+- Emit PNReconnectedCategory in case of successful manual reconnection.
+
 ## v5.2.3
 November 17 2021
 

@@ -1,6 +1,8 @@
 package com.pubnub.api.managers;
 
 import com.pubnub.api.PNConfiguration;
+import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +14,8 @@ public class BasePathManagerTest {
     private PNConfiguration pnConfiguration;
 
     @Before
-    public void beforeEach() throws IOException {
-        pnConfiguration = new PNConfiguration();
+    public void beforeEach() throws IOException, PubNubException {
+        pnConfiguration = new PNConfiguration(PubNub.generateUUID());
     }
 
     @Test

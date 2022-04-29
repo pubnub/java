@@ -18,7 +18,7 @@ public abstract class ObjectsApiBaseIT {
     protected final PubNub pubNubUnderTest = pubNub();
 
     private PubNub pubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey(itTestConfig.subscribeKey());
         pnConfiguration.setLogVerbosity(PNLogVerbosity.BODY);
 

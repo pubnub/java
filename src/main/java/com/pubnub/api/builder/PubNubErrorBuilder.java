@@ -346,6 +346,16 @@ public final class PubNubErrorBuilder {
      */
     public static final int PNERR_PAYLOAD_TOO_LARGE = 167;
 
+    /**
+     * Token missing
+     */
+    public static final int PNERR_TOKEN_MISSING = 168;
+
+    /**
+     * UUID can't be null nor empty
+     */
+    public static final int PNERR_UUID_NULL_OR_EMPTY = 169;
+
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
             .errorCode(PNERR_TIMEOUT)
@@ -688,6 +698,16 @@ public final class PubNubErrorBuilder {
     public static final PubNubError PNERROBJ_PAYLOAD_TOO_LARGE = PubNubError.builder()
             .errorCode(PNERR_PAYLOAD_TOO_LARGE)
             .message("Payload too large.")
+            .build();
+
+    public static final PubNubError PNERROBJ_TOKEN_MISSING = PubNubError.builder()
+            .errorCode(PNERR_TOKEN_MISSING)
+            .message("Token missing.")
+            .build();
+
+    public static final PubNubError PNERROBJ_UUID_NULL_OR_EMPTY = PubNubError.builder()
+            .errorCode(PNERR_UUID_NULL_OR_EMPTY)
+            .message("Uuid can't be null nor empty.")
             .build();
 
     private PubNubErrorBuilder() {

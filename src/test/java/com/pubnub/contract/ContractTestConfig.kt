@@ -15,6 +15,12 @@ interface ContractTestConfig : Config {
     @Config.Key("pamSecKey")
     fun pamSecKey(): String?
 
+    @Config.Key("subKey")
+    fun subKey(): String?
+
+    @Config.Key("pubKey")
+    fun pubKey(): String?
+
     @Config.Key("serverHostPort")
     fun serverHostPort(): String
 

@@ -2,13 +2,14 @@ package com.pubnub.api.endpoints;
 
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNLogVerbosity;
 
 public class TestHarness {
     protected final static int PORT = 8080;
 
-    protected PubNub createPubNubInstance() {
-        PNConfiguration pnConfiguration = new PNConfiguration();
+    protected PubNub createPubNubInstance() throws PubNubException {
+        PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setOrigin("localhost" + ":" + PORT);
         pnConfiguration.setSecure(false);
         pnConfiguration.setSubscribeKey("mySubscribeKey");

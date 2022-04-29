@@ -1,6 +1,7 @@
 package com.pubnub.api.endpoints.push;
 
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.endpoints.TestHarness;
 import com.pubnub.api.enums.PNPushEnvironment;
 import com.pubnub.api.models.consumer.push.payload.PushPayloadHelper;
@@ -21,7 +22,7 @@ public class PushPayloadHelperHelperTest extends TestHarness {
     private PubNub pubnub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
     }
 

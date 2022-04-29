@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class SubscriptionTestUtils {
     @SneakyThrows
     public static PubNub pubnub(final RetrofitManager retrofitManager) {
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey("fake_sub_key");
         pnConfiguration.setConnectTimeout(1);
 

@@ -39,7 +39,7 @@ public class TimeEndpointTest extends TestHarness {
     private PubNub pubnub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialTime = pubnub.time();
         wireMockRule.start();

@@ -1,6 +1,8 @@
 package com.pubnub.api.managers;
 
 import com.pubnub.api.PNConfiguration;
+import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.dto.PresenceOperation;
 import com.pubnub.api.builder.dto.PubSubOperation;
 import com.pubnub.api.builder.dto.StateOperation;
@@ -27,9 +29,9 @@ public class StateManagerTest {
     final private String state = "state";
 
     @Test
-    public void heartbeatSendsAllChannelsWhenManualModeTurnedOff() {
+    public void heartbeatSendsAllChannelsWhenManualModeTurnedOff() throws PubNubException {
         //given
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         final StateManager stateManagerUnderTest = new StateManager(pnConfiguration);
 
         //when
@@ -53,9 +55,9 @@ public class StateManagerTest {
     }
 
     @Test
-    public void heartbeatSendsOnlyPresenceChannelsWhenManualModeTurnedOn() {
+    public void heartbeatSendsOnlyPresenceChannelsWhenManualModeTurnedOn() throws PubNubException {
         //given
-        final PNConfiguration pnConfiguration = new PNConfiguration();
+        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setManagePresenceListManually(true);
         final StateManager stateManagerUnderTest = new StateManager(pnConfiguration);
 
@@ -82,7 +84,7 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenManualModeStateOperationAddStateToSubscribedChannels() {
+    public void whenManualModeStateOperationAddStateToSubscribedChannels() throws PubNubException {
         //given
         StateManager stateManagerUnderTest = new StateManager(withManualPresenceMode(config()));
 
@@ -99,7 +101,7 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenManualModeStateOperationAddStateToHeartbeatChannels() {
+    public void whenManualModeStateOperationAddStateToHeartbeatChannels() throws PubNubException {
         //given
         StateManager stateManagerUnderTest = new StateManager(withManualPresenceMode(config()));
 
@@ -116,7 +118,7 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenManualModeOffStateOperationDoNotAddStateToHeartbeatChannels() {
+    public void whenManualModeOffStateOperationDoNotAddStateToHeartbeatChannels() throws PubNubException {
         //given
         StateManager stateManagerUnderTest = new StateManager(withoutManualPresenceMode(config()));
 
@@ -132,7 +134,7 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenManualModeOffStateOperationAddStateToSubscribedChannels() {
+    public void whenManualModeOffStateOperationAddStateToSubscribedChannels() throws PubNubException {
         //given
         StateManager stateManagerUnderTest = new StateManager(withoutManualPresenceMode(config()));
 
@@ -149,7 +151,7 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenManualModeStateOperationAddStateToSubscribedAndHeartbeatIfBothPresent() {
+    public void whenManualModeStateOperationAddStateToSubscribedAndHeartbeatIfBothPresent() throws PubNubException {
         //given
         StateManager stateManagerUnderTest = new StateManager(withManualPresenceMode(config()));
 
@@ -175,8 +177,8 @@ public class StateManagerTest {
         return result;
     }
 
-    private PNConfiguration config() {
-        return new PNConfiguration();
+    private PNConfiguration config() throws PubNubException {
+        return new PNConfiguration(PubNub.generateUUID());
     }
 
     private PNConfiguration withManualPresenceMode(PNConfiguration config) {

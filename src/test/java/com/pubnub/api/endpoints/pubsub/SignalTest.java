@@ -57,7 +57,7 @@ public class SignalTest extends TestHarness {
     private PubNub pubNub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubNub = this.createPubNubInstance();
         wireMockRule.start();
     }

@@ -10,8 +10,8 @@ import io.cucumber.java.en.When
 import org.junit.Assert
 
 class WhenSteps(
-    private val grantTokenState: GrantTokenState,
-    private val world: World
+        private val grantTokenState: GrantTokenState,
+        private val world: World
 ) {
 
 
@@ -47,5 +47,38 @@ class WhenSteps(
     @When("I parse the token")
     fun i_parse_the_token() {
         grantTokenState.parsedToken = world.pubnub.parseToken(grantTokenState.result?.token)
+    }
+
+    @When("I revoke a token")
+    fun i_revoke_the_token() {
+        try {
+            world.pubnub.revokeToken()
+                    .token(world.tokenString!!).sync()
+        } catch (e: PubNubException) {
+            world.pnException = e
+        }
+    }
+
+    @When("I publish a message using that auth token with channel {string}")
+    fun i_publish_a_message_using_that_auth_token_with_channel(channel: String) {
+        world.pubnub.setToken(world.tokenString)
+        world.pubnub.publish()
+                .channel(channel)
+                .message("Message")
+                .sync()
+    }
+
+    @When("I attempt to publish a message using that auth token with channel {string}")
+    fun i_attempt_to_publish_a_message_using_that_auth_token_with_channel(channel: String) {
+        world.pubnub.setToken(world.tokenString)
+
+        try {
+            world.pubnub.publish()
+                    .channel(channel)
+                    .message("Message")
+                    .sync()
+        } catch (e: PubNubException) {
+            world.pnException = e
+        }
     }
 }

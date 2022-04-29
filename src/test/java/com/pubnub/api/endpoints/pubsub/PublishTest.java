@@ -41,7 +41,7 @@ public class PublishTest extends TestHarness {
     private Publish instance;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         instance = pubnub.publish();
         wireMockRule.start();

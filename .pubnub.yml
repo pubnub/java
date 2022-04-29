@@ -1,9 +1,9 @@
 name: java
-version: v5.2.3
+version: 6.0.0
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-5.2.3-all.jar
+  - build/libs/pubnub-gson-6.0.0-all.jar
 sdks:
   - 
       type: library
@@ -22,9 +22,9 @@ sdks:
           distributions:
             -
               distribution-type: library
-              distribution-repository: git release
-              package-name: pubnub-gson-5.2.3
-              location: https://github.com/pubnub/java/releases/download/v5.2.3/pubnub-gson-5.2.3-all.jar
+              distribution-repository: GitHub
+              package-name: pubnub-gson-6.0.0
+              location: https://github.com/pubnub/java/releases/download/v6.0.0/pubnub-gson-6.0.0-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-5.2.3
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/5.2.3/pubnub-gson-5.2.3.jar
+              package-name: pubnub-gson-6.0.0
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.0.0/pubnub-gson-6.0.0.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,21 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2022-01-12
+    version: v6.0.0
+    changes:
+      - type: improvement
+        text: "BREAKING CHANGES: uuid is required parameter in PNConfiguration constructor."
+  - date: 2021-12-16
+    version: v5.3.0
+    changes:
+      - type: feature
+        text: "Add revoke token feature."
+  - date: 2021-12-09
+    version: v5.2.4
+    changes:
+      - type: bug
+        text: "Emit PNReconnectedCategory in case of successful manual reconnection."
   - date: 2021-11-17
     version: v5.2.3
     changes:
@@ -768,6 +783,7 @@ features:
     - ACCESS-GRANT-TOKEN
     - ACCESS-PARSE-TOKEN
     - ACCESS-SET-TOKEN
+    - ACCESS-REVOKE-TOKEN
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
@@ -783,7 +799,6 @@ features:
     - PUSH-TYPE-APNS
     - PUSH-TYPE-APNS2
     - PUSH-TYPE-FCM
-    - PUSH-TYPE-MPNS
   presence:
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW

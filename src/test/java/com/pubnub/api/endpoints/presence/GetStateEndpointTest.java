@@ -44,7 +44,7 @@ public class GetStateEndpointTest extends TestHarness {
     private GetState partialGetState;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialGetState = pubnub.getPresenceState();
         wireMockRule.start();

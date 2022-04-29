@@ -3,6 +3,7 @@ package com.pubnub.api.workers;
 import com.google.gson.Gson;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.managers.DuplicationManager;
@@ -35,7 +36,7 @@ public class SubscribeMessageWorkerTest {
     private final String authKey = "ak";
 
     @Test
-    public void fileEventUrlContainsAuthQueryParamWhenAuthIsSet() throws InterruptedException {
+    public void fileEventUrlContainsAuthQueryParamWhenAuthIsSet() throws InterruptedException, PubNubException {
         //given
         PNConfiguration config = configWithAuth(config());
         PubNub pubnub = new PubNub(config);
@@ -63,7 +64,7 @@ public class SubscribeMessageWorkerTest {
     }
 
     @Test
-    public void fileEventUrlContainsNoQueryParamsWhenNoSecretNorAuth() throws InterruptedException {
+    public void fileEventUrlContainsNoQueryParamsWhenNoSecretNorAuth() throws InterruptedException, PubNubException {
         //given
         PNConfiguration config = config();
         PubNub pubnub = new PubNub(config);
@@ -91,7 +92,7 @@ public class SubscribeMessageWorkerTest {
     }
 
     @Test
-    public void fileEventUrlContainsSignatureQueryParamWhenSecretIsSet() throws InterruptedException {
+    public void fileEventUrlContainsSignatureQueryParamWhenSecretIsSet() throws InterruptedException, PubNubException {
         //given
         PNConfiguration config = configWithSecret(config());
         PubNub pubnub = new PubNub(config);
@@ -118,7 +119,7 @@ public class SubscribeMessageWorkerTest {
     }
 
     @Test
-    public void fileEventUrlContainsSignatureAndAuthQueryParamsWhenAuthAndSecretAreSet() throws InterruptedException {
+    public void fileEventUrlContainsSignatureAndAuthQueryParamsWhenAuthAndSecretAreSet() throws InterruptedException, PubNubException {
         //given
         PNConfiguration config = configWithAuth(configWithSecret(config()));
         PubNub pubnub = new PubNub(config);
@@ -172,8 +173,8 @@ public class SubscribeMessageWorkerTest {
         );
     }
 
-    private PNConfiguration config() {
-        PNConfiguration config = new PNConfiguration();
+    private PNConfiguration config() throws PubNubException {
+        PNConfiguration config = new PNConfiguration(PubNub.generateUUID());
         config.setPublishKey("pk");
         config.setSubscribeKey("ck");
         return config;

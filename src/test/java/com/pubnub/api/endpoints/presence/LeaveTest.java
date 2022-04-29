@@ -36,7 +36,7 @@ public class LeaveTest extends TestHarness {
     private PubNub pubnub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         RetrofitManager retrofitManager = new RetrofitManager(pubnub);
         instance = new Leave(pubnub, null, retrofitManager, new TokenManager());

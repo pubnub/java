@@ -13,8 +13,8 @@ public class PubNubTest {
     private PNConfiguration pnConfiguration;
 
     @Before
-    public void beforeEach() throws IOException {
-        pnConfiguration = new PNConfiguration();
+    public void beforeEach() throws IOException, PubNubException {
+        pnConfiguration = new PNConfiguration(PubNub.generateUUID());
         pnConfiguration.setSubscribeKey("demo");
         pnConfiguration.setPublishKey("demo");
         pnConfiguration.setUseRandomInitializationVector(false);
@@ -99,7 +99,7 @@ public class PubNubTest {
         pubnub = new PubNub(pnConfiguration);
         String version = pubnub.getVersion();
         int timeStamp = pubnub.getTimestamp();
-        Assert.assertEquals("5.2.3", version);
+        Assert.assertEquals("6.0.0", version);
         Assert.assertTrue(timeStamp > 0);
     }
 

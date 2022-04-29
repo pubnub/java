@@ -184,6 +184,7 @@ public class TelemetryManager {
                 endpoint = "obj";
                 break;
             case PNAccessManagerGrantToken:
+            case PNAccessManagerRevokeToken:
                 endpoint = "pamv3";
                 break;
             case PNAddMessageAction:

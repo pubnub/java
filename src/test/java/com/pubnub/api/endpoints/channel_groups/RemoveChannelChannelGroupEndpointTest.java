@@ -36,7 +36,7 @@ public class RemoveChannelChannelGroupEndpointTest extends TestHarness {
     private PubNub pubnub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialRemoveChannelChannelGroup = pubnub.removeChannelsFromChannelGroup();
         wireMockRule.start();

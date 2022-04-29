@@ -26,7 +26,7 @@ public class DeleteMessagesEndpointTest extends TestHarness {
     private PubNub pubnub;
 
     @Before
-    public void beforeEach() throws IOException {
+    public void beforeEach() throws IOException, PubNubException {
         pubnub = this.createPubNubInstance();
         partialHistory = pubnub.deleteMessages();
         wireMockRule.start();
