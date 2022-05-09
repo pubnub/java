@@ -128,8 +128,14 @@ public abstract class BaseIntegrationTest {
         client.forceDestroy();
     }
 
-    protected PNConfiguration getBasicPnConfiguration() throws PubNubException {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+    protected PNConfiguration getBasicPnConfiguration()  {
+        final PNConfiguration pnConfiguration;
+        try {
+            pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+            pnConfiguration.setUuid("client-".concat(UUID.randomUUID().toString()));
+        } catch (PubNubException e) {
+            throw new RuntimeException(e);
+        }
         if (!needsServer()) {
             pnConfiguration.setSubscribeKey(SUB_KEY);
             pnConfiguration.setPublishKey(PUB_KEY);
@@ -140,18 +146,22 @@ public abstract class BaseIntegrationTest {
         }
         pnConfiguration.setLogVerbosity(PNLogVerbosity.NONE);
         pnConfiguration.setHttpLoggingInterceptor(createInterceptor());
-        pnConfiguration.setUuid("client-".concat(UUID.randomUUID().toString()));
         return pnConfiguration;
     }
 
-    private PNConfiguration getServerPnConfiguration() throws PubNubException {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+    private PNConfiguration getServerPnConfiguration(){
+        final PNConfiguration pnConfiguration;
+        try {
+            pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+            pnConfiguration.setUuid("server-".concat(UUID.randomUUID().toString()));
+        } catch (PubNubException e) {
+            throw new RuntimeException(e);
+        }
         pnConfiguration.setSubscribeKey(PAM_SUB_KEY);
         pnConfiguration.setPublishKey(PAM_PUB_KEY);
         pnConfiguration.setSecretKey(PAM_SEC_KEY);
         pnConfiguration.setLogVerbosity(PNLogVerbosity.NONE);
         pnConfiguration.setHttpLoggingInterceptor(createInterceptor());
-        pnConfiguration.setUuid("server-".concat(UUID.randomUUID().toString()));
         return pnConfiguration;
     }
 

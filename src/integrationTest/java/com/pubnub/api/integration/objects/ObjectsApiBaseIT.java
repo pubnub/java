@@ -2,6 +2,7 @@ package com.pubnub.api.integration.objects;
 
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.integration.util.ITTestConfig;
 import org.aeonbits.owner.ConfigFactory;
@@ -18,7 +19,12 @@ public abstract class ObjectsApiBaseIT {
     protected final PubNub pubNubUnderTest = pubNub();
 
     private PubNub pubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        PNConfiguration pnConfiguration;
+        try {
+            pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        } catch (PubNubException e) {
+            throw new RuntimeException(e);
+        }
         pnConfiguration.setSubscribeKey(itTestConfig.subscribeKey());
         pnConfiguration.setLogVerbosity(PNLogVerbosity.BODY);
 

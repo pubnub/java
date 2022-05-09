@@ -211,3 +211,4 @@ test {
 
 
 build.finalizedBy(shadowJar)
+build.dependsOn compileIntegrationTestJava
