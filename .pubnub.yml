@@ -238,7 +238,7 @@ changelog:
     version: v6.0.1
     changes:
       - type: bug
-        text: "It prevents race condition between these two calls and "phantom" join after leave ."
+        text: "Do heartbeat and leave calls sequentially to prevent race condition between these two calls and 'phantom' join after leave."
   - date: 2022-01-12
     version: v6.0.0
     changes:
