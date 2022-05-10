@@ -1,3 +1,9 @@
+## v6.0.1
+May 09 2022
+
+#### Fixed
+- Do heartbeat and leave calls sequentially to prevent race condition between these two calls and 'phantom' join after leave.
+
 ## v6.0.0
 January 12 2022
 

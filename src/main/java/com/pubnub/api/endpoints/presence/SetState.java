@@ -104,7 +104,7 @@ public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> 
 
         String channelCSV = channels.size() > 0 ? PubNubUtil.joinString(channels, ",") : ",";
 
-        return this.getRetrofit().getPresenceService().setState(
+        return this.getRetrofit().getExtendedPresenceService().setState(
                 this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);
     }
 

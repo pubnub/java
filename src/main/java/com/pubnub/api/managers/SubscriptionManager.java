@@ -189,6 +189,8 @@ public class SubscriptionManager {
     }
 
     public void adaptUnsubscribeBuilder(UnsubscribeOperation unsubscribeOperation) {
+        reconnect(unsubscribeOperation);
+
         if (!this.pubnub.getConfiguration().isSuppressLeaveEvents()) {
             new Leave(pubnub, this.telemetryManager, this.retrofitManager, tokenManager)
                     .channels(unsubscribeOperation.getChannels())
@@ -205,8 +207,6 @@ public class SubscriptionManager {
                         }
                     });
         }
-
-        reconnect(unsubscribeOperation);
     }
 
     private synchronized void registerHeartbeatTimer(PubSubOperation pubSubOperation) {
@@ -232,6 +232,10 @@ public class SubscriptionManager {
         if (timer != null) {
             timer.cancel();
             timer = null;
+        }
+        if (heartbeatCall != null) {
+            heartbeatCall.silentCancel();
+            heartbeatCall = null;
         }
     }
 
