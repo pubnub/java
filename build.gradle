@@ -53,7 +53,7 @@ dependencies {
     // compile group: 'com.squareup.retrofit2', name: 'converter-jackson', version:'2.1.0'
 
     // gson
-    api 'com.google.code.gson:gson:2.8.6'
+    api 'com.google.code.gson:gson:2.9.0'
     implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.6.2'
 
     // cbor
