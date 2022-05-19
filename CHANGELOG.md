@@ -1,3 +1,9 @@
+## v6.0.2
+May 19 2022
+
+#### Fixed
+- Upgraded gson to 2.9.0 to make SDK working under Java 17.
+
 ## v6.0.1
 May 09 2022
 
