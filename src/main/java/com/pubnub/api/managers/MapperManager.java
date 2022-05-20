@@ -49,6 +49,7 @@ public class MapperManager {
                 .registerTypeAdapter(boolean.class, booleanAsIntAdapter)
                 .registerTypeAdapter(JSONObject.class, new JSONObjectAdapter())
                 .registerTypeAdapter(JSONArray.class, new JSONArrayAdapter())
+                .disableHtmlEscaping()
                 .create();
         this.converterFactory = GsonConverterFactory.create(this.getObjectMapper());
     }
