@@ -1,7 +1,6 @@
 package com.pubnub.api;
 
 import lombok.Getter;
-import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_USERID_NULL_OR_EMPTY;
