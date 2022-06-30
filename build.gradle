@@ -77,6 +77,7 @@ dependencies {
     testImplementation group: 'io.cucumber', name: 'cucumber-picocontainer', version: '6.10.4'
     testImplementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.8'
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
 task integrationTest(type: Test) {
@@ -206,6 +207,7 @@ task cucumber(type: Test) {
 }
 
 test {
+    useJUnitPlatform()
     exclude '**/contract/*.class'
 }
 

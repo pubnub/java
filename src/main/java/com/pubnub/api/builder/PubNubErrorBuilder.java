@@ -710,6 +710,11 @@ public final class PubNubErrorBuilder {
             .message("Uuid can't be null nor empty.")
             .build();
 
+    public static final PubNubError PNERROBJ_USERID_NULL_OR_EMPTY = PubNubError.builder()
+            .errorCode(PNERR_UUID_NULL_OR_EMPTY)
+            .message("UserId can't be null nor empty.")
+            .build();
+
     private PubNubErrorBuilder() {
 
     }

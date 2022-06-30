@@ -34,10 +34,9 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 2. Configure your keys:
 
     ```java
-    PNConfiguration pnConfiguration = new PNConfiguration();
+    PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUserId"));
     pnConfiguration.setSubscribeKey("mySubscribeKey");
     pnConfiguration.setPublishKey("myPublishKey");
-    pnConfiguration.setUuid("myUniqueUUID");
     
     PubNub pubnub = new PubNub(pnConfiguration);
     ```
