@@ -13,6 +13,7 @@ import com.pubnub.api.endpoints.Time;
 import com.pubnub.api.endpoints.access.Grant;
 import com.pubnub.api.endpoints.access.GrantToken;
 import com.pubnub.api.endpoints.access.RevokeToken;
+import com.pubnub.api.endpoints.access.builder.GrantTokenBuilder;
 import com.pubnub.api.endpoints.channel_groups.AddChannelChannelGroup;
 import com.pubnub.api.endpoints.channel_groups.AllChannelsChannelGroup;
 import com.pubnub.api.endpoints.channel_groups.DeleteChannelGroup;
@@ -237,9 +238,17 @@ public class PubNub {
         return new Grant(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    /**
+     * @deprecated Use {@link #grantToken(Integer)} instead.
+     */
     @NotNull
-    public GrantToken grantToken() {
-        return new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    public GrantTokenBuilder.General grantToken() {
+        return new GrantTokenBuilder.General(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager));
+    }
+
+    @NotNull
+    public GrantTokenBuilder.General grantToken(Integer ttl) {
+        return new GrantTokenBuilder.General(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager)).ttl(ttl);
     }
 
     @NotNull
