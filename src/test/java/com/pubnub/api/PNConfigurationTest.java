@@ -1,6 +1,5 @@
 package com.pubnub.api;
 
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,12 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PNConfigurationTest {
 
     @Test
+    void should_set_uuid_creating_PNConfiguration() throws PubNubException {
+        String userId01value = "userId01";
+        PNConfiguration pnConfiguration = new PNConfiguration(new UserId(userId01value));
+
+        assertEquals(userId01value, pnConfiguration.getUuid());
+    }
+
+    @Test
     void can_setUserId() throws PubNubException {
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("userId01"));
         UserId newUserId = new UserId("newUserId");
         pnConfiguration.setUserId(newUserId);
 
-        assertEquals(newUserId.getValue(), pnConfiguration.getUserId().getValue() );
+        assertEquals(newUserId.getValue(), pnConfiguration.getUserId().getValue());
     }
 
     @Test
