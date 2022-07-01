@@ -136,6 +136,9 @@ public class PubNub {
         instanceId = UUID.randomUUID().toString();
     }
 
+    /**
+     * @deprecated
+     */
     @NotNull
     public static String generateUUID() {
         return "pn-" + UUID.randomUUID();
