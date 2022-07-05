@@ -110,8 +110,6 @@ public class PNConfiguration {
         this.uuid = uuid;
     }
 
-    private UserId userId;
-
     public UserId getUserId() throws PubNubException {
         return new UserId(this.uuid);
     }
