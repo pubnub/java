@@ -242,13 +242,13 @@ public class PubNub {
      * @deprecated Use {@link #grantToken(Integer)} instead.
      */
     @NotNull
-    public GrantTokenBuilder.General grantToken() {
-        return new GrantTokenBuilder.General(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager));
+    public GrantTokenBuilder grantToken() {
+        return new GrantTokenBuilder(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager));
     }
 
     @NotNull
-    public GrantTokenBuilder.General grantToken(Integer ttl) {
-        return new GrantTokenBuilder.General(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager)).ttl(ttl);
+    public GrantTokenBuilder grantToken(Integer ttl) {
+        return new GrantTokenBuilder(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager)).ttl(ttl);
     }
 
     @NotNull
