@@ -17,11 +17,6 @@ public class GrantTokenEntitiesBuilder extends AbstractGrantTokenBuilder<GrantTo
         super(grantToken);
     }
 
-    public GrantTokenEntitiesBuilder ttl(Integer ttl) {
-        grantToken.ttl(ttl);
-        return this;
-    }
-
     public GrantTokenEntitiesBuilder meta(Object meta) {
         grantToken.meta(meta);
         return this;
