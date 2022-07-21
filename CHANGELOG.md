@@ -1,3 +1,10 @@
+## v6.1.0
+July 21 2022
+
+#### Added
+- Add support for spaces and users permissions in grantToken.
+- Add userId to PNConfiguration and deprecate uuid .
+
 ## v6.0.2
 May 19 2022
 
