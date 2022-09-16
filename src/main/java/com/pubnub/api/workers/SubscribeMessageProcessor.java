@@ -43,8 +43,7 @@ public class SubscribeMessageProcessor {
     private final int typeObject = 2;
     private final int typeMessageAction = 3;
     public static final int TYPE_FILES = 4;
-
-
+    
     private final PubNub pubnub;
     private final DuplicationManager duplicationManager;
 
