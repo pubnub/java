@@ -2,7 +2,7 @@ package com.pubnub.api.models.server;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
-import com.pubnub.api.workers.SubscribeMessageWorker;
+import com.pubnub.api.workers.SubscribeMessageProcessor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -57,7 +57,7 @@ public class SubscribeMessage {
     private Integer type;
 
     public boolean supportsEncryption() {
-        return type == null || type == SubscribeMessageWorker.TYPE_MESSAGE || type == SubscribeMessageWorker.TYPE_FILES;
+        return type == null || type == SubscribeMessageProcessor.TYPE_MESSAGE || type == SubscribeMessageProcessor.TYPE_FILES;
     }
 
 }

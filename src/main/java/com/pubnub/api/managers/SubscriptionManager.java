@@ -1,14 +1,8 @@
 package com.pubnub.api.managers;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.builder.dto.ChangeTemporaryUnavailableOperation;
+import com.pubnub.api.builder.dto.*;
 import com.pubnub.api.builder.dto.ChangeTemporaryUnavailableOperation.ChangeTemporaryUnavailableOperationBuilder;
-import com.pubnub.api.builder.dto.PresenceOperation;
-import com.pubnub.api.builder.dto.PubSubOperation;
-import com.pubnub.api.builder.dto.StateOperation;
-import com.pubnub.api.builder.dto.SubscribeOperation;
-import com.pubnub.api.builder.dto.TimetokenAndRegionOperation;
-import com.pubnub.api.builder.dto.UnsubscribeOperation;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.ReconnectionCallback;
 import com.pubnub.api.endpoints.presence.Heartbeat;
@@ -19,6 +13,7 @@ import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.server.SubscribeMessage;
+import com.pubnub.api.workers.SubscribeMessageProcessor;
 import com.pubnub.api.workers.SubscribeMessageWorker;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -125,7 +120,7 @@ public class SubscriptionManager {
 
         if (this.pubnub.getConfiguration().isStartSubscriberThread()) {
             consumerThread = new Thread(new SubscribeMessageWorker(
-                    this.pubnub, listenerManager, messageQueue, duplicationManager));
+                    listenerManager, messageQueue, new SubscribeMessageProcessor(this.pubnub, duplicationManager)));
             consumerThread.setName("Subscription Manager Consumer Thread");
             consumerThread.setDaemon(true);
             consumerThread.start();
@@ -260,11 +255,10 @@ public class SubscriptionManager {
 
     /**
      * user is calling subscribe:
-     *
+     * <p>
      * if the state has changed we should restart the subscribe loop
      * if the state hasn't change but the loop is not running we should restart the loop
      * if the state hasn't change and the loop is running fine, we should do nothing
-     *
      */
 
     synchronized void startSubscribeLoop(final PubSubOperation... pubSubOperations) {

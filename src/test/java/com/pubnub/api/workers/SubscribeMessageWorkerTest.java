@@ -16,18 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SubscribeMessageWorkerTest {
@@ -166,10 +156,10 @@ public class SubscribeMessageWorkerTest {
     private SubscribeMessageWorker subscribeMessageWorker(PubNub pubnub,
                                                           ListenerManager listenerManager,
                                                           LinkedBlockingQueue<SubscribeMessage> queue) {
-        return new SubscribeMessageWorker(pubnub,
+        return new SubscribeMessageWorker(
                 listenerManager,
                 queue,
-                new DuplicationManager(pubnub.getConfiguration())
+                new SubscribeMessageProcessor(pubnub, new DuplicationManager(pubnub.getConfiguration()))
         );
     }
 

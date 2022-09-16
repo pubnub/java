@@ -145,6 +145,10 @@ public class MapperManager {
         return (T) fromJson(toJson(object), clazz);
     }
 
+    public JsonElement toJsonTree(Object object) {
+        return objectMapper.toJsonTree(object);
+    }
+
     public String toJson(Object input) throws PubNubException {
         try {
             return this.objectMapper.toJson(input);
