@@ -1,9 +1,9 @@
 name: java
-version: 6.1.0
+version: 6.2.0
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-6.1.0-all.jar
+  - build/libs/pubnub-gson-6.2.0-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: GitHub
-              package-name: pubnub-gson-6.1.0
-              location: https://github.com/pubnub/java/releases/download/v6.1.0/pubnub-gson-6.1.0-all.jar
+              package-name: pubnub-gson-6.2.0
+              location: https://github.com/pubnub/java/releases/download/v6.2.0/pubnub-gson-6.2.0-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-6.1.0
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.1.0/pubnub-gson-6.1.0.jar
+              package-name: pubnub-gson-6.2.0
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.2.0/pubnub-gson-6.2.0.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,11 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2022-09-20
+    version: v6.2.0
+    changes:
+      - type: feature
+        text: "PNFileEventResult has messageJson field with the same JsonElement type as in other events."
   - date: 2022-07-21
     version: v6.1.0
     changes:

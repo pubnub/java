@@ -1,3 +1,9 @@
+## v6.2.0
+September 20 2022
+
+#### Added
+- PNFileEventResult has messageJson field with the same JsonElement type as in other events.
+
 ## v6.1.0
 July 21 2022
 
