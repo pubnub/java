@@ -6,7 +6,8 @@ import org.junit.runner.RunWith
 
 @RunWith(Cucumber::class)
 @CucumberOptions(
-        tags = "not @skip and not @na=ruby and not @beta",
+        features = ["src/test/resources"],
+        tags = "not @skip and not @na=java and not @beta",
         plugin = ["pretty", "summary", "junit:build/reports/cucumber-reports/main.xml"]
 )
 class RunMainCucumberTest

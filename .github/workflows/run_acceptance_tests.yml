@@ -1,4 +1,4 @@
-name: run_acceptance_tests
+name: Acceptance tests
 
 on: [push]
 
@@ -22,6 +22,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
       - name: Run acceptance tests (optional)
         run: |
+          pwd
           export pubKey=somePubKey
           export subKey=someSubKey
           export pamPubKey=somePamPubKey
@@ -29,6 +30,7 @@ jobs:
           export pamSecKey=someSecKey
           export serverHostPort=localhost:8090
           export serverMock=true
+          ln -s /home/runner/work/kotlin/kotlin/sdk-specifications/features src/test/resources/features
           ./gradlew cucumber --tests RunBetaCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
         continue-on-error: true
       - name: Run acceptance tests (required)
@@ -40,6 +42,7 @@ jobs:
           export pamSecKey=someSecKey
           export serverHostPort=localhost:8090
           export serverMock=true
+           ln -s /home/runner/work/kotlin/kotlin/sdk-specifications/features src/test/resources/features
           ./gradlew cucumber --tests RunMainCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
       - name: Expose acceptance tests reports
         uses: actions/upload-artifact@v2

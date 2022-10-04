@@ -26,6 +26,9 @@ interface ContractTestConfig : Config {
 
     @Config.Key("serverMock")
     fun serverMock(): Boolean
+
+    @Config.Key("personasLocation")
+    fun personasLocation(): String
 }
 
 val CONTRACT_TEST_CONFIG: ContractTestConfig = ConfigFactory.create(ContractTestConfig::class.java, System.getenv())

@@ -1,14 +1,13 @@
 package com.pubnub.contract.access.step
 
-import com.pubnub.contract.access.parameter.PermissionType
-import com.pubnub.contract.access.parameter.ResourceType
-import com.pubnub.contract.access.state.GrantTokenState
 import com.pubnub.api.models.consumer.access_manager.v3.ChannelGrant
 import com.pubnub.api.models.consumer.access_manager.v3.ChannelGroupGrant
 import com.pubnub.api.models.consumer.access_manager.v3.PNGrantTokenResult
 import com.pubnub.api.models.consumer.access_manager.v3.UUIDGrant
+import com.pubnub.contract.access.parameter.PermissionType
+import com.pubnub.contract.access.parameter.ResourceType
+import com.pubnub.contract.access.state.GrantTokenState
 import com.pubnub.contract.state.World
-import io.cucumber.java.PendingException
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import kotlin.random.Random

@@ -56,3 +56,4 @@ gradlew.bat
 # GitHub Actions #
 ##################
 .github/.release
+src/test/resources/sdk-specification
