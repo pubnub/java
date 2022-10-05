@@ -30,61 +30,29 @@ class GivenSteps(
     }
 
     @Given("the id for {string} persona")
-    fun the_id_for_Alice_persona(personaName: String) {
-        val pnUUIDMetadata = loadPersona(personaName)  ///"alice.json"  Alice
-
-        //get id
+    fun the_id_for_persona(personaName: String) {
+        val pnUUIDMetadata = loadPersona(personaName)
         val uuidId = pnUUIDMetadata.id
-        //set uuidId in state for getMetadataForAnUUID
         getUUIDMetadataState.id = uuidId
-        removeUUIDMetadataState.id = uuidId  //czy tu tak?
+        removeUUIDMetadataState.id = uuidId
     }
 
-    @Given("current user is 'Bob' persona")
-    fun current_user_is_Bob_persona() {
-        //read bob.json file
-        val personasLocation = CONTRACT_TEST_CONFIG.personasLocation()
-        val bobPersonaAsString = File("$personasLocation/bob.json").readText(Charsets.UTF_8)
-        //convert json to object
-        val pnUUIDMetadata: PNUUIDMetadata = Gson().fromJson(bobPersonaAsString, PNUUIDMetadata::class.java)
+    @Given("current user is {string} persona")
+    fun current_user_is_persona(personaName: String) {
+        val pnUUIDMetadata = loadPersona(personaName)
         val id = pnUUIDMetadata.id
-        // set object state/configuration
         world.configuration.uuid = id
     }
 
-    @Given("current user is 'Alice' persona")
-    fun current_user_is_Alice_persona() {
-        //read alice.json file
-        val personasLocation = CONTRACT_TEST_CONFIG.personasLocation()
-        val bobPersonaAsString = File("$personasLocation/alice.json").readText(Charsets.UTF_8)
-        //convert json to object
-        val pnUUIDMetadata: PNUUIDMetadata = Gson().fromJson(bobPersonaAsString, PNUUIDMetadata::class.java)
+    @Given("the data for {string} persona")
+    fun the_data_for_persona(personaName: String) {
+        val pnUUIDMetadata = loadPersona(personaName)
         val id = pnUUIDMetadata.id
-        // set object state/configuration
-        world.configuration.uuid = id
-    }
-
-    @Given("the data for 'Alice' persona")
-    fun the_data_for_Alice_persona() {
-        //read alice.json file
-        val personasLocation = CONTRACT_TEST_CONFIG.personasLocation()
-        val bobPersonaAsString = File("$personasLocation/alice.json").readText(Charsets.UTF_8)
-        //convert json to object
-        val pnUUIDMetadata: PNUUIDMetadata = Gson().fromJson(bobPersonaAsString, PNUUIDMetadata::class.java)
-        val id = pnUUIDMetadata.id
-        // set data in state object
         setUUIDMetadataState.id = id
         setUUIDMetadataState.pnUUIDMetadata.name = pnUUIDMetadata.name
         setUUIDMetadataState.pnUUIDMetadata.email = pnUUIDMetadata.email
         setUUIDMetadataState.pnUUIDMetadata.externalId = pnUUIDMetadata.externalId
         setUUIDMetadataState.pnUUIDMetadata.profileUrl = pnUUIDMetadata.profileUrl
         setUUIDMetadataState.pnUUIDMetadata.custom = pnUUIDMetadata.custom
-    }
-
-    private fun loadPersona(personaName: String): PNUUIDMetadata {
-        val fileName = personaName.toLowerCase() + ".json"
-        val personasLocation = CONTRACT_TEST_CONFIG.personasLocation()
-        val personaAsString = File("$personasLocation/$fileName").readText(Charsets.UTF_8)
-        return Gson().fromJson(personaAsString, PNUUIDMetadata::class.java)
     }
 }

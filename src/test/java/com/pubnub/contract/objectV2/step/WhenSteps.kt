@@ -19,7 +19,6 @@ class WhenSteps(
 
     @When("I get the UUID metadata")
     fun I_get_the_UUID_metadata() {
-        //call getUUIDMetadata()
         getUUIDMetadataState.result = world.pubnub.getUUIDMetadata()
             .uuid(getUUIDMetadataState.id)
             .includeCustom(false)
@@ -29,7 +28,6 @@ class WhenSteps(
 
     @When("I get the UUID metadata with custom for current user")
     fun I_get_the_UUID_metadata_with_custom_for_current_user() {
-        //call getUUIDMetadata()
         getUUIDMetadataState.result = world.pubnub.getUUIDMetadata()
             .includeCustom(true)
             .sync()
