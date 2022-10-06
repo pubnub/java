@@ -27,7 +27,7 @@ interface ContractTestConfig : Config {
     @Config.Key("serverMock")
     fun serverMock(): Boolean
 
-    @Config.Key("personasLocation")
+    @Config.Key("dataFileLocation")
     fun dataFileLocation(): String
 }
 

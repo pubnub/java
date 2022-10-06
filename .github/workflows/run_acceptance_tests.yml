@@ -29,6 +29,7 @@ jobs:
           export pamSecKey=someSecKey
           export serverHostPort=localhost:8090
           export serverMock=true
+          export dataFileLocation=src/test/resources/sdk-specifications/features/data
           ln -s /home/runner/work/java/java/sdk-specifications src/test/resources/sdk-specifications
           ./gradlew cucumber --tests RunBetaCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
         continue-on-error: true
@@ -41,6 +42,7 @@ jobs:
           export pamSecKey=someSecKey
           export serverHostPort=localhost:8090
           export serverMock=true
+          export dataFileLocation=src/test/resources/sdk-specifications/features/data
            ln -s /home/runner/work/java/java/sdk-specifications src/test/resources/sdk-specifications
           ./gradlew cucumber --tests RunMainCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
       - name: Expose acceptance tests reports
