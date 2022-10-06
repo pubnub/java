@@ -1,4 +1,4 @@
-package com.pubnub.contract.objectV2.step
+package com.pubnub.contract.objectV2.uuidmetadata.step
 
 import com.google.gson.Gson
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadata

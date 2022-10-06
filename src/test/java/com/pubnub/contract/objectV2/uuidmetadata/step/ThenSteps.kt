@@ -1,9 +1,9 @@
-package com.pubnub.contract.objectV2.step
+package com.pubnub.contract.objectV2.uuidmetadata.step
 
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadata
-import com.pubnub.contract.objectV2.state.GetAllUUIDMetadataState
-import com.pubnub.contract.objectV2.state.GetUUIDMetadataState
-import com.pubnub.contract.objectV2.state.SetUUIDMetadataState
+import com.pubnub.contract.objectV2.uuidmetadata.state.GetAllUUIDMetadataState
+import com.pubnub.contract.objectV2.uuidmetadata.state.GetUUIDMetadataState
+import com.pubnub.contract.objectV2.uuidmetadata.state.SetUUIDMetadataState
 import com.pubnub.contract.state.World
 import io.cucumber.java.en.Then
 import org.hamcrest.MatcherAssert.assertThat
