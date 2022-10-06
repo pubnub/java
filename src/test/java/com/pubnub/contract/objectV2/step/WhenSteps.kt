@@ -21,7 +21,6 @@ class WhenSteps(
     fun I_get_the_UUID_metadata() {
         getUUIDMetadataState.result = world.pubnub.getUUIDMetadata()
             .uuid(getUUIDMetadataState.id)
-            .includeCustom(false)
             .sync()
         world.responseStatus = getUUIDMetadataState.result?.status
     }
@@ -57,18 +56,13 @@ class WhenSteps(
 
     @When("I remove the UUID metadata for current user")
     fun I_remove_the_UUID_metadata_for_current_user() {
-        removeUUIDMetadataState.result = world.pubnub.removeUUIDMetadata()
-            .sync()
+        removeUUIDMetadataState.result = world.pubnub.removeUUIDMetadata().sync()
         world.responseStatus = removeUUIDMetadataState.result?.status
     }
 
     @When("I get all UUID metadata")
     fun I_get_all_UUID_metadata() {
-        getAllUUIDMetadataState.result = world.pubnub.getAllUUIDMetadata()
-            .includeCustom(false)
-            .includeTotalCount(true)
-            .limit(3)
-            .sync()
+        getAllUUIDMetadataState.result = world.pubnub.getAllUUIDMetadata().sync()
         world.responseStatus = getAllUUIDMetadataState.result?.status
     }
 
@@ -76,8 +70,6 @@ class WhenSteps(
     fun I_get_all_UUID_metadata_with_custom() {
         getAllUUIDMetadataState.result = world.pubnub.getAllUUIDMetadata()
             .includeCustom(true)
-            .includeTotalCount(true)
-            .limit(3)
             .sync()
         world.responseStatus = getAllUUIDMetadataState.result?.status
     }

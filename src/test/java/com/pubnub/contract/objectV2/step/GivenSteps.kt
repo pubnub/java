@@ -1,7 +1,5 @@
 package com.pubnub.contract.objectV2.step
 
-import com.google.gson.Gson
-import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadata
 import com.pubnub.contract.CONTRACT_TEST_CONFIG
 import com.pubnub.contract.objectV2.state.GetUUIDMetadataState
 import com.pubnub.contract.objectV2.state.RemoveUUIDMetadataState
@@ -10,7 +8,6 @@ import com.pubnub.contract.state.World
 import io.cucumber.java.en.Given
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import java.io.File
 
 class GivenSteps(
     private val getUUIDMetadataState: GetUUIDMetadataState,
@@ -31,7 +28,7 @@ class GivenSteps(
 
     @Given("the id for {string} persona")
     fun the_id_for_persona(personaName: String) {
-        val pnUUIDMetadata = loadPersona(personaName)
+        val pnUUIDMetadata = loadPersonaUUIDMetadata(personaName)
         val uuidId = pnUUIDMetadata.id
         getUUIDMetadataState.id = uuidId
         removeUUIDMetadataState.id = uuidId
@@ -39,14 +36,14 @@ class GivenSteps(
 
     @Given("current user is {string} persona")
     fun current_user_is_persona(personaName: String) {
-        val pnUUIDMetadata = loadPersona(personaName)
+        val pnUUIDMetadata = loadPersonaUUIDMetadata(personaName)
         val id = pnUUIDMetadata.id
         world.configuration.uuid = id
     }
 
     @Given("the data for {string} persona")
     fun the_data_for_persona(personaName: String) {
-        val pnUUIDMetadata = loadPersona(personaName)
+        val pnUUIDMetadata = loadPersonaUUIDMetadata(personaName)
         val id = pnUUIDMetadata.id
         setUUIDMetadataState.id = id
         setUUIDMetadataState.pnUUIDMetadata.name = pnUUIDMetadata.name

@@ -28,7 +28,7 @@ interface ContractTestConfig : Config {
     fun serverMock(): Boolean
 
     @Config.Key("personasLocation")
-    fun personasLocation(): String
+    fun dataFileLocation(): String
 }
 
 val CONTRACT_TEST_CONFIG: ContractTestConfig = ConfigFactory.create(ContractTestConfig::class.java, System.getenv())

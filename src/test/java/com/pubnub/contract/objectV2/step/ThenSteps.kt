@@ -6,6 +6,8 @@ import com.pubnub.contract.objectV2.state.GetUUIDMetadataState
 import com.pubnub.contract.objectV2.state.SetUUIDMetadataState
 import com.pubnub.contract.state.World
 import io.cucumber.java.en.Then
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.junit.Assert.assertEquals
 
 class ThenSteps(
@@ -23,59 +25,26 @@ class ThenSteps(
 
     @Then("the UUID metadata for {string} persona")
     fun the_UUID_metadata_for_persona(personaName: String) {
-        val expectedPNUUIDMetadata: PNUUIDMetadata = loadPersona(personaName)
+        val expectedPNUUIDMetadata: PNUUIDMetadata = loadPersonaUUIDMetadata(personaName)
         val actualPNUUIDMetadata = getUUIDMetadataState.result!!.data
 
-        assertEquals(expectedPNUUIDMetadata.id, actualPNUUIDMetadata.id)
-        assertEquals(expectedPNUUIDMetadata.name, actualPNUUIDMetadata.name)
-        assertEquals(expectedPNUUIDMetadata.email, actualPNUUIDMetadata.email)
-        assertEquals(expectedPNUUIDMetadata.externalId, actualPNUUIDMetadata.externalId)
-        assertEquals(expectedPNUUIDMetadata.profileUrl, actualPNUUIDMetadata.profileUrl)
-        assertEquals(expectedPNUUIDMetadata.custom, actualPNUUIDMetadata.custom)
-        assertEquals(expectedPNUUIDMetadata.updated, actualPNUUIDMetadata.updated)
-        assertEquals(expectedPNUUIDMetadata.eTag, actualPNUUIDMetadata.eTag)
+        assertEquals(expectedPNUUIDMetadata, actualPNUUIDMetadata)
     }
 
     @Then("the UUID metadata for {string} persona contains updated")
     fun the_UUID_metadata_for_persona_contains_updated(personaName: String) {
-        val expectedPNUUIDMetadata: PNUUIDMetadata = loadPersona(personaName)
+        val expectedPNUUIDMetadata: PNUUIDMetadata = loadPersonaUUIDMetadata(personaName)
 
         val actualPNUUIDMetadata = setUUIDMetadataState.result!!.data
 
-        assertEquals(expectedPNUUIDMetadata.id, actualPNUUIDMetadata.id)
-        assertEquals(expectedPNUUIDMetadata.name, actualPNUUIDMetadata.name)
-        assertEquals(expectedPNUUIDMetadata.email, actualPNUUIDMetadata.email)
-        assertEquals(expectedPNUUIDMetadata.externalId, actualPNUUIDMetadata.externalId)
-        assertEquals(expectedPNUUIDMetadata.profileUrl, actualPNUUIDMetadata.profileUrl)
-        assertEquals(expectedPNUUIDMetadata.custom, actualPNUUIDMetadata.custom)
-        assertEquals(expectedPNUUIDMetadata.updated, actualPNUUIDMetadata.updated)
-        assertEquals(expectedPNUUIDMetadata.eTag, actualPNUUIDMetadata.eTag)
+        assertEquals(expectedPNUUIDMetadata, actualPNUUIDMetadata)
     }
 
     @Then("the UUID metadata for {string} and {string} persona")
     fun the_UUID_metadata_for_first_and_second_persona(persona01Name: String, persona02Name: String) {
-        val expectedPNUUIDMetadataForAlice: PNUUIDMetadata = loadPersona(persona01Name)
-        val expectedPNUUIDMetadataForJames: PNUUIDMetadata = loadPersona(persona02Name)
+        val expectedPNUUIDMetadataForFirstPersona: PNUUIDMetadata = loadPersonaUUIDMetadata(persona01Name)
+        val expectedPNUUIDMetadataForSecondPersona: PNUUIDMetadata = loadPersonaUUIDMetadata(persona02Name)
 
-        val actualPNUUIDMetadataForFirstPersona = getAllUUIDMetadataState.result!!.data[0]
-        val actualPNUUIDMetadataForSecondPersona = getAllUUIDMetadataState.result!!.data[1]
-
-        assertEquals(expectedPNUUIDMetadataForAlice.id, actualPNUUIDMetadataForFirstPersona.id)
-        assertEquals(expectedPNUUIDMetadataForAlice.name, actualPNUUIDMetadataForFirstPersona.name)
-        assertEquals(expectedPNUUIDMetadataForAlice.email, actualPNUUIDMetadataForFirstPersona.email)
-        assertEquals(expectedPNUUIDMetadataForAlice.externalId, actualPNUUIDMetadataForFirstPersona.externalId)
-        assertEquals(expectedPNUUIDMetadataForAlice.profileUrl, actualPNUUIDMetadataForFirstPersona.profileUrl)
-        assertEquals(expectedPNUUIDMetadataForAlice.custom, actualPNUUIDMetadataForFirstPersona.custom)
-        assertEquals(expectedPNUUIDMetadataForAlice.updated, actualPNUUIDMetadataForFirstPersona.updated)
-        assertEquals(expectedPNUUIDMetadataForAlice.eTag, actualPNUUIDMetadataForFirstPersona.eTag)
-
-        assertEquals(expectedPNUUIDMetadataForJames.id, actualPNUUIDMetadataForSecondPersona.id)
-        assertEquals(expectedPNUUIDMetadataForJames.name, actualPNUUIDMetadataForSecondPersona.name)
-        assertEquals(expectedPNUUIDMetadataForJames.email, actualPNUUIDMetadataForSecondPersona.email)
-        assertEquals(expectedPNUUIDMetadataForJames.externalId, actualPNUUIDMetadataForSecondPersona.externalId)
-        assertEquals(expectedPNUUIDMetadataForJames.profileUrl, actualPNUUIDMetadataForSecondPersona.profileUrl)
-        assertEquals(expectedPNUUIDMetadataForJames.custom, actualPNUUIDMetadataForSecondPersona.custom)
-        assertEquals(expectedPNUUIDMetadataForJames.updated, actualPNUUIDMetadataForSecondPersona.updated)
-        assertEquals(expectedPNUUIDMetadataForJames.eTag, actualPNUUIDMetadataForSecondPersona.eTag)
+        assertThat(getAllUUIDMetadataState.result!!.data, Matchers.containsInAnyOrder(expectedPNUUIDMetadataForFirstPersona, expectedPNUUIDMetadataForSecondPersona))
     }
 }
