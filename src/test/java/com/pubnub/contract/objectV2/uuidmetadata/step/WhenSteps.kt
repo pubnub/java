@@ -19,59 +19,65 @@ class WhenSteps(
 
     @When("I get the UUID metadata")
     fun I_get_the_UUID_metadata() {
-        getUUIDMetadataState.result = world.pubnub.getUUIDMetadata()
+        val pnGetUUIDMetadataResult = world.pubnub.getUUIDMetadata()
             .uuid(getUUIDMetadataState.id)
             .sync()
-        world.responseStatus = getUUIDMetadataState.result?.status
+        getUUIDMetadataState.result = pnGetUUIDMetadataResult
+        world.responseStatus = pnGetUUIDMetadataResult?.status
     }
 
     @When("I get the UUID metadata with custom for current user")
     fun I_get_the_UUID_metadata_with_custom_for_current_user() {
-        getUUIDMetadataState.result = world.pubnub.getUUIDMetadata()
+        val pnGetUUIDMetadataResult = world.pubnub.getUUIDMetadata()
             .includeCustom(true)
             .sync()
-        world.responseStatus = getUUIDMetadataState.result?.status
+        getUUIDMetadataState.result = pnGetUUIDMetadataResult
+        world.responseStatus = pnGetUUIDMetadataResult?.status
     }
 
 
     @When("I set the UUID metadata")
     fun I_set_the_UUID_metadata() {
-        setUUIDMetadataState.result = world.pubnub.setUUIDMetadata()
+        val pnSetUUIDMetadataResult = world.pubnub.setUUIDMetadata()
             .uuid(setUUIDMetadataState.id)
             .name(setUUIDMetadataState.pnUUIDMetadata.name)
             .email(setUUIDMetadataState.pnUUIDMetadata.email)
             .profileUrl(setUUIDMetadataState.pnUUIDMetadata.profileUrl)
             .externalId(setUUIDMetadataState.pnUUIDMetadata.externalId)
             .sync()
-        world.responseStatus = setUUIDMetadataState.result?.status
+        setUUIDMetadataState.result = pnSetUUIDMetadataResult
+        world.responseStatus = pnSetUUIDMetadataResult?.status
     }
 
     @When("I remove the UUID metadata")
     fun I_remove_the_UUID_metadata() {
-        removeUUIDMetadataState.result = world.pubnub.removeUUIDMetadata()
+        val pnRemoveUUIDMetadataResult = world.pubnub.removeUUIDMetadata()
             .uuid(removeUUIDMetadataState.id)
             .sync()
-        world.responseStatus = removeUUIDMetadataState.result?.status
+        removeUUIDMetadataState.result = pnRemoveUUIDMetadataResult
+        world.responseStatus = pnRemoveUUIDMetadataResult?.status
     }
 
     @When("I remove the UUID metadata for current user")
     fun I_remove_the_UUID_metadata_for_current_user() {
-        removeUUIDMetadataState.result = world.pubnub.removeUUIDMetadata().sync()
-        world.responseStatus = removeUUIDMetadataState.result?.status
+        val pnRemoveUUIDMetadataResult = world.pubnub.removeUUIDMetadata().sync()
+        removeUUIDMetadataState.result = pnRemoveUUIDMetadataResult
+        world.responseStatus = pnRemoveUUIDMetadataResult?.status
     }
 
     @When("I get all UUID metadata")
     fun I_get_all_UUID_metadata() {
-        getAllUUIDMetadataState.result = world.pubnub.getAllUUIDMetadata().sync()
-        world.responseStatus = getAllUUIDMetadataState.result?.status
+        val pnGetAllUUIDMetadataResult = world.pubnub.getAllUUIDMetadata().sync()
+        getAllUUIDMetadataState.result = pnGetAllUUIDMetadataResult
+        world.responseStatus = pnGetAllUUIDMetadataResult?.status
     }
 
     @When("I get all UUID metadata with custom")
     fun I_get_all_UUID_metadata_with_custom() {
-        getAllUUIDMetadataState.result = world.pubnub.getAllUUIDMetadata()
+        val pnGetAllUUIDMetadataResult = world.pubnub.getAllUUIDMetadata()
             .includeCustom(true)
             .sync()
-        world.responseStatus = getAllUUIDMetadataState.result?.status
+        getAllUUIDMetadataState.result = pnGetAllUUIDMetadataResult
+        world.responseStatus = pnGetAllUUIDMetadataResult?.status
     }
-
 }

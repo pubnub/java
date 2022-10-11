@@ -43,6 +43,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
     private final String randomChannelMetadataId = randomChannelMetadataIds.get(0);
 
     private final String randomDescription = randomDescription();
+    private final String STATUS = "active";
+    private final String TYPE = "chat";
 
     private final List<PNSetChannelMetadataResult> createdChannelMetadataList = new ArrayList<>();
 
@@ -56,6 +58,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
                 .description(randomDescription)
                 .custom(customChannelObject())
                 .includeCustom(true)
+                .status(STATUS)
+                .type(TYPE)
                 .sync();
 
         //then
@@ -66,6 +70,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
         assertEquals(setChannelMetadataResult.getData().getDescription(),
                 setChannelMetadataResult.getData().getDescription());
         assertNotNull(setChannelMetadataResult.getData().getCustom());
+        assertEquals(STATUS, setChannelMetadataResult.getData().getStatus());
+        assertEquals(TYPE, setChannelMetadataResult.getData().getType());
     }
 
     @Test
@@ -76,6 +82,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
                 .description(randomDescription)
                 .custom(customChannelObject())
                 .includeCustom(true)
+                .status(STATUS)
+                .type(TYPE)
                 .sync();
         createdChannelMetadataList.add(setChannelMetadataResult);
 
@@ -94,6 +102,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
         assertEquals(setChannelMetadataResult.getData().getDescription(),
                 getChannelMetadataResult.getData().getDescription());
         assertNotNull(setChannelMetadataResult.getData().getCustom());
+        assertEquals(STATUS, setChannelMetadataResult.getData().getStatus());
+        assertEquals(TYPE, setChannelMetadataResult.getData().getType());
     }
 
     @Test
@@ -188,6 +198,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
                 .description(randomDescription)
                 .custom(customChannelObject())
                 .includeCustom(true)
+                .status(STATUS)
+                .type(TYPE)
                 .sync();
         createdChannelMetadataList.add(setChannelMetadataResult);
 

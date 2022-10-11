@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 public class PNChannelMetadata extends PNObject {
     private String name;
     private String description;
+    private String type;
+    private String status;
 
     public PNChannelMetadata(String id, String name, String description) {
         super(id);

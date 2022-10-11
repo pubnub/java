@@ -13,8 +13,8 @@ import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadata;
 import com.pubnub.api.models.consumer.objects_api.channel.PNSetChannelMetadataResult;
-import com.pubnub.api.models.server.objects_api.SetChannelMetadataPayload;
 import com.pubnub.api.models.server.objects_api.EntityEnvelope;
+import com.pubnub.api.models.server.objects_api.SetChannelMetadataPayload;
 import lombok.AllArgsConstructor;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -39,6 +39,10 @@ public abstract class SetChannelMetadata
     public abstract SetChannelMetadata name(String name);
 
     public abstract SetChannelMetadata custom(Map<String, Object> custom);
+
+    public abstract SetChannelMetadata status(String status);
+
+    public abstract SetChannelMetadata type(String status);
 
     public static Builder builder(final PubNub pubnubInstance,
                                   final TelemetryManager telemetry,
@@ -69,6 +73,8 @@ final class SetChannelMetadataCommand extends SetChannelMetadata implements Havi
     private String name;
     private String description;
     private Object custom;
+    private String status;
+    private String type;
 
     SetChannelMetadataCommand(final String channel,
                               final PubNub pubNub,
@@ -83,7 +89,7 @@ final class SetChannelMetadataCommand extends SetChannelMetadata implements Havi
     protected Call<EntityEnvelope<PNChannelMetadata>> executeCommand(final Map<String, String> effectiveParams)
             throws PubNubException {
         final SetChannelMetadataPayload setChannelMetadataPayload = new SetChannelMetadataPayload(name, description,
-                custom);
+                custom, status, type);
         return getRetrofit()
                 .getChannelMetadataService()
                 .setChannelsMetadata(getPubnub().getConfiguration().getSubscribeKey(), channel,
@@ -126,6 +132,18 @@ final class SetChannelMetadataCommand extends SetChannelMetadata implements Havi
     @Override
     public SetChannelMetadata custom(final Map<String, Object> custom) {
         this.custom = new HashMap<>(custom);
+        return this;
+    }
+
+    @Override
+    public SetChannelMetadata status(String status) {
+        this.status = status;
+        return this;
+    }
+
+    @Override
+    public SetChannelMetadata type(String type) {
+        this.type = type;
         return this;
     }
 }

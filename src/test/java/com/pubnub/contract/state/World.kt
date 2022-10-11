@@ -15,5 +15,5 @@ class World {
     val pubnub: PubNub by lazy { PubNub(configuration) }
     var pnException: PubNubException? = null
     var tokenString: String? = null
-    var responseStatus: Int? = null
+    var responseStatus: Int? = null //we are storing this member here so that we can have one common verification step "I receive a successful response"
 }

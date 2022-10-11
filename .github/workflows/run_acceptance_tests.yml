@@ -13,13 +13,22 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: pubnub/client-engineering-deployment-tools
-          ref: github-actions
+          ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: client-engineering-deployment-tools
       - name: Run mock server action
         uses: ./client-engineering-deployment-tools/actions/mock-server
         with:
           token: ${{ secrets.GH_TOKEN }}
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: Run acceptance tests (optional)
         run: |
           export pubKey=somePubKey

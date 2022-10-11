@@ -60,4 +60,11 @@ public abstract class ObjectApiEndpoint<INPUT, OUTPUT> extends Endpoint<INPUT, O
     }
 
     protected abstract Call<INPUT> executeCommand(Map<String, String> effectiveParams) throws PubNubException;
+
+    @Override
+    protected Map<String, String> createBaseParams() {
+        Map<String, String> baseParams = super.createBaseParams();
+        baseParams.put("include", "type,status");
+        return baseParams;
+    }
 }

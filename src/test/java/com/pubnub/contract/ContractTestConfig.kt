@@ -28,6 +28,7 @@ interface ContractTestConfig : Config {
     fun serverMock(): Boolean
 
     @Config.Key("dataFileLocation")
+    @Config.DefaultValue("src/test/resources/sdk-specifications/features/data")
     fun dataFileLocation(): String
 }
 
