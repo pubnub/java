@@ -22,7 +22,7 @@ class WhenSteps(
         val pnGetUUIDMetadataResult = world.pubnub.getUUIDMetadata()
             .uuid(getUUIDMetadataState.id)
             .sync()
-        getUUIDMetadataState.result = pnGetUUIDMetadataResult
+        getUUIDMetadataState.pnUUIDMetadata = pnGetUUIDMetadataResult?.data
         world.responseStatus = pnGetUUIDMetadataResult?.status
     }
 
@@ -31,7 +31,7 @@ class WhenSteps(
         val pnGetUUIDMetadataResult = world.pubnub.getUUIDMetadata()
             .includeCustom(true)
             .sync()
-        getUUIDMetadataState.result = pnGetUUIDMetadataResult
+        getUUIDMetadataState.pnUUIDMetadata = pnGetUUIDMetadataResult?.data
         world.responseStatus = pnGetUUIDMetadataResult?.status
     }
 

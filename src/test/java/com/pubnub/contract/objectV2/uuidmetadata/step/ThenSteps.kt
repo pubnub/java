@@ -17,7 +17,7 @@ class ThenSteps(
     @Then("the UUID metadata for {string} persona")
     fun the_UUID_metadata_for_persona(personaName: String) {
         val expectedPNUUIDMetadata = loadPersonaUUIDMetadata(personaName)
-        val actualPNUUIDMetadata = getUUIDMetadataState.result!!.data
+        val actualPNUUIDMetadata = getUUIDMetadataState.pnUUIDMetadata
 
         assertEquals(expectedPNUUIDMetadata, actualPNUUIDMetadata)
     }
