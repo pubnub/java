@@ -40,7 +40,7 @@ class WhenSteps(
             .channel(setChannelMetadataState.id)
             .name(setChannelMetadataState.pnChannelMetadata?.name)
             .description(setChannelMetadataState.pnChannelMetadata?.description)
-            .status(setChannelMetadataState.pnChannelMetadata?.status)  //test przejdzie jak tego nie będzie. Porawić test?
+            .status(setChannelMetadataState.pnChannelMetadata?.status)
             .type(setChannelMetadataState.pnChannelMetadata?.type)
             .sync()
         setChannelMetadataState.result = pnGetChannelMetadataResult

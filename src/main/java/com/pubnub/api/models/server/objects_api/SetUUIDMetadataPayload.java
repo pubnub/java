@@ -11,5 +11,7 @@ public class SetUUIDMetadataPayload {
     private final String externalId;
     private final String profileUrl;
     private final Object custom;
+    private String status;
+    private String type;
 
 }

@@ -36,7 +36,7 @@ class ThenSteps(
         val expectedPNUUIDMetadataForSecondPersona = loadPersonaUUIDMetadata(persona02Name)
 
         assertThat(
-            getAllUUIDMetadataState.result!!.data,
+            getAllUUIDMetadataState.pnUUIDMetadataList,
             Matchers.containsInAnyOrder(expectedPNUUIDMetadataForFirstPersona, expectedPNUUIDMetadataForSecondPersona)
         )
     }

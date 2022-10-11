@@ -37,5 +37,7 @@ class GivenSteps(
         setUUIDMetadataState.pnUUIDMetadata.externalId = pnUUIDMetadata.externalId
         setUUIDMetadataState.pnUUIDMetadata.profileUrl = pnUUIDMetadata.profileUrl
         setUUIDMetadataState.pnUUIDMetadata.custom = pnUUIDMetadata.custom
+        setUUIDMetadataState.pnUUIDMetadata.status = pnUUIDMetadata.status
+        setUUIDMetadataState.pnUUIDMetadata.type = pnUUIDMetadata.type
     }
 }

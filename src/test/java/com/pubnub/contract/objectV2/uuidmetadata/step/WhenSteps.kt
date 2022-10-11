@@ -44,6 +44,8 @@ class WhenSteps(
             .email(setUUIDMetadataState.pnUUIDMetadata.email)
             .profileUrl(setUUIDMetadataState.pnUUIDMetadata.profileUrl)
             .externalId(setUUIDMetadataState.pnUUIDMetadata.externalId)
+            .status(setUUIDMetadataState.pnUUIDMetadata.status)
+            .type(setUUIDMetadataState.pnUUIDMetadata.type)
             .sync()
         setUUIDMetadataState.result = pnSetUUIDMetadataResult
         world.responseStatus = pnSetUUIDMetadataResult?.status
@@ -68,7 +70,7 @@ class WhenSteps(
     @When("I get all UUID metadata")
     fun I_get_all_UUID_metadata() {
         val pnGetAllUUIDMetadataResult = world.pubnub.getAllUUIDMetadata().sync()
-        getAllUUIDMetadataState.result = pnGetAllUUIDMetadataResult
+        getAllUUIDMetadataState.pnUUIDMetadataList = pnGetAllUUIDMetadataResult?.data
         world.responseStatus = pnGetAllUUIDMetadataResult?.status
     }
 
@@ -77,7 +79,7 @@ class WhenSteps(
         val pnGetAllUUIDMetadataResult = world.pubnub.getAllUUIDMetadata()
             .includeCustom(true)
             .sync()
-        getAllUUIDMetadataState.result = pnGetAllUUIDMetadataResult
+        getAllUUIDMetadataState.pnUUIDMetadataList = pnGetAllUUIDMetadataResult?.data
         world.responseStatus = pnGetAllUUIDMetadataResult?.status
     }
 }
