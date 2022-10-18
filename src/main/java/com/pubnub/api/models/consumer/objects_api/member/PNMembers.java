@@ -22,4 +22,5 @@ public class PNMembers {
 
     protected String updated;
     protected String eTag;
+    protected String status;
 }

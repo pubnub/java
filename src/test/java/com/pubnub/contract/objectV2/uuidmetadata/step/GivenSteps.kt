@@ -1,5 +1,6 @@
 package com.pubnub.contract.objectV2.uuidmetadata.step
 
+import com.pubnub.contract.objectV2.membership.state.MembershipState
 import com.pubnub.contract.objectV2.uuidmetadata.state.GetUUIDMetadataState
 import com.pubnub.contract.objectV2.uuidmetadata.state.RemoveUUIDMetadataState
 import com.pubnub.contract.objectV2.uuidmetadata.state.SetUUIDMetadataState
@@ -10,6 +11,7 @@ class GivenSteps(
     private val getUUIDMetadataState: GetUUIDMetadataState,
     private val setUUIDMetadataState: SetUUIDMetadataState,
     private val removeUUIDMetadataState: RemoveUUIDMetadataState,
+    private val membershipState: MembershipState,
     private val world: World
 ) {
 
@@ -19,6 +21,7 @@ class GivenSteps(
         val uuidId = pnUUIDMetadata.id
         getUUIDMetadataState.id = uuidId
         removeUUIDMetadataState.id = uuidId
+        membershipState.uuid = uuidId
     }
 
     @Given("current user is {string} persona")

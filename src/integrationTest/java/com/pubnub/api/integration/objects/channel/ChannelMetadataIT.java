@@ -104,6 +104,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
         assertNotNull(setChannelMetadataResult.getData().getCustom());
         assertEquals(STATUS, setChannelMetadataResult.getData().getStatus());
         assertEquals(TYPE, setChannelMetadataResult.getData().getType());
+        assertEquals(STATUS, getChannelMetadataResult.getData().getStatus());
+        assertEquals(TYPE, getChannelMetadataResult.getData().getType());
     }
 
     @Test

@@ -14,10 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.pubnub.api.endpoints.objects_api.utils.Include.INCLUDE_PARAM_NAME;
 import static lombok.AccessLevel.PROTECTED;
 
 public abstract class ObjectApiEndpoint<INPUT, OUTPUT> extends Endpoint<INPUT, OUTPUT> {
 
+    static final String TYPE_AND_STATUS_INCLUDE_PARAMS = "type,status";
     @Getter(PROTECTED)
     private final CompositeParameterEnricher compositeParameterEnricher;
 
@@ -64,7 +66,7 @@ public abstract class ObjectApiEndpoint<INPUT, OUTPUT> extends Endpoint<INPUT, O
     @Override
     protected Map<String, String> createBaseParams() {
         Map<String, String> baseParams = super.createBaseParams();
-        baseParams.put("include", "type,status");
+        baseParams.put(INCLUDE_PARAM_NAME, TYPE_AND_STATUS_INCLUDE_PARAMS);
         return baseParams;
     }
 }

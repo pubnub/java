@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Include implements ParameterEnricher {
-    static final String INCLUDE_PARAM_NAME = "include";
-    static final String INCLUDE_CUSTOM_PARAM_VALUE = "custom,type,status";
+    public static final String INCLUDE_PARAM_NAME = "include";
+    static final String INCLUDE_CUSTOM_PARAM_VALUE = "custom";
     static final String INCLUDE_CHANNEL_PARAM_VALUE = "channel";
     static final String INCLUDE_CHANNEL_CUSTOM_PARAM_VALUE = "channel.custom";
     static final String INCLUDE_UUID_PARAM_VALUE = "uuid";
@@ -92,6 +92,8 @@ public class Include implements ParameterEnricher {
     public Map<String, String> enrichParameters(Map<String, String> baseParams) {
         final Map<String, String> enrichedMap = new HashMap<>(baseParams);
         if (!inclusionFlags.isEmpty()) {
+            String currentIncludeValue = enrichedMap.get(INCLUDE_PARAM_NAME);
+            inclusionFlags.add(currentIncludeValue);
             enrichedMap.put(INCLUDE_PARAM_NAME, join(inclusionFlags));
         }
         return enrichedMap;

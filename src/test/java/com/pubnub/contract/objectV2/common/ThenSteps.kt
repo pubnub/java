@@ -9,6 +9,6 @@ class ThenSteps(private val world: World) {
     @Then("I receive a successful response")
     fun I_receive_a_successful_response() {
         val status = world.responseStatus
-        Assert.assertEquals(status, 200)
+        Assert.assertEquals(200, status)
     }
 }
