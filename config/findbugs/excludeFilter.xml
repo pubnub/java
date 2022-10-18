@@ -66,6 +66,11 @@
         <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
+        <Class name="com.pubnub.api.models.consumer.objects_api.member.PNMembers"/>
+        <Field name="status"/>
+        <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
         <Class name="com.pubnub.api.PubNubException"/>
         <Field name="affectedCall"/>
         <Bug pattern="URF_UNREAD_FIELD"/>
