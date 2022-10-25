@@ -13,9 +13,5 @@ class GivenSteps(
         val pnChannelMetadata = loadChannelMetadata(channelFileName)
         setChannelMetadataState.id = pnChannelMetadata.id
         setChannelMetadataState.pnChannelMetadata = pnChannelMetadata
-        setChannelMetadataState.pnChannelMetadata?.name = pnChannelMetadata.name
-        setChannelMetadataState.pnChannelMetadata?.description = pnChannelMetadata.description
-        setChannelMetadataState.pnChannelMetadata?.status = pnChannelMetadata.status
-        setChannelMetadataState.pnChannelMetadata?.type = pnChannelMetadata.type
     }
 }

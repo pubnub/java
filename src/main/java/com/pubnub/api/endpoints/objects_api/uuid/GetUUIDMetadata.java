@@ -33,7 +33,7 @@ public abstract class GetUUIDMetadata extends UUIDEndpoint<GetUUIDMetadata, Enti
                                          final TelemetryManager telemetry,
                                          final RetrofitManager retrofitInstance,
                                          final TokenManager tokenManager) {
-        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, true);
         return new GetUUIDMetadataCommand(pubnubInstance, telemetry, retrofitInstance,
                 compositeParameterEnricher, tokenManager);
     }

@@ -62,7 +62,7 @@ public abstract class ManageChannelMembers extends ChannelEnpoint<EntityArrayEnv
                         @Override
                         public ManageChannelMembers remove(final Collection<PNUUID> uuidsToRemove) {
                             final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher
-                                    .createDefault();
+                                    .createDefault(true, false);
                             return new ManageChannelMembersCommand(channel,
                                     uuidsToSet,
                                     uuidsToRemove,
@@ -81,7 +81,7 @@ public abstract class ManageChannelMembers extends ChannelEnpoint<EntityArrayEnv
                         @Override
                         public ManageChannelMembers set(final Collection<PNUUID> uuidsToSet) {
                             final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher
-                                    .createDefault();
+                                    .createDefault(true, false);
                             return new ManageChannelMembersCommand(channel,
                                     uuidsToSet,
                                     uuidsToRemove,

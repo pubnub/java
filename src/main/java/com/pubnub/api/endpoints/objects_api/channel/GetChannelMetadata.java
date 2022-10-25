@@ -48,7 +48,7 @@ public abstract class GetChannelMetadata
 
         @Override
         public GetChannelMetadata channel(final String channel) {
-            final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+            final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, true);
             return new GetChannelMetadataCommand(channel, pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher, tokenManager);
         }
     }

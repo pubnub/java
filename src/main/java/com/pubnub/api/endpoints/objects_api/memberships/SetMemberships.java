@@ -56,7 +56,7 @@ public abstract class SetMemberships extends UUIDEndpoint<SetMemberships, Entity
 
         @Override
         public SetMemberships channelMemberships(@NotNull final Collection<PNChannelMembership> channelMemberships) {
-            final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+            final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, false);
             return new SetMembershipsCommand(channelMemberships, pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher,
                     tokenManager);
         }

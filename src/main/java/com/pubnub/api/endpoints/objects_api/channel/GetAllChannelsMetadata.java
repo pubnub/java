@@ -35,7 +35,7 @@ public abstract class GetAllChannelsMetadata
                                                 final TelemetryManager telemetry,
                                                 final RetrofitManager retrofitInstance,
                                                 final TokenManager tokenManager) {
-        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, true);
         return new GetAllChannelsMetadataCommand(pubnubInstance, telemetry, retrofitInstance,
                 compositeParameterEnricher, tokenManager);
     }

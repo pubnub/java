@@ -35,9 +35,10 @@ class WhenSteps(
 
     @When("I set a channel member")
     fun I_set_a_channel_member() {
+        val pnUuidList = listOf(PNUUID.uuid(channelMembersState.member?.uuid?.id))
         val setChannelMembersResult: PNSetChannelMembersResult? = world.pubnub.setChannelMembers()
             .channel(channelMembersState.channelId)
-            .uuids(channelMembersState.uuids as MutableCollection<PNUUID>)
+            .uuids(pnUuidList)
             .sync()
 
         channelMembersState.memberList = setChannelMembersResult?.data
@@ -46,9 +47,10 @@ class WhenSteps(
 
     @When("I set a channel member including custom and UUID with custom")
     fun I_set_a_channel_member_including_custom_and_UUID_with_custom() {
+        val pnUuidList = listOf(PNUUID.uuid(channelMembersState.member?.uuid?.id))
         val setChannelMembersResult: PNSetChannelMembersResult? = world.pubnub.setChannelMembers()
             .channel(channelMembersState.channelId)
-            .uuids(channelMembersState.uuids as MutableCollection<PNUUID>)
+            .uuids(pnUuidList)
             .includeCustom(true)
             .includeUUID(Include.PNUUIDDetailsLevel.UUID_WITH_CUSTOM)
             .sync()
@@ -59,9 +61,10 @@ class WhenSteps(
 
     @When("I remove a channel member")
     fun I_remove_a_channel_member() {
+        val pnUuidList = listOf(PNUUID.uuid(channelMembersState.member?.uuid?.id))
         val pnRemoveChannelMembersResult: PNRemoveChannelMembersResult? = world.pubnub.removeChannelMembers()
             .channel(channelMembersState.channelId)
-            .uuids(channelMembersState.uuids as MutableCollection<PNUUID>)
+            .uuids(pnUuidList)
             .sync()
 
         world.responseStatus = pnRemoveChannelMembersResult?.status

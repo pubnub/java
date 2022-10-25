@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UUIDMetadataIT extends ObjectsApiBaseIT {
     private static final Logger LOG = LoggerFactory.getLogger(UUIDMetadataIT.class);
@@ -45,6 +45,8 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
     private final String randomEmail = randomEmail();
     private final String randomProfileUrl =  randomProfileUrl();
     private final String randomExternalId = randomExternalId();
+    private final String statusValue = "active";
+    private final String typeValue = "gold";
 
     @Test
     public void setUUIDHappyPath() throws PubNubException {
@@ -59,6 +61,8 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
                 .externalId(randomExternalId)
                 .custom(customUUIDObject())
                 .includeCustom(true)
+                .status(statusValue)
+                .type(typeValue)
                 .sync();
 
         //then
@@ -71,6 +75,8 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
         assertEquals(randomProfileUrl, setUUIDMetadataResult.getData().getProfileUrl());
         assertEquals(randomExternalId, setUUIDMetadataResult.getData().getExternalId());
         assertNotNull(setUUIDMetadataResult.getData().getCustom());
+        assertEquals(statusValue, setUUIDMetadataResult.getData().getStatus());
+        assertEquals(typeValue, setUUIDMetadataResult.getData().getType());
     }
 
     @Test
@@ -84,6 +90,8 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
                 .externalId(randomExternalId)
                 .custom(customUUIDObject())
                 .includeCustom(true)
+                .status(statusValue)
+                .type(typeValue)
                 .sync();
         createdUUIDMetadataList.add(setUUIDMetadataResult);
 
@@ -103,6 +111,8 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
         assertEquals(setUUIDMetadataResult.getData().getProfileUrl(), getUUIDMetadataResult.getData().getProfileUrl());
         assertEquals(setUUIDMetadataResult.getData().getExternalId(), getUUIDMetadataResult.getData().getExternalId());
         assertNotNull(getUUIDMetadataResult.getData().getCustom());
+        assertEquals(statusValue, getUUIDMetadataResult.getData().getStatus());
+        assertEquals(typeValue, getUUIDMetadataResult.getData().getType());
     }
 
     @Test
@@ -151,6 +161,8 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
                 .externalId(randomExternalId)
                 .custom(customUUIDObject())
                 .includeCustom(true)
+                .status(statusValue)
+                .type(typeValue)
                 .sync();
         createdUUIDMetadataList.add(setUUIDMetadataResult);
 

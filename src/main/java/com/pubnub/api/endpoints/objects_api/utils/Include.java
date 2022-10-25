@@ -92,8 +92,6 @@ public class Include implements ParameterEnricher {
     public Map<String, String> enrichParameters(Map<String, String> baseParams) {
         final Map<String, String> enrichedMap = new HashMap<>(baseParams);
         if (!inclusionFlags.isEmpty()) {
-            String currentIncludeValue = enrichedMap.get(INCLUDE_PARAM_NAME);
-            inclusionFlags.add(currentIncludeValue);
             enrichedMap.put(INCLUDE_PARAM_NAME, join(inclusionFlags));
         }
         return enrichedMap;

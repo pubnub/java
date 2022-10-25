@@ -35,7 +35,7 @@ public abstract class SetUUIDMetadata extends UUIDEndpoint<SetUUIDMetadata, Enti
                                          final TelemetryManager telemetryManager,
                                          final RetrofitManager retrofitManager,
                                          final TokenManager tokenManager) {
-        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, true);
         return new SetUUIDMetadataCommand(pubNub, telemetryManager, retrofitManager, compositeParameterEnricher, tokenManager);
     }
 
@@ -71,7 +71,7 @@ final class SetUUIDMetadataCommand extends SetUUIDMetadata implements HavingCust
     protected Call<EntityEnvelope<PNUUIDMetadata>> executeCommand(final Map<String, String> effectiveParams)
             throws PubNubException {
         //This is workaround to accept custom maps that are instances of anonymous classes not handled by gson
-        final HashMap<String, Object> customHashMap = new HashMap<String, Object>();
+        final HashMap<String, Object> customHashMap = new HashMap<>();
         if (custom != null) {
             customHashMap.putAll(custom);
         }

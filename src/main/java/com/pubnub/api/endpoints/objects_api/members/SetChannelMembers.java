@@ -61,7 +61,7 @@ public abstract class SetChannelMembers extends ChannelEnpoint<EntityArrayEnvelo
             return new ObjectsBuilderSteps.UUIDsStep<SetChannelMembers>() {
                 @Override
                 public SetChannelMembers uuids(@NotNull final Collection<PNUUID> uuids) {
-                    final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+                    final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, false);
                     return new SetChannelMembersCommand(channel, uuids, pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher,
                             tokenManager);
                 }

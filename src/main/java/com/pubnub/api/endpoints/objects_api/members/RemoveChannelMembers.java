@@ -61,7 +61,7 @@ public abstract class RemoveChannelMembers extends ChannelEnpoint<EntityArrayEnv
             return new ObjectsBuilderSteps.UUIDsStep<RemoveChannelMembers>() {
                 @Override
                 public RemoveChannelMembers uuids(@NotNull final Collection<PNUUID> uuids) {
-                    final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+                    final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, false);
                     return new RemoveChannelMembersCommand(channel, uuids, pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher, tokenManager);
                 }
             };

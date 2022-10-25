@@ -24,7 +24,7 @@ public class RemoveChannelMetadata extends ChannelEnpoint<EntityEnvelope<JsonEle
                           final TelemetryManager telemetry,
                           final RetrofitManager retrofitInstance,
                           final TokenManager tokenManager) {
-        super(channel, pubnubInstance, telemetry, retrofitInstance, CompositeParameterEnricher.createDefault(),
+        super(channel, pubnubInstance, telemetry, retrofitInstance, CompositeParameterEnricher.createDefault(true, true),
                 tokenManager);
     }
 
