@@ -3,7 +3,6 @@ package com.pubnub.api.endpoints.objects_api;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.endpoints.objects_api.utils.Filter;
 import com.pubnub.api.endpoints.objects_api.utils.Include;
-import com.pubnub.api.endpoints.objects_api.utils.IncludeParamValue;
 import com.pubnub.api.endpoints.objects_api.utils.Limiter;
 import com.pubnub.api.endpoints.objects_api.utils.Pager;
 import com.pubnub.api.endpoints.objects_api.utils.ParameterEnricher;
@@ -32,21 +31,10 @@ public class CompositeParameterEnricher implements ParameterEnricher {
     private final TotalCounter totalCounter;
     @Getter
     private final Limiter limiter;
-    @Getter
-    private final IncludeParamValue includeStatus;
-    @Getter
-    private final IncludeParamValue includeType;
 
 
     public static CompositeParameterEnricher createDefault() {
-        final Include include = new Include();
-        final Sorter sorter = new Sorter();
-        final Pager pager = new Pager();
-        final Filter filter = new Filter();
-        final Limiter limiter = new Limiter();
-        final TotalCounter totalCounter = new TotalCounter();
-
-        return new CompositeParameterEnricher(include, sorter, pager, filter, totalCounter, limiter, null, null);
+        return createDefault(false, false);
     }
 
     public static CompositeParameterEnricher createDefault(boolean includeStatusInParams, boolean includeTypeInParams) {
@@ -56,10 +44,14 @@ public class CompositeParameterEnricher implements ParameterEnricher {
         final Filter filter = new Filter();
         final Limiter limiter = new Limiter();
         final TotalCounter totalCounter = new TotalCounter();
-        final IncludeParamValue includeStatus = new IncludeParamValue(STATUS, includeStatusInParams);
-        final IncludeParamValue includeType = new IncludeParamValue(TYPE, includeTypeInParams);
+        if (includeStatusInParams) {
+            include.addInclusionFlag(STATUS);
+        }
+        if (includeTypeInParams) {
+            include.addInclusionFlag(TYPE);
+        }
 
-        return new CompositeParameterEnricher(include, sorter, pager, filter, totalCounter, limiter, includeStatus, includeType);
+        return new CompositeParameterEnricher(include, sorter, pager, filter, totalCounter, limiter);
     }
 
     public CompositeParameterEnricher(final Include include,
@@ -67,17 +59,13 @@ public class CompositeParameterEnricher implements ParameterEnricher {
                                       final Pager pager,
                                       final Filter filter,
                                       final TotalCounter totalCounter,
-                                      final Limiter limiter,
-                                      final IncludeParamValue includeStatus,
-                                      final IncludeParamValue includeType) {
+                                      final Limiter limiter) {
         this.include = include;
         this.sorter = sorter;
         this.pager = pager;
         this.filter = filter;
         this.totalCounter = totalCounter;
         this.limiter = limiter;
-        this.includeStatus = includeStatus;
-        this.includeType = includeType;
     }
 
 
@@ -86,7 +74,7 @@ public class CompositeParameterEnricher implements ParameterEnricher {
         Map<String, String> enrichedMap = new HashMap<>(baseParams);
 
         final List<ParameterEnricher> parameterEnrichers = new ArrayList<>();
-        for (final ParameterEnricher enricher : Arrays.asList(include, sorter, pager, filter, totalCounter, limiter, includeStatus, includeType)) {
+        for (final ParameterEnricher enricher : Arrays.asList(include, sorter, pager, filter, totalCounter, limiter)) {
             if (enricher != null) {
                 parameterEnrichers.add(enricher);
             }

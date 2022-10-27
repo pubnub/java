@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,8 +20,11 @@ class IncludeTest {
 
     @Test
     void when_inclusionFlags_are_not_empty_then_should_enrich_base_param_map() {
-        objectUnderTest.addInclusionFlag("custom");
+        String value = "custom";
+        objectUnderTest.addInclusionFlag(value);
         Map<String, String> baseParams = createBaseParams();
+        Map<String, String> expectedParams = new HashMap<>(baseParams);
+        expectedParams.put("include", value);
 
         Map<String, String> enrichedParameterMap = objectUnderTest.enrichParameters(baseParams);
 
@@ -30,10 +34,12 @@ class IncludeTest {
     @Test
     void when_inclusionFlags_are_empty_then_should_not_enrich_base_param_map() {
         Map<String, String> baseParams = createBaseParams();
+        Map<String, String> expectedParams = new HashMap<>(baseParams);
 
         Map<String, String> enrichedParameterMap = objectUnderTest.enrichParameters(baseParams);
 
         assertFalse(enrichedParameterMap.containsKey("include"));
+        assertEquals(expectedParams, enrichedParameterMap);
     }
 
     private Map<String, String> createBaseParams() {
