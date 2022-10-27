@@ -28,7 +28,7 @@ class IncludeTest {
 
         Map<String, String> enrichedParameterMap = objectUnderTest.enrichParameters(baseParams);
 
-        assertTrue(enrichedParameterMap.containsKey("include"));
+        assertEquals(expectedParams, enrichedParameterMap);
     }
 
     @Test
