@@ -18,6 +18,6 @@ class GivenSteps(
     @Given("the data for {string} member that we want to remove")
     fun the_data_for_member_that_we_want_to_delete(memberName: String){
         val channelMember: PNMembers = loadMember(memberName)
-        channelMembersState.memberToBeDeleted = channelMember
+        channelMembersState.memberToBeRemoved = channelMember
     }
 }

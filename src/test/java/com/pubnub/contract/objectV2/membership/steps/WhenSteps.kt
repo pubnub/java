@@ -19,7 +19,7 @@ class WhenSteps(
             .uuid(membershipState.uuid)
             .sync()
 
-        membershipState.membershipList = pnGetMembershipsResult?.data
+        membershipState.resultMembershipList = pnGetMembershipsResult?.data
         world.responseStatus = pnGetMembershipsResult?.status
     }
 
@@ -27,7 +27,7 @@ class WhenSteps(
     fun I_get_the_memberships_for_current_user() {
         val pnGetMembershipsResult = world.pubnub.getMemberships().sync()
 
-        membershipState.membershipList = pnGetMembershipsResult?.data
+        membershipState.resultMembershipList = pnGetMembershipsResult?.data
         world.responseStatus = pnGetMembershipsResult?.status
     }
 
@@ -39,57 +39,73 @@ class WhenSteps(
             .includeChannel(Include.PNChannelDetailsLevel.CHANNEL_WITH_CUSTOM)
             .sync()
 
-        membershipState.membershipList = pnGetMembershipsResult?.data
+        membershipState.resultMembershipList = pnGetMembershipsResult?.data
         world.responseStatus = pnGetMembershipsResult?.status
     }
 
     @When("I set the membership")
     fun I_set_the_membership() {
-        val channelId = membershipState.membershipList?.first()?.channel?.id
+        val channelId = membershipState.membershipToBeAdded?.channel?.id
         val channelMembership = listOf(PNChannelMembership.channel(channelId))
         val pnSetMembershipResult: PNSetMembershipResult? = world.pubnub.setMemberships()
             .channelMemberships(channelMembership)
             .uuid(membershipState.uuid)
             .sync()
 
-        membershipState.membershipList = pnSetMembershipResult?.data
+        membershipState.resultMembershipList = pnSetMembershipResult?.data
         world.responseStatus = pnSetMembershipResult?.status
     }
 
     @When("I set the membership for current user")
-    fun  I_set_the_membership_for_current_user(){
-        val channelId = membershipState.membershipList?.first()?.channel?.id
+    fun I_set_the_membership_for_current_user() {
+        val channelId = membershipState.membershipToBeAdded?.channel?.id
         val channelMembership = listOf(PNChannelMembership.channel(channelId))
         val pnSetMembershipResult: PNSetMembershipResult? = world.pubnub.setMemberships()
             .channelMemberships(channelMembership)
             .sync()
 
-        membershipState.membershipList = pnSetMembershipResult?.data
+        membershipState.resultMembershipList = pnSetMembershipResult?.data
         world.responseStatus = pnSetMembershipResult?.status
     }
 
     @When("I remove the membership")
-    fun I_remove_the_membership(){
-        val channelId = membershipState.membershipList?.first()?.channel?.id
+    fun I_remove_the_membership() {
+        val channelId = membershipState.membershipToBeRemoved?.channel?.id
         val channelMembership = listOf(PNChannelMembership.channel(channelId))
         val pnRemoveMembershipResult: PNRemoveMembershipResult? = world.pubnub.removeMemberships()
             .channelMemberships(channelMembership)
             .uuid(membershipState.uuid)
             .sync()
 
-        membershipState.membershipList = pnRemoveMembershipResult?.data
+        membershipState.resultMembershipList = pnRemoveMembershipResult?.data
         world.responseStatus = pnRemoveMembershipResult?.status
     }
 
     @When("I remove the membership for current user")
-    fun I_remove_the_membership_for_current_user(){
-        val channelId = membershipState.membershipList?.first()?.channel?.id
+    fun I_remove_the_membership_for_current_user() {
+        val channelId = membershipState.membershipToBeRemoved?.channel?.id
         val channelMembership = listOf(PNChannelMembership.channel(channelId))
         val pnRemoveMembershipResult: PNRemoveMembershipResult? = world.pubnub.removeMemberships()
             .channelMemberships(channelMembership)
             .sync()
 
-        membershipState.membershipList = pnRemoveMembershipResult?.data
+        membershipState.resultMembershipList = pnRemoveMembershipResult?.data
         world.responseStatus = pnRemoveMembershipResult?.status
+    }
+
+    @When("I manage memberships")
+    fun I_manage_memberships() {
+        val channelIdToBeAdded = membershipState.membershipToBeAdded?.channel?.id
+        val channelMembershipToBeAdded = listOf(PNChannelMembership.channel(channelIdToBeAdded))
+        val channelIdToBeRemoved = membershipState.membershipToBeRemoved?.channel?.id
+        val channelMembershipToBeRemoved = listOf(PNChannelMembership.channel(channelIdToBeRemoved))
+        val pnManageMembershipResult = world.pubnub.manageMemberships()
+            .set(channelMembershipToBeAdded)
+            .remove(channelMembershipToBeRemoved)
+            .uuid(membershipState.uuid)
+            .sync()
+
+        membershipState.resultMembershipList = pnManageMembershipResult?.data
+        world.responseStatus = pnManageMembershipResult?.status
     }
 }

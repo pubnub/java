@@ -4,5 +4,7 @@ import com.pubnub.api.models.consumer.objects_api.membership.PNMembership
 
 class MembershipState {
     var uuid: String? = null
-    var membershipList: Collection<PNMembership>? = mutableListOf()
+    var resultMembershipList: Collection<PNMembership>? = mutableListOf()
+    var membershipToBeAdded: PNMembership? = null
+    var membershipToBeRemoved: PNMembership? = null
 }

@@ -6,5 +6,5 @@ class ChannelMembersState {
     var channelId: String? = null
     var resultMemberList: List<PNMembers>? = mutableListOf()
     var memberToBeAdded: PNMembers? = null
-    var memberToBeDeleted: PNMembers? = null
+    var memberToBeRemoved: PNMembers? = null
 }

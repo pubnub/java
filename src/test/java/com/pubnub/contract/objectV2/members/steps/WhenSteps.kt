@@ -58,7 +58,7 @@ class WhenSteps(
 
     @When("I remove a channel member")
     fun I_remove_a_channel_member() {
-        val pnUuidList = listOf(PNUUID.uuid(channelMembersState.memberToBeDeleted?.uuid?.id))
+        val pnUuidList = listOf(PNUUID.uuid(channelMembersState.memberToBeRemoved?.uuid?.id))
         val pnRemoveChannelMembersResult = world.pubnub.removeChannelMembers()
             .channel(channelMembersState.channelId)
             .uuids(pnUuidList)
@@ -70,7 +70,7 @@ class WhenSteps(
     @When("I manage channel members")
     fun I_manage_channel_members() {
         val pnUuidListToBeAdded = listOf(PNUUID.uuid(channelMembersState.memberToBeAdded?.uuid?.id))
-        val pnUuidListToBeDeleted = listOf(PNUUID.uuid(channelMembersState.memberToBeDeleted?.uuid?.id))
+        val pnUuidListToBeDeleted = listOf(PNUUID.uuid(channelMembersState.memberToBeRemoved?.uuid?.id))
         val pnManageChannelMembersResult = world.pubnub.manageChannelMembers()
             .channel(channelMembersState.channelId)
             .set(pnUuidListToBeAdded)
