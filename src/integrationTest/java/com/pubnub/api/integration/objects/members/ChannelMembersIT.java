@@ -2,7 +2,12 @@ package com.pubnub.api.integration.objects.members;
 
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.integration.objects.ObjectsApiBaseIT;
-import com.pubnub.api.models.consumer.objects_api.member.*;
+import com.pubnub.api.models.consumer.objects_api.member.PNGetChannelMembersResult;
+import com.pubnub.api.models.consumer.objects_api.member.PNManageChannelMembersResult;
+import com.pubnub.api.models.consumer.objects_api.member.PNMembers;
+import com.pubnub.api.models.consumer.objects_api.member.PNRemoveChannelMembersResult;
+import com.pubnub.api.models.consumer.objects_api.member.PNSetChannelMembersResult;
+import com.pubnub.api.models.consumer.objects_api.member.PNUUID;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadata;
 import org.apache.http.HttpStatus;
 import org.junit.After;
@@ -10,14 +15,34 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNUUIDDetailsLevel.UUID_WITH_CUSTOM;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ChannelMembersIT extends ObjectsApiBaseIT {
-    private final static Logger LOG = LoggerFactory.getLogger(ChannelMembersIT.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelMembersIT.class);
+    private static final String STATUS_01 = "myStatus01";
+    private static final String STATUS_02 = "myStatus02";
 
     private final List<PNSetChannelMembersResult> createdMembersList = new ArrayList<>();
 
@@ -30,7 +55,8 @@ public class ChannelMembersIT extends ObjectsApiBaseIT {
     public void addChannelMembersHappyPath() throws PubNubException {
         //given
         Map<String, Object> customMembershipObject = customChannelMembershipObject();
-        final Collection<PNUUID> channelMembers = Arrays.asList(PNUUID.uuid(TEST_UUID1),
+        final Collection<PNUUID> channelMembers = Arrays.asList(
+                PNUUID.uuid(TEST_UUID1, STATUS_01),
                 PNUUID.uuidWithCustom(TEST_UUID2, customMembershipObject));
 
         //when
@@ -67,15 +93,23 @@ public class ChannelMembersIT extends ObjectsApiBaseIT {
             }
         }
 
+        List<String> actualStatusList = setChannelMembersResult.getData()
+                .stream()
+                .map(PNMembers::getStatus)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
         assertThat(returnedUUIDs, containsInAnyOrder(expectedUUIDs.toArray()));
         assertThat(receivedCustomObjects, hasSize(1));
+        assertThat(actualStatusList, containsInAnyOrder(STATUS_01));
     }
 
     @Test
     public void getChannelMembersHappyPath() throws PubNubException {
         //given
-        final Collection<PNUUID> channelMembers = Arrays.asList(PNUUID.uuid(TEST_UUID1),
-                PNUUID.uuidWithCustom(TEST_UUID2, customChannelMembershipObject()));
+        final Collection<PNUUID> channelMembers = Arrays.asList(
+                PNUUID.uuid(TEST_UUID1),
+                PNUUID.uuidWithCustom(TEST_UUID2, customChannelMembershipObject(), STATUS_02));
 
         final PNSetChannelMembersResult setChannelMembersResult = pubNubUnderTest.setChannelMembers()
                 .channel(testChannelId)
@@ -117,17 +151,25 @@ public class ChannelMembersIT extends ObjectsApiBaseIT {
                 receivedCustomObjects.add(custom);
             }
         }
+
+        List<String> actualStatusList = setChannelMembersResult.getData()
+                .stream()
+                .map(PNMembers::getStatus)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
         assertThat(returnedUUIDs, containsInAnyOrder(expectedUUIDs.toArray()));
         assertThat(receivedCustomObjects, hasSize(1));
-
+        assertThat(actualStatusList, containsInAnyOrder(STATUS_02));
 
     }
 
     @Test
     public void removeChannelMembersHappyPath() throws PubNubException {
         //given
-        final Collection<PNUUID> channelMembers = Arrays.asList(PNUUID.uuid(TEST_UUID1),
-                PNUUID.uuidWithCustom(TEST_UUID2, customChannelMembershipObject()));
+        final Collection<PNUUID> channelMembers = Arrays.asList(
+                PNUUID.uuid(TEST_UUID1, STATUS_01),
+                PNUUID.uuidWithCustom(TEST_UUID2, customChannelMembershipObject(), STATUS_02));
 
         final PNSetChannelMembersResult setChannelMembersResult = pubNubUnderTest.setChannelMembers()
                 .channel(testChannelId)
@@ -165,7 +207,7 @@ public class ChannelMembersIT extends ObjectsApiBaseIT {
     public void manageChannelMembersHappyPath() throws PubNubException {
         //given
         final List<PNUUID> channelMembersToRemove = Collections.singletonList(
-                PNUUID.uuidWithCustom(TEST_UUID1, customChannelMembershipObject()));
+                PNUUID.uuidWithCustom(TEST_UUID1, customChannelMembershipObject(), STATUS_01));
 
         final PNSetChannelMembersResult setChannelMembersResult = pubNubUnderTest.setChannelMembers()
                 .channel(testChannelId)
