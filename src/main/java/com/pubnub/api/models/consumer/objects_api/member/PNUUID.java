@@ -14,6 +14,7 @@ import java.util.Map;
 public class PNUUID {
     @Getter
     private final UUIDId uuid;
+    @Getter
     private String status = null;
 
     public PNUUID(UUIDId uuid, String status) {
