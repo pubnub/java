@@ -85,11 +85,6 @@ task integrationTest(type: Test) {
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath += sourceSets.integrationTest.runtimeClasspath
 }
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 jacoco {
     toolVersion = "0.8.2"
 }
