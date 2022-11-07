@@ -1,3 +1,14 @@
+## v6.3.0
+November 07 2022
+
+#### Added
+- Added acceptance tests for ObjectsV2 feature.
+-  Added possibility to add status when setting ChannelMembers.
+- Added status and type to query parameters for objectV2 REST calls. For membership and member only status.
+
+#### Modified
+- Upgrade OkHttp lib to 4.9.3.
+
 ## v6.2.0
 September 20 2022
 
