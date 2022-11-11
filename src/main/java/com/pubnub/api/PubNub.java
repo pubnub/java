@@ -44,6 +44,16 @@ import com.pubnub.api.endpoints.objects_api.uuid.GetAllUUIDMetadata;
 import com.pubnub.api.endpoints.objects_api.uuid.GetUUIDMetadata;
 import com.pubnub.api.endpoints.objects_api.uuid.RemoveUUIDMetadata;
 import com.pubnub.api.endpoints.objects_api.uuid.SetUUIDMetadata;
+import com.pubnub.api.endpoints.objects_vsp.space.CreateSpace;
+import com.pubnub.api.endpoints.objects_vsp.space.FetchSpace;
+import com.pubnub.api.endpoints.objects_vsp.space.RemoveSpace;
+import com.pubnub.api.endpoints.objects_vsp.space.UpdateSpace;
+import com.pubnub.api.endpoints.objects_vsp.space.UpsertSpace;
+import com.pubnub.api.endpoints.objects_vsp.user.CreateUser;
+import com.pubnub.api.endpoints.objects_vsp.user.FetchUser;
+import com.pubnub.api.endpoints.objects_vsp.user.RemoveUser;
+import com.pubnub.api.endpoints.objects_vsp.user.UpdateUser;
+import com.pubnub.api.endpoints.objects_vsp.user.UpsertUser;
 import com.pubnub.api.endpoints.presence.GetState;
 import com.pubnub.api.endpoints.presence.HereNow;
 import com.pubnub.api.endpoints.presence.SetState;
@@ -303,6 +313,34 @@ public class PubNub {
 
     // Start Objects API
 
+    @NotNull
+    public CreateUser createUser() {
+        return CreateUser.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public FetchUser fetchUser() {
+        return FetchUser.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public UpdateUser updateUser() {
+        return UpdateUser.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public UpsertUser upsertUser() {
+        return UpsertUser.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public RemoveUser removeUser() {
+        return new RemoveUser(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    /**
+     * @deprecated Use {@link #createUser()} or {@link #updateUser()} or {@link #upsertUser()} instead.
+     */
     public SetUUIDMetadata setUUIDMetadata() {
         return SetUUIDMetadata.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
@@ -312,16 +350,50 @@ public class PubNub {
         return GetAllUUIDMetadata.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    /**
+     * @deprecated Use {@link #fetchUser()} instead.
+     */
     @NotNull
     public GetUUIDMetadata getUUIDMetadata() {
         return GetUUIDMetadata.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    /**
+     * @deprecated Use {@link #removeUser()} instead.
+     */
     @NotNull
     public RemoveUUIDMetadata removeUUIDMetadata() {
         return new RemoveUUIDMetadata(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    @NotNull
+    public CreateSpace createSpace(@NotNull SpaceId spaceId) {
+        return CreateSpace.create(spaceId, this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public FetchSpace fetchSpace(@NotNull SpaceId spaceId) {
+        return FetchSpace.create(spaceId, this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public UpdateSpace updateSpace(@NotNull SpaceId spaceId) {
+        return UpdateSpace.create(spaceId, this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public UpsertSpace upsertSpace(@NotNull SpaceId spaceId) {
+        return UpsertSpace.create(spaceId, this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    @NotNull
+    public RemoveSpace removeSpace(@NotNull SpaceId spaceId) {
+        return new RemoveSpace(spaceId, this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    }
+
+    /**
+     * @deprecated Use {@link #createSpace(SpaceId)} or {@link #updateSpace(SpaceId)} or {@link #upsertSpace(SpaceId)} instead.
+     */
     public SetChannelMetadata.Builder setChannelMetadata() {
         return SetChannelMetadata.builder(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
@@ -331,11 +403,17 @@ public class PubNub {
         return GetAllChannelsMetadata.create(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    /**
+     * @deprecated Use {@link #fetchSpace(SpaceId)} instead.
+     */
     @NotNull
     public GetChannelMetadata.Builder getChannelMetadata() {
         return GetChannelMetadata.builder(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    /**
+     * @deprecated Use {@link #removeSpace(SpaceId)} instead.
+     */
     public RemoveChannelMetadata.Builder removeChannelMetadata() {
         return RemoveChannelMetadata.builder(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }

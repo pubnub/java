@@ -206,10 +206,6 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
         return RandomStringUtils.randomAlphabetic(6) + "@example.com";
     }
 
-    private String randomName() {
-        return RandomStringUtils.randomAlphabetic(5, 10) + " " + RandomStringUtils.randomAlphabetic(5, 10);
-    }
-
     private String randomProfileUrl() {
         return "http://" + RandomStringUtils.randomAlphabetic(5, 15) + ".com";
     }

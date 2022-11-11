@@ -26,6 +26,16 @@
         <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
+        <Class name="com.pubnub.api.models.consumer.objects_vsp.ObjectVsp"/>
+        <Field name="eTag"/>
+        <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="com.pubnub.api.models.consumer.objects_vsp.ObjectVsp"/>
+        <Field name="updated"/>
+        <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
         <Class name="com.pubnub.api.models.consumer.objects_api.PropertyEnvelope"/>
         <Field name="id"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>

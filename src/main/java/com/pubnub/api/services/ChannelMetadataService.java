@@ -22,7 +22,6 @@ public interface ChannelMetadataService {
     Call<EntityEnvelope<PNChannelMetadata>> getChannelMetadata(@Path("subKey") String subKey, @Path("channel") String channel, @QueryMap(encoded = true) Map<String, String> options);
 
     @PATCH("/v2/objects/{subKey}/channels/{channel}")
-    @Headers("Content-Type: application/json; charset=UTF-8")
     Call<EntityEnvelope<PNChannelMetadata>> setChannelsMetadata(@Path("subKey") String subKey, @Path("channel") String channel, @Body SetChannelMetadataPayload setChannelMetadataPayload, @QueryMap(encoded = true) Map<String, String> options);
 
     @DELETE("/v2/objects/{subKey}/channels/{channel}")

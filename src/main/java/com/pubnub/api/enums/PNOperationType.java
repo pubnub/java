@@ -42,6 +42,20 @@ public enum PNOperationType {
     PNGetAllUuidMetadataOperation,
     PNRemoveUuidMetadataOperation,
 
+    // User - VSP
+    PNCreateUserOperation,
+    PNFetchUserOperation,
+    PNRemoveUserOperation,
+    PNUpdateUserOperation,
+    PNUpsertUserOperation,
+
+    // Space - VSP
+    PNCreateSpaceOperation,
+    PNFetchSpaceOperation,
+    PNRemoveSpaceOperation,
+    PNUpdateSpaceOperation,
+    PNUpsertSpaceOperation,
+
     // Channel Metadata
     PNSetChannelMetadataOperation,
     PNGetChannelMetadataOperation,

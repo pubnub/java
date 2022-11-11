@@ -1,6 +1,7 @@
 package com.pubnub.api.endpoints.objects_api.utils;
 
 import com.pubnub.api.endpoints.Endpoint;
+import com.pubnub.api.endpoints.remoteaction.RemoteAction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,11 +18,11 @@ public class Include implements ParameterEnricher {
     static final String INCLUDE_UUID_PARAM_VALUE = "uuid";
     static final String INCLUDE_UUID_CUSTOM_PARAM_VALUE = "uuid.custom";
 
-    public interface CustomIncludeAware<T extends Endpoint<?, ?>> {
+    public interface CustomIncludeAware<T extends RemoteAction<?>> {
         T includeCustom(boolean includeCustom);
     }
 
-    public interface HavingCustomInclude<T extends Endpoint<?, ?>>
+    public interface HavingCustomInclude<T extends RemoteAction<?>>
             extends CustomIncludeAware<T>, HavingCompositeParameterEnricher {
         @Override
         default T includeCustom(boolean includeCustom) {

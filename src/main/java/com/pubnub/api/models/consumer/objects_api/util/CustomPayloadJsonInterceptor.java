@@ -10,12 +10,14 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 public class CustomPayloadJsonInterceptor implements JsonDeserializer<Object>, JsonSerializer<Object> {
 
     @Override
     public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return json;
+        Map map = new Gson().fromJson(json.toString(), Map.class);
+        return map;
     }
 
     @Override

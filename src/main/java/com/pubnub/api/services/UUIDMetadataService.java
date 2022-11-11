@@ -23,7 +23,6 @@ public interface UUIDMetadataService {
     Call<EntityEnvelope<PNUUIDMetadata>> getUUIDMetadata(@Path("subKey") String subKey, @Path("uuid") String uuid, @QueryMap(encoded = true) Map<String, String> options);
 
     @PATCH("/v2/objects/{subKey}/uuids/{uuid}")
-    @Headers("Content-Type: application/json; charset=UTF-8")
     Call<EntityEnvelope<PNUUIDMetadata>> setUUIDsMetadata(@Path("subKey") String subKey, @Path("uuid") String uuid, @Body SetUUIDMetadataPayload setUUIDMetadataPayload, @QueryMap(encoded = true) Map<String, String> options);
 
     @DELETE("/v2/objects/{subKey}/uuids/{uuid}")

@@ -9,6 +9,8 @@ import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.interceptors.SignatureInterceptor;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.services.*;
+import com.pubnub.api.services.vsp.SpaceService;
+import com.pubnub.api.services.vsp.UserService;
 import lombok.Getter;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
@@ -55,6 +57,10 @@ public class RetrofitManager {
     private SignalService signalService;
     @Getter
     private UUIDMetadataService uuidMetadataService;
+    @Getter
+    private UserService userService;
+    @Getter
+    private SpaceService spaceService;
     @Getter
     private ChannelMetadataService channelMetadataService;
     @Getter
@@ -154,6 +160,8 @@ public class RetrofitManager {
         this.s3Service = noSignatureInstance.create(S3Service.class);
         this.extendedPresenceService = transactionInstance.create(ExtendedPresenceService.class);
 
+        this.userService = transactionInstance.create(UserService.class);
+        this.spaceService = transactionInstance.create(SpaceService.class);
     }
 
     private OkHttpClient.Builder prepareOkHttpClient(int requestTimeout, int connectTimeOut) {
