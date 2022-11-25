@@ -60,14 +60,14 @@ public class GetState extends Endpoint<Envelope<JsonElement>, PNGetStateResult> 
     }
 
     @Override
-    protected Call<Envelope<JsonElement>> doWork(Map<String, String> params) {
+    protected Call<Envelope<JsonElement>> doWork(Map<String, String> params) throws PubNubException {
         if (channelGroups.size() > 0) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }
 
         String channelCSV = channels.size() > 0 ? PubNubUtil.joinString(channels, ",") : ",";
 
-        String selectedUUID = uuid != null ? uuid : this.getPubnub().getConfiguration().getUuid();
+        String selectedUUID = uuid != null ? uuid : this.getPubnub().getConfiguration().getUserId().getValue();
 
         return this.getRetrofit().getExtendedPresenceService().getState(
                 this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);

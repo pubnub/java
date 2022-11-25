@@ -2,6 +2,7 @@ package com.pubnub.api.managers.subscription.utils;
 
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.UserId;
 import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.models.server.SubscribeEnvelope;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class SubscriptionTestUtils {
     @SneakyThrows
     public static PubNub pubnub(final RetrofitManager retrofitManager) {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        final PNConfiguration pnConfiguration =  new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         pnConfiguration.setSubscribeKey("fake_sub_key");
         pnConfiguration.setConnectTimeout(1);
 
@@ -35,6 +37,7 @@ public class SubscriptionTestUtils {
         return (TelemetryManager) FieldUtils.readField(pubnub, "telemetryManager", true);
     }
 
+    @SuppressWarnings("unchecked")
     @NotNull
     public static RetrofitManager retrofitManagerMock(final ResponseSupplier<SubscribeEnvelope> responseSupplier) {
         final SubscribeService subscribeServiceMock = mock(SubscribeService.class);

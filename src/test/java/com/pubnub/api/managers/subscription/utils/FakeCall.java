@@ -51,7 +51,7 @@ public class FakeCall<T> implements Call<T> {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                log.info("asynchronously executing the call with request: " + request);
+//                log.info("asynchronously executing the call with request: " + request);
                 final RequestDetails requestDetails = request.tag(RequestDetails.class);
                 final ResponseHolder<T> responseHolder = responseSupplier.get(requestDetails);
                 final Exception exception = responseHolder.getException();

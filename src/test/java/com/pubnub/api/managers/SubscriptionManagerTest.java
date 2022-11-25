@@ -1328,6 +1328,7 @@ public class SubscriptionManagerTest extends TestHarness {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testSubscribeBuilderWithState() throws PubNubException {
         final String expectedPayload = PubNubUtil.urlDecode("%7B%22ch1%22%3A%5B%22p1%22%2C%22p2%22%5D%2C%22cg2%22%3A" +

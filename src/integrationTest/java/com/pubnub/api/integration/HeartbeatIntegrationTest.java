@@ -2,6 +2,7 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
@@ -44,12 +45,13 @@ public class HeartbeatIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testStateWithHeartbeat() {
+    public void testStateWithHeartbeat() throws PubNubException {
         final AtomicInteger hits = new AtomicInteger();
         final JsonObject expectedStatePayload = generatePayload();
         final PubNub observer = getPubNub();
 
         pubNub.getConfiguration().setPresenceTimeoutWithCustomInterval(20, 4);
+        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
 
         observer.addListener(new SubscribeCallback() {
             @Override
@@ -77,7 +79,7 @@ public class HeartbeatIntegrationTest extends BaseIntegrationTest {
 
             @Override
             public void presence(@NotNull PubNub p, @NotNull PNPresenceEventResult presence) {
-                if (presence.getUuid().equals(pubNub.getConfiguration().getUuid())
+                if (presence.getUuid().equals(userIdValue)
                         && presence.getChannel().equals(expectedChannel)) {
                     switch (presence.getEvent()) {
                         case "state-change":

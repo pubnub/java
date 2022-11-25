@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class PubNubTest {
     private PubNub pubnub;
@@ -14,7 +15,7 @@ public class PubNubTest {
 
     @Before
     public void beforeEach() throws IOException, PubNubException {
-        pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         pnConfiguration.setSubscribeKey("demo");
         pnConfiguration.setPublishKey("demo");
         pnConfiguration.setUseRandomInitializationVector(false);

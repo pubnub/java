@@ -14,12 +14,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.AbstractMap;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNChannelDetailsLevel.CHANNEL;
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNChannelDetailsLevel.CHANNEL_WITH_CUSTOM;
@@ -30,19 +32,18 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
     private final String testChannelMetadataId = UUID.randomUUID().toString();
-    private final Map<String, Object> testCustomObjectForChannelMetadata = new HashMap() {{
-        put("key1", "val1");
-        put("key2", "val2");
-    }};
-
-    private final Map<String, Object> testCustomObjectForMembership = new HashMap() {{
-        put("key3", "val3");
-        put("key4", "val4");
-    }};
+    private final Map<String, Object> testCustomObjectForChannelMetadata = Stream.of(
+                    new AbstractMap.SimpleImmutableEntry<>("key1", "val1"),
+                    new AbstractMap.SimpleImmutableEntry<>("key2", "val2"))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private final Map<String, Object> testCustomObjectForMembership = Stream.of(
+                    new AbstractMap.SimpleImmutableEntry<>("key3", "val3"),
+                    new AbstractMap.SimpleImmutableEntry<>("key4", "val4"))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private PNSetChannelMetadataResult setChannelMetadataResult;
     private PNSetMembershipResult setMembershipResult;
 
@@ -63,6 +64,7 @@ public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
                 .execute();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setMembershipCustomHappyPath() throws PubNubException {
         final String testChannelName = "The Name of the Channel";
@@ -111,11 +113,12 @@ public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
                                                 hasProperty("description", is(testDescription)),
                                                 hasProperty("custom", nullValue()))))))));
 
+        String userIdValue = pubNubUnderTest.getConfiguration().getUserId().getValue();
         await().atMost(1, TimeUnit.SECONDS).untilAsserted(new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
                 assertThat(pnMembershipResults, hasItem(
-                        hasProperty("data", hasProperty("uuid", is(pubNubUnderTest.getConfiguration().getUuid())))));
+                        hasProperty("data", hasProperty("uuid", is(userIdValue)))));
             }
         });
     }

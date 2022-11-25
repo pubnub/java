@@ -357,7 +357,7 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
         }
     }
 
-    protected Map<String, String> createBaseParams() {
+    protected Map<String, String> createBaseParams() throws PubNubException {
         Map<String, String> params = new HashMap<>();
 
         if (queryParam != null) {
@@ -365,7 +365,7 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
         }
 
         params.put("pnsdk", "PubNub-Java-Unified/".concat(this.pubnub.getVersion()));
-        params.put("uuid", this.pubnub.getConfiguration().getUuid());
+        params.put("uuid", this.pubnub.getConfiguration().getUserId().getValue());
 
         if (this.pubnub.getConfiguration().isIncludeInstanceIdentifier()) {
             params.put("instanceid", pubnub.getInstanceId());

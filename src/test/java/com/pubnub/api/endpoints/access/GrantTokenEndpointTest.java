@@ -3,16 +3,17 @@ package com.pubnub.api.endpoints.access;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.SpaceId;
+import com.pubnub.api.UserId;
 import com.pubnub.api.endpoints.TestHarness;
-import com.pubnub.api.enums.PNLogVerbosity;
-import com.pubnub.api.models.consumer.access_manager.v3.ChannelGrant;
-import com.pubnub.api.models.consumer.access_manager.v3.ChannelGroupGrant;
+import com.pubnub.api.models.consumer.access_manager.sum.SpacePermissions;
+import com.pubnub.api.models.consumer.access_manager.sum.UserPermissions;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.UUID;
 
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERR_RESOURCES_MISSING;
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERR_SECRET_KEY_MISSING;
@@ -35,19 +36,19 @@ public class GrantTokenEndpointTest extends TestHarness {
     @Test
     public void validate_NoResourceSet() {
         try {
-            pubnub.grantToken()
-                    .ttl(1)
+            pubnub.grantToken(1)
                     .sync();
         } catch (PubNubException e) {
             assertEquals(PNERR_RESOURCES_MISSING, e.getPubnubError().getErrorCode());
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void validate_NoTTLSet() {
         try {
             pubnub.grantToken()
-                    .channels(Collections.singletonList(ChannelGrant.name("test").read()))
+                    .spacesPermissions(Arrays.asList(SpacePermissions.id(new SpaceId("mySpaceId")).delete()))
                     .sync();
         } catch (PubNubException e) {
             assertEquals(PNERR_TTL_MISSING, e.getPubnubError().getErrorCode());
@@ -57,9 +58,8 @@ public class GrantTokenEndpointTest extends TestHarness {
     @Test
     public void validate_SecretKeyMissing() {
         try {
-            createPubNubInstance().grantToken()
-                    .ttl(1)
-                    .channelGroups(Collections.singletonList(ChannelGroupGrant.id("test").read()))
+            createPubNubInstance().grantToken(1)
+                    .spacesPermissions(Arrays.asList(SpacePermissions.id(new SpaceId("mySpaceId")).delete()))
                     .sync();
         } catch (PubNubException e) {
             assertEquals(PNERR_SECRET_KEY_MISSING, e.getPubnubError().getErrorCode());
@@ -69,9 +69,8 @@ public class GrantTokenEndpointTest extends TestHarness {
     @Test
     public void validate_SubscribeKeyMissing() {
         try {
-            new PubNub(new PNConfiguration(PubNub.generateUUID()).setSecretKey("secret")).grantToken()
-                    .ttl(1)
-                    .channelGroups(Collections.singletonList(ChannelGroupGrant.id("test").read()))
+            new PubNub(new PNConfiguration(new UserId("pn-" + UUID.randomUUID())).setSecretKey("secret")).grantToken(1)
+                    .usersPermissions(Arrays.asList(UserPermissions.id(new UserId("myUserId")).get()))
                     .sync();
         } catch (PubNubException e) {
             assertEquals(PNERR_SUBSCRIBE_KEY_MISSING, e.getPubnubError().getErrorCode());

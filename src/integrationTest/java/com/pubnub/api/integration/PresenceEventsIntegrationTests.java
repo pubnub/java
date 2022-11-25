@@ -2,6 +2,7 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNStatus;
@@ -248,11 +249,15 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
 
             @Override
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
-                if (presence.getEvent().equals("state-change") && presence.getUuid()
-                        .equals(pubNub.getConfiguration().getUuid())) {
-                    assertEquals("state-change", presence.getEvent());
-                    pubNub.removeListener(this);
-                    success.set(true);
+                try {
+                    if (presence.getEvent().equals("state-change") && presence.getUuid()
+                            .equals(pubNub.getConfiguration().getUserId().getValue())) {
+                        assertEquals("state-change", presence.getEvent());
+                        pubNub.removeListener(this);
+                        success.set(true);
+                    }
+                } catch (PubNubException e) {
+                    throw new RuntimeException(e);
                 }
             }
 

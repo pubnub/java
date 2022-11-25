@@ -12,7 +12,7 @@ class PNConfigurationTest {
         String userId01value = "userId01";
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId(userId01value));
 
-        assertEquals(userId01value, pnConfiguration.getUuid());
+        assertEquals(userId01value, pnConfiguration.getUserId().getValue());
     }
 
     @Test
@@ -42,14 +42,14 @@ class PNConfigurationTest {
     }
 
     @Test
-    void should_throw_exception_when_uuid_is_empty_string() {
-        Assertions.assertThrows(PubNubException.class, () -> new PNConfiguration(""));
+    void should_throw_exception_when_userIdValue_is_empty_string() {
+        Assertions.assertThrows(PubNubException.class, () -> new PNConfiguration(new UserId("")));
     }
 
     @Test
-    void should_throw_exception_when_uuid_is_null_string() {
+    void should_throw_exception_when_userIdValue_is_null_string() {
         Assertions.assertThrows(PubNubException.class, () -> {
-            new PNConfiguration((String) null);
+            new PNConfiguration(new UserId(null));
         });
     }
 }

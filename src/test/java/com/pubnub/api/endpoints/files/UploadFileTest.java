@@ -38,6 +38,7 @@ public class UploadFileTest implements TestsWithFiles {
     private final S3Service s3Service = mock(S3Service.class);
     private final ArgumentCaptor<MultipartBody> requestBodyArgumentCaptor = ArgumentCaptor.forClass(MultipartBody.class);
 
+    @SuppressWarnings("unchecked")
     @NotNull
     protected static <T> Answer<Call<T>> mockRetrofitSuccessfulCall(final Supplier<T> block) {
         return invocation -> {
@@ -47,11 +48,12 @@ public class UploadFileTest implements TestsWithFiles {
         };
     }
 
+    @SuppressWarnings("unchecked")
     @NotNull
     protected static <T extends String> Answer<Call<T>> mockRetrofitErrorCall(final Supplier<T> block) {
         return invocation -> {
             final Call<T> mockCall = mock(Call.class);
-            when(mockCall.execute()).thenAnswer(blockInvocation -> Response.error(400, ResponseBody.create(MediaType.get("application/xml"), block.get())));
+            when(mockCall.execute()).thenAnswer(blockInvocation -> Response.error(400, ResponseBody.create(block.get(), MediaType.get("application/xml"))));
             return mockCall;
         };
     }

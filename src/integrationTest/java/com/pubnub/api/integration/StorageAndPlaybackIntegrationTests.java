@@ -1,5 +1,6 @@
 package com.pubnub.api.integration;
 
+import com.pubnub.api.PubNubException;
 import com.pubnub.api.integration.util.RandomGenerator;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class StorageAndPlaybackIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testHistoryMessages() {
+    public void testHistoryMessages() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
         final String messageText = RandomGenerator.newValue(10);
         final String channel = RandomGenerator.newValue(10);
@@ -31,13 +32,14 @@ public class StorageAndPlaybackIntegrationTests extends BaseIntegrationTest {
         publishMessage(pubNub, channel, messageText);
         pause(1);
 
+        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
         pubNub.history()
                 .channel(channel)
                 .async((result, status) -> {
                     assertNotNull(result);
                     final String message = result.getMessages().get(0).getEntry().toString();
                     assertFalse(status.isError());
-                    assertTrue(message.contains(pubNub.getConfiguration().getUuid()));
+                    assertTrue(message.contains(userIdValue));
                     assertTrue(message.contains(messageText));
                     success.set(true);
                 });
@@ -147,7 +149,7 @@ public class StorageAndPlaybackIntegrationTests extends BaseIntegrationTest {
                 .async((result, status) -> {
                     assertFalse(status.isError());
                     assertNotNull(result);
-                    if (result.getMessages().size() > 0) {
+                    if (!result.getMessages().isEmpty()) {
                         final String message = result.getMessages().get(0).getEntry().toString();
                         assertTrue(message.contains(message_1));
                     } else {

@@ -50,6 +50,7 @@ public class GrantTokenIT extends BaseIntegrationTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void happyPath() throws PubNubException {
         //given

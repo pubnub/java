@@ -49,17 +49,18 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishMessage() {
+    public void testPublishMessage() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
+        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
 
         pubNub.publish()
                 .message(messagePayload)
                 .channel(expectedChannel)
                 .async((result, status) -> {
                     assertFalse(status.isError());
-                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUuid());
+                    assertEquals(status.getUuid(), userIdValue);
                     success.set(true);
                 });
 
@@ -105,10 +106,11 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishMessageNoHistory() {
+    public void testPublishMessageNoHistory() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
+        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
 
         pubNub.publish()
                 .message(messagePayload)
@@ -116,7 +118,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .shouldStore(false)
                 .async((result, status) -> {
                     assertFalse(status.isError());
-                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUuid());
+                    assertEquals(status.getUuid(), userIdValue);
                 });
 
         pause(2);
@@ -135,12 +137,13 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testReceiveMessage() {
+    public void testReceiveMessage() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
 
         final PubNub observer = getPubNub();
+        String userIdValue = observer.getConfiguration().getUserId().getValue();
 
         this.pubNub.addListener(new SubscribeCallback() {
             @Override
@@ -163,7 +166,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult message) {
                 assertEquals(expectedChannel, message.getChannel());
-                assertEquals(observer.getConfiguration().getUuid(), message.getPublisher());
+                assertEquals(userIdValue, message.getPublisher());
                 assertEquals(messagePayload, message.getMessage());
                 success.set(true);
             }

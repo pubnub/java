@@ -11,9 +11,9 @@ import java.io.File
 const val JSON_FILE_EXTENSION = "json"
 
 inline fun <reified T> readResourceFromDataFile(fileName: String) : T {
-    val fileName = fileName.toLowerCase() + ".$JSON_FILE_EXTENSION"
+    val resourceFileName = fileName.lowercase() + ".$JSON_FILE_EXTENSION"
     val personasLocation = CONTRACT_TEST_CONFIG.dataFileLocation()
-    val personaAsString = File("$personasLocation/$fileName").readText(Charsets.UTF_8)
+    val personaAsString = File("$personasLocation/$resourceFileName").readText(Charsets.UTF_8)
     return Gson().fromJson(personaAsString, T::class.java)
 }
 

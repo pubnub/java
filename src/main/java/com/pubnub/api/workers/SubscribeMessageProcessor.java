@@ -47,6 +47,7 @@ public class SubscribeMessageProcessor {
     private final PubNub pubnub;
     private final DuplicationManager duplicationManager;
 
+    @SuppressWarnings("deprecation")
     PNEvent processIncomingPayload(SubscribeMessage message) throws PubNubException {
         MapperManager mapper = this.pubnub.getMapper();
 

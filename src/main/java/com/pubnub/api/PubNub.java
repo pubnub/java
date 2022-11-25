@@ -247,6 +247,7 @@ public class PubNub {
     }
 
     @NotNull
+    @SuppressWarnings("deprecation")
     public GrantTokenBuilder grantToken(Integer ttl) {
         return new GrantTokenBuilder(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager)).ttl(ttl);
     }

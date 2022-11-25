@@ -10,6 +10,7 @@ import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.UserId;
 import com.pubnub.api.managers.DuplicationManager;
 import com.pubnub.api.models.consumer.pubsub.PNEvent;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -168,7 +170,7 @@ public class SubscribeMessageProcessorTest {
     }
 
     private PNConfiguration config() throws PubNubException {
-        PNConfiguration config = new PNConfiguration(PubNub.generateUUID());
+        PNConfiguration config = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         config.setPublishKey("pk");
         config.setSubscribeKey("ck");
         return config;

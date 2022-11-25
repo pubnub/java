@@ -44,10 +44,11 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishSignalMessageAsync() {
+    public void testPublishSignalMessageAsync() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
         final String expectedChannel = randomChannel();
         final String expectedPayload = RandomGenerator.newValue(5);
+        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
 
         pubNub.signal()
                 .message(expectedPayload)
@@ -55,7 +56,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
                 .async((result, status) -> {
                     assertFalse(status.isError());
                     assertEquals(PNOperationType.PNSignalOperation, status.getOperation());
-                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUuid());
+                    assertEquals(status.getUuid(), userIdValue);
                     assertNotNull(result);
                     success.set(true);
                 });
@@ -77,13 +78,14 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testReceiveSignalMessage() {
+    public void testReceiveSignalMessage() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
 
         final String expectedChannel = randomChannel();
         final String expectedPayload = RandomGenerator.newValue(5);
 
         final PubNub observerClient = getPubNub();
+        String userIdValue= pubNub.getConfiguration().getUserId().getValue();
 
         observerClient.addListener(new SubscribeCallback() {
             @Override
@@ -101,7 +103,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
                                 .async((result, status1) -> {
                                     assertFalse(status1.isError());
                                     assertEquals(PNOperationType.PNSignalOperation, status1.getOperation());
-                                    assertEquals(status1.getUuid(), pubNub.getConfiguration().getUuid());
+                                    assertEquals(status1.getUuid(), userIdValue);
                                     assertNotNull(result);
                                 });
                     }
@@ -120,7 +122,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
 
             @Override
             public void signal(@NotNull PubNub pubnub, @NotNull PNSignalResult signal) {
-                assertEquals(pubNub.getConfiguration().getUuid(), signal.getPublisher());
+                assertEquals(userIdValue, signal.getPublisher());
                 assertEquals(expectedChannel, signal.getChannel());
                 assertEquals(expectedPayload, new Gson().fromJson(signal.getMessage(), String.class));
                 success.set(true);

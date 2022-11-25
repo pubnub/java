@@ -73,7 +73,7 @@ public class GrantTokenBuilder extends AbstractGrantTokenBuilder<GrantTokenBuild
     }
 
     @Override
-    public GrantTokenBuilder queryParam(Map queryParam) {
+    public GrantTokenBuilder queryParam(Map<String, String> queryParam) {
         grantToken.queryParam(queryParam);
         return this;
     }

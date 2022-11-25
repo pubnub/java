@@ -50,9 +50,9 @@ public class WhereNow extends Endpoint<Envelope<WhereNowPayload>, PNWhereNowResu
     }
 
     @Override
-    protected Call<Envelope<WhereNowPayload>> doWork(Map<String, String> params) {
+    protected Call<Envelope<WhereNowPayload>> doWork(Map<String, String> params) throws PubNubException {
         return this.getRetrofit().getExtendedPresenceService().whereNow(this.getPubnub().getConfiguration().getSubscribeKey(),
-                this.uuid != null ? this.uuid : this.getPubnub().getConfiguration().getUuid(), params);
+                this.uuid != null ? this.uuid : this.getPubnub().getConfiguration().getUserId().getValue(), params);
     }
 
     @Override

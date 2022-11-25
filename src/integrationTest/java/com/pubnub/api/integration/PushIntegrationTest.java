@@ -33,6 +33,7 @@ public class PushIntegrationTest extends BaseIntegrationTest {
         expectedTopic = UUID.randomUUID().toString();
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testEnumNames() {
         assertEquals("apns", PNPushType.APNS.toString());

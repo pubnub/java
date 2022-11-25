@@ -1,14 +1,11 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
-    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id 'io.franzbecker.gradle-lombok' version '5.0.0'
     id 'com.github.johnrengelman.shadow' version '4.0.2'
-    id 'com.bmuschko.nexus' version '2.3.1'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'java-library'
     id 'jacoco'
-    id 'maven'
     id 'checkstyle'
-    id 'findbugs'
 }
 group = 'com.pubnub'
 
@@ -41,16 +38,17 @@ sourceSets {
     }
 }
 
+configurations {
+    allTest
+    integrationTestImplementation { extendsFrom allTest }
+    testImplementation { extendsFrom allTest }
+}
+
 dependencies {
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.6.2'
-    api group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.9.3'
+    api group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.10.0'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.28'
-
-    // jackson
-    // compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.7.3'
-    // compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.7.3'
-    // compile group: 'com.squareup.retrofit2', name: 'converter-jackson', version:'2.1.0'
 
     // gson
     api 'com.google.code.gson:gson:2.9.0'
@@ -62,7 +60,7 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
     testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.9'
     testImplementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.9'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
@@ -78,33 +76,23 @@ dependencies {
     testImplementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.8'
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
 }
 
-task integrationTest(type: Test) {
-    group = "verification"
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath += sourceSets.integrationTest.runtimeClasspath
-}
 jacoco {
     toolVersion = "0.8.2"
 }
 
 jacocoTestReport {
     reports {
-        xml.enabled = true
-        html.enabled = true
+        xml.required = true
+        html.required = true
     }
 }
 
 checkstyle {
     toolVersion = "8.14"
     configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    //configFile = new File(rootDir, "config/checkstyle/checkstyle.xml")
-    sourceSets = [sourceSets.main]
-}
-
-findbugs {
-    excludeFilter = rootProject.file("config/findbugs/excludeFilter.xml")
     sourceSets = [sourceSets.main]
 }
 
@@ -112,64 +100,12 @@ tasks.withType(Checkstyle) {
     exclude '**/vendor/**', '**/*Test*'
 
     reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
-
-tasks.withType(FindBugs) {
-    exclude '**/vendor/**', '**/*Test*'
-
-    reports {
-        xml.enabled false
-        html.enabled true
+        xml.required = true
+        html.required = true
     }
 }
 
 check.dependsOn jacocoTestReport
-
-extraArchive {
-    sources = false
-    tests = true
-    javadoc = true
-}
-
-nexus {
-    sign = true
-    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
-}
-
-modifyPom {
-    project {
-        name 'PubNub Java SDK'
-        description 'PubNub is a cross-platform client-to-client (1:1 and 1:many) push service in the cloud, capable of\n' +
-                '        broadcasting real-time messages to millions of web and mobile clients simultaneously, in less than a quarter\n' +
-                '        second!'
-        url 'https://github.com/pubnub/java'
-        inceptionYear '2009'
-
-        scm {
-            url 'https://github.com/pubnub/java'
-        }
-
-        licenses {
-            license {
-                name 'MIT License'
-                url 'https://github.com/pubnub/pubnub-api/blob/master/LICENSE'
-                distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id 'PubNub'
-                name 'PubNub'
-                email 'support@pubnub.com'
-            }
-        }
-    }
-}
 
 import io.franzbecker.gradle.lombok.task.DelombokTask
 
