@@ -112,7 +112,7 @@ public class PubNubUtil {
     }
 
     public static String preparePamArguments(Map<String, String> pamArgs) {
-        Set<String> pamKeys = new TreeSet(pamArgs.keySet());
+        Set<String> pamKeys = new TreeSet<>(pamArgs.keySet());
         String stringifiedArguments = "";
         int i = 0;
 
@@ -290,10 +290,9 @@ public class PubNubUtil {
         return collection == null || collection.isEmpty();
     }
 
-    public static void require(boolean value, PubNubError error) throws PubNubException {
+    public static void require(boolean value, PubNubError error) {
         if (!value) {
-            throw PubNubException.builder().pubnubError(error).build();
+            throw PubNubRuntimeException.builder().pubnubError(error).build();
         }
     }
-
 }

@@ -2,7 +2,6 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubException;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNStatus;
@@ -39,6 +38,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -102,6 +102,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -170,6 +171,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -237,6 +239,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -249,16 +252,13 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
 
             @Override
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
-                try {
-                    if (presence.getEvent().equals("state-change") && presence.getUuid()
-                            .equals(pubNub.getConfiguration().getUserId().getValue())) {
-                        assertEquals("state-change", presence.getEvent());
-                        pubNub.removeListener(this);
-                        success.set(true);
-                    }
-                } catch (PubNubException e) {
-                    throw new RuntimeException(e);
+                if (presence.getEvent().equals("state-change") && presence.getUuid()
+                        .equals(pubNub.getConfiguration().getUserId().getValue())) {
+                    assertEquals("state-change", presence.getEvent());
+                    pubNub.removeListener(this);
+                    success.set(true);
                 }
+
             }
 
             @Override

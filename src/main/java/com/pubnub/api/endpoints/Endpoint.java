@@ -357,7 +357,7 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
         }
     }
 
-    protected Map<String, String> createBaseParams() throws PubNubException {
+    protected Map<String, String> createBaseParams() {
         Map<String, String> params = new HashMap<>();
 
         if (queryParam != null) {

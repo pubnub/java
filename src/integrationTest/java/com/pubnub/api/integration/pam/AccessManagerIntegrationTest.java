@@ -382,14 +382,13 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testSetStateWithoutPermission() throws PubNubException {
+    public void testSetStateWithoutPermission() {
         final AtomicBoolean success = new AtomicBoolean();
         final JsonObject expectedStatePayload = generatePayload();
 
-        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
         pubNub.setPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(userIdValue)
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .state(expectedStatePayload)
                 .async((pnSetStateResult, status) -> {
                     try {
@@ -408,16 +407,15 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testSetStateWithPermission() throws PubNubException {
+    public void testSetStateWithPermission() {
         final AtomicBoolean success = new AtomicBoolean();
         final JsonObject expectedStatePayload = generatePayload();
 
         requestAccess(READ);
 
-        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
         pubNub.setPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(userIdValue)
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .state(expectedStatePayload)
                 .async((result, status) -> {
                     try {
@@ -438,13 +436,12 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testGetSetStateWithoutPermission() throws PubNubException {
+    public void testGetSetStateWithoutPermission() {
         final AtomicBoolean success = new AtomicBoolean();
 
-        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
         pubNub.getPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(userIdValue)
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .async((result, status) -> {
                     try {
                         assertAuthKey(status);
@@ -462,14 +459,13 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testGetStateWithPermission() throws PubNubException {
+    public void testGetStateWithPermission() {
         final AtomicBoolean success = new AtomicBoolean();
 
         requestAccess(READ);
-        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
         pubNub.getPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(userIdValue)
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .async((result, status) -> {
                     try {
                         requestAccess(READ);
@@ -487,15 +483,14 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testStateComboWithPermission() throws PubNubException {
+    public void testStateComboWithPermission() {
         final AtomicBoolean success = new AtomicBoolean();
         final JsonObject expectedStatePayload = generatePayload();
 
         requestAccess(READ);
-        String userIdValue = pubNub.getConfiguration().getUserId().getValue();
         pubNub.setPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(userIdValue)
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .state(expectedStatePayload)
                 .async((result, status) -> {
                     try {
@@ -513,10 +508,9 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
 
         pause(2);
 
-        String value = pubNub.getConfiguration().getUserId().getValue();
         pubNub.getPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(value)
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .async((result, status) -> {
                     try {
                         assertAuthKey(status);
@@ -535,11 +529,10 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPresenceWithPermission() throws PubNubException {
+    public void testPresenceWithPermission() {
         final AtomicBoolean success = new AtomicBoolean();
 
         requestAccess(READ);
-        String userIdValue = server.getConfiguration().getUserId().getValue();
 
         pubNub.addListener(new SubscribeCallback() {
             @Override
@@ -560,7 +553,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult pnPresenceEventResult) {
                 if ((pnPresenceEventResult.getEvent().equals("join"))
                         && (pnPresenceEventResult.getChannel().equals(expectedChannel))) {
-                    if (pnPresenceEventResult.getUuid().equals(userIdValue)) {
+                    if (pnPresenceEventResult.getUuid().equals(server.getConfiguration().getUserId().getValue())) {
                         success.set(true);
                     }
                 }
@@ -1072,7 +1065,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
         }
     }
 
-    private void assertUuid(PNStatus pnStatus) throws AssertionError, PubNubException {
+    private void assertUuid(PNStatus pnStatus) throws AssertionError {
         assertEquals(pubNub.getConfiguration().getUserId().getValue(), pnStatus.getUuid());
     }
 

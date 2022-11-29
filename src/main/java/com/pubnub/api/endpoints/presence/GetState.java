@@ -60,7 +60,7 @@ public class GetState extends Endpoint<Envelope<JsonElement>, PNGetStateResult> 
     }
 
     @Override
-    protected Call<Envelope<JsonElement>> doWork(Map<String, String> params) throws PubNubException {
+    protected Call<Envelope<JsonElement>> doWork(Map<String, String> params) {
         if (channelGroups.size() > 0) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }

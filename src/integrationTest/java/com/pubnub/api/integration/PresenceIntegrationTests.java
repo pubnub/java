@@ -2,7 +2,6 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubException;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNHeartbeatNotificationOptions;
 import com.pubnub.api.enums.PNOperationType;
@@ -14,7 +13,6 @@ import com.pubnub.api.models.consumer.objects_api.membership.PNMembershipResult;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadataResult;
 import com.pubnub.api.models.consumer.presence.PNHereNowChannelData;
 import com.pubnub.api.models.consumer.presence.PNHereNowOccupantData;
-import com.pubnub.api.models.consumer.presence.PNHereNowResult;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
@@ -70,7 +68,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testGlobalHereNow() throws PubNubException {
+    public void testGlobalHereNow() {
         final AtomicBoolean success = new AtomicBoolean();
 
         final int expectedChannelsCount = 2;
@@ -129,11 +127,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
 
                             final List<String> expectedUuidList = new ArrayList<>();
                             for (PubNub client : clients) {
-                                try {
-                                    expectedUuidList.add(client.getConfiguration().getUserId().getValue());
-                                } catch (PubNubException e) {
-                                    e.printStackTrace();
-                                }
+                                expectedUuidList.add(client.getConfiguration().getUserId().getValue());
                             }
 
                             Collections.sort(expectedUuidList);
@@ -197,13 +191,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
                             final String uuid = occupant.getUuid();
                             boolean contains = false;
                             for (PubNub client : clients) {
-                                String userIdValue = null;
-                                try {
-                                    userIdValue = client.getConfiguration().getUserId().getValue();
-                                } catch (PubNubException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                if (userIdValue.equals(uuid)) {
+                                if (client.getConfiguration().getUserId().getValue().equals(uuid)) {
                                     contains = true;
                                     break;
                                 }
@@ -219,19 +207,19 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPresenceState() throws PubNubException {
+    public void testPresenceState() {
         final AtomicInteger hits = new AtomicInteger();
         final int expectedHits = 2;
 
         final JsonObject expectedStatePayload = generatePayload();
         final String expectedChannel = RandomGenerator.get();
-        final String userIdValue = pubNub.getConfiguration().getUserId().getValue();
 
         pubNub.addListener(new SubscribeCallback() {
             @Override
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -246,7 +234,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
                 if (presence.getEvent().equals("state-change")
                         && presence.getChannel().equals(expectedChannel)
-                        && presence.getUuid().equals(userIdValue)) {
+                        && presence.getUuid().equals(pubNub.getConfiguration().getUserId().getValue())) {
                     assertEquals(expectedStatePayload, presence.getState());
                     hits.incrementAndGet();
                 }
@@ -325,6 +313,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (!status.isError()) {
@@ -408,6 +397,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (!status.isError()) {

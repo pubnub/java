@@ -266,20 +266,14 @@ public abstract class BaseIntegrationTest {
 
     protected Map<String, String> generateMessage(PubNub pubNub, String message) {
         final Map<String, String> map = new HashMap<>();
-        String userIdValue = null;
-        try {
-            userIdValue = pubNub.getConfiguration().getUserId().getValue();
-        } catch (PubNubException e) {
-            throw new RuntimeException(e);
-        }
-        map.put("publisher", userIdValue);
+        map.put("publisher", pubNub.getConfiguration().getUserId().getValue());
         map.put("text", "mymsg" + RandomGenerator.newValue(5) + "+" + RandomGenerator.newValue(5));
         map.put("uncd", RandomGenerator.unicode(8));
         map.put("extra", message);
         return map;
     }
 
-    protected JsonObject generateMessage(PubNub pubNub) throws PubNubException {
+    protected JsonObject generateMessage(PubNub pubNub) {
         final JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("publisher", pubNub.getConfiguration().getUserId().getValue());
         jsonObject.addProperty("text", RandomGenerator.newValue(8));

@@ -34,11 +34,6 @@ public abstract class UUIDEndpoint<SELF extends UUIDEndpoint, INPUT, OUTPUT> ext
     }
 
     protected String effectiveUuid() {
-        try {
-            return (uuid != null) ? uuid : getPubnub().getConfiguration().getUserId().getValue();
-        } catch (PubNubException e) {
-            throw new RuntimeException(e);
-        }
+        return (uuid != null) ? uuid : getPubnub().getConfiguration().getUserId().getValue();
     }
 }
-

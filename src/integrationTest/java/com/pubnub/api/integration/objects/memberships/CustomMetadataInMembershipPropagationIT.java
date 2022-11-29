@@ -14,36 +14,36 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.AbstractMap;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNChannelDetailsLevel.CHANNEL;
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNChannelDetailsLevel.CHANNEL_WITH_CUSTOM;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
     private final String testChannelMetadataId = UUID.randomUUID().toString();
-    private final Map<String, Object> testCustomObjectForChannelMetadata = Stream.of(
-                    new AbstractMap.SimpleImmutableEntry<>("key1", "val1"),
-                    new AbstractMap.SimpleImmutableEntry<>("key2", "val2"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    private final Map<String, Object> testCustomObjectForMembership = Stream.of(
-                    new AbstractMap.SimpleImmutableEntry<>("key3", "val3"),
-                    new AbstractMap.SimpleImmutableEntry<>("key4", "val4"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    //Double Brace initialization is done on purpose here to test that GSON can handle that
+    private final Map<String, Object> testCustomObjectForChannelMetadata = new HashMap() {{
+        put("key1", "val1");
+        put("key2", "val2");
+    }};
+
+    private final Map<String, Object> testCustomObjectForMembership = new HashMap() {{
+        put("key3", "val3");
+        put("key4", "val4");
+    }};
     private PNSetChannelMetadataResult setChannelMetadataResult;
     private PNSetMembershipResult setMembershipResult;
 

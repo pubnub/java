@@ -43,7 +43,7 @@ public abstract class BaseObjectApiTest {
     }
 
     @Before
-    public void configureMocks() throws PubNubException {
+    public void configureMocks() {
         when(configurationMock.getSubscribeKey()).thenReturn(testSubscriptionKey);
         when(configurationMock.getUserId()).thenReturn(new UserId(testUUID));
         when(pubNubMock.getConfiguration()).thenReturn(configurationMock);

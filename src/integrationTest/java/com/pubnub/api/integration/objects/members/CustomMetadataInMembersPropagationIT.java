@@ -9,12 +9,10 @@ import com.pubnub.api.models.consumer.objects_api.uuid.PNSetUUIDMetadataResult;
 import org.junit.After;
 import org.junit.Test;
 
-import java.util.AbstractMap;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNUUIDDetailsLevel;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,15 +27,17 @@ public class CustomMetadataInMembersPropagationIT extends ObjectsApiBaseIT {
     private final String testUUID = UUID.randomUUID().toString();
     private final String testChannelMetadataId = UUID.randomUUID().toString();
     private final String testExternalId = UUID.randomUUID().toString();
-    private final Map<String, Object> testCustomObjectForUUIDMetadata = Stream.of(
-                    new AbstractMap.SimpleImmutableEntry<>("key1", "val1"),
-                    new AbstractMap.SimpleImmutableEntry<>("key2", "val2"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    private final Map<String, Object> testCustomObjectForMembers = Stream.of(
-                    new AbstractMap.SimpleImmutableEntry<>("key3", "val3"),
-                    new AbstractMap.SimpleImmutableEntry<>("key4", "val4"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    //Double Brace initialization is done on purpose here to test that GSON can handle that
+    private final Map<String, Object> testCustomObjectForUUIDMetadata = new HashMap() {{
+        put("key1", "val1");
+        put("key2", "val2");
+    }};
+
+    private final Map<String, Object> testCustomObjectForMembers = new HashMap() {{
+        put("key3", "val3");
+        put("key4", "val4");
+    }};
 
     private PNSetUUIDMetadataResult setUUIDMetadataResult;
     private PNSetChannelMembersResult setChannelMembersResult;

@@ -43,12 +43,12 @@ class PNConfigurationTest {
 
     @Test
     void should_throw_exception_when_userIdValue_is_empty_string() {
-        Assertions.assertThrows(PubNubException.class, () -> new PNConfiguration(new UserId("")));
+        Assertions.assertThrows(PubNubRuntimeException.class, () -> new PNConfiguration(new UserId("")));
     }
 
     @Test
     void should_throw_exception_when_userIdValue_is_null_string() {
-        Assertions.assertThrows(PubNubException.class, () -> {
+        Assertions.assertThrows(PubNubRuntimeException.class, () -> {
             new PNConfiguration(new UserId(null));
         });
     }
