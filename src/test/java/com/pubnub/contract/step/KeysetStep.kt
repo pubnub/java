@@ -39,4 +39,9 @@ class KeysetStep(private val world: World) {
             subscribeKey = CONTRACT_TEST_CONFIG.subKey()
         }
     }
+
+    @Given("the demo keyset")
+    fun the_demo_keyset() {
+        i_have_a_keyset_with_access_manager_enabled_without_secret_key()
+    }
 }

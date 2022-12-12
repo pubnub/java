@@ -3,6 +3,7 @@ package com.pubnub.api.endpoints.pubsub;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.enums.PNOperationType;
@@ -12,6 +13,7 @@ import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.PNPublishResult;
+import com.pubnub.api.models.consumer.history.MessageType;
 import com.pubnub.api.vendor.Crypto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -25,6 +27,8 @@ import java.util.Map;
 @Accessors(chain = true, fluent = true)
 public class Publish extends Endpoint<List<Object>, PNPublishResult> {
 
+    static final String SPACE_ID_QUERY_PARAMETER = "space-id";
+    static final String MESSAGE_TYPE_QUERY_PARAMETER = "type";
     @Setter
     private Object message;
     @Setter
@@ -39,6 +43,10 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
     private Boolean replicate;
     @Setter
     private Integer ttl;
+    @Setter
+    private MessageType messageType;
+    @Setter
+    private SpaceId spaceId;
 
     private PublishSequenceManager publishSequenceManager;
 
@@ -81,9 +89,47 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
 
     @Override
     protected Call<List<Object>> doWork(Map<String, String> params) throws PubNubException {
-        MapperManager mapper = this.getPubnub().getMapper();
+        String stringifiedMessage = getEncryptedMessageAsString();
+        Map<String, String> publishSpecificParams = extendRequestParamMapByPublishSpecificParams(params);
 
+        if (shouldSendViaPOST()) {
+            return sendRequestViaPOST(stringifiedMessage, publishSpecificParams);
+        } else {
+            return sendRequestViaGET(stringifiedMessage, publishSpecificParams);
+        }
+    }
+
+    @Override
+    protected PNPublishResult createResponse(Response<List<Object>> input) throws PubNubException {
+        PNPublishResult.PNPublishResultBuilder pnPublishResult = PNPublishResult.builder();
+        pnPublishResult.timetoken(Long.valueOf(input.body().get(2).toString()));
+
+        return pnPublishResult.build();
+    }
+
+    @Override
+    protected PNOperationType getOperationType() {
+        return PNOperationType.PNPublishOperation;
+    }
+
+    @Override
+    protected boolean isAuthRequired() {
+        return true;
+    }
+
+    private String getEncryptedMessageAsString() throws PubNubException {
+        MapperManager mapper = this.getPubnub().getMapper();
         String stringifiedMessage = mapper.toJson(message);
+
+        if (this.getPubnub().getConfiguration().getCipherKey() != null) {
+            Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey(), this.getPubnub().getConfiguration().isUseRandomInitializationVector());
+            stringifiedMessage = crypto.encrypt(stringifiedMessage).replace("\n", "");
+        }
+        return stringifiedMessage;
+    }
+
+    private Map<String, String> extendRequestParamMapByPublishSpecificParams(Map<String, String> params) throws PubNubException {
+        MapperManager mapper = this.getPubnub().getMapper();
 
         if (meta != null) {
             String stringifiedMeta = mapper.toJson(meta);
@@ -105,59 +151,50 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
 
         params.put("seqn", String.valueOf(publishSequenceManager.getNextSequence()));
 
-        if (!replicate) {
+        if (Boolean.FALSE.equals(replicate)) {
             params.put("norep", "true");
         }
 
-        if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-            Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey(), this.getPubnub().getConfiguration().isUseRandomInitializationVector());
-            stringifiedMessage = crypto.encrypt(stringifiedMessage).replace("\n", "");
+        if (spaceId != null && spaceId.getValue() != null) {
+            params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());
+        }
+
+        if (messageType != null && messageType.getType() != null) {
+            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getType());
         }
 
         params.putAll(encodeParams(params));
 
-        if (usePOST != null && usePOST) {
-            Object payloadToSend;
+        return params;
+    }
 
-            if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-                payloadToSend = stringifiedMessage;
-            } else {
-                payloadToSend = message;
-            }
+    private boolean shouldSendViaPOST() {
+        return usePOST != null && usePOST;
+    }
 
-            return this.getRetrofit().getPublishService().publishWithPost(this.getPubnub().getConfiguration().getPublishKey(),
-                    this.getPubnub().getConfiguration().getSubscribeKey(),
-                    channel, payloadToSend, params);
+    private Call<List<Object>> sendRequestViaPOST(String stringifiedMessage, Map<String, String> publishSpecificParams) {
+        Object payloadToSend;
+        if (this.getPubnub().getConfiguration().getCipherKey() != null) {
+            payloadToSend = stringifiedMessage;
         } else {
-
-            if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-                stringifiedMessage = "\"".concat(stringifiedMessage).concat("\"");
-            }
-
-            stringifiedMessage = PubNubUtil.urlEncode(stringifiedMessage);
-
-            return this.getRetrofit().getPublishService().publish(this.getPubnub().getConfiguration().getPublishKey(),
-                    this.getPubnub().getConfiguration().getSubscribeKey(),
-                    channel, stringifiedMessage, params);
+            payloadToSend = message;
         }
+
+        return this.getRetrofit().getPublishService().publishWithPost(this.getPubnub().getConfiguration().getPublishKey(),
+                this.getPubnub().getConfiguration().getSubscribeKey(),
+                channel, payloadToSend, publishSpecificParams);
     }
 
-    @Override
-    protected PNPublishResult createResponse(Response<List<Object>> input) throws PubNubException {
-        PNPublishResult.PNPublishResultBuilder pnPublishResult = PNPublishResult.builder();
-        pnPublishResult.timetoken(Long.valueOf(input.body().get(2).toString()));
+    private Call<List<Object>> sendRequestViaGET(String stringifiedMessage, Map<String, String> publishSpecificParams) {
+        if (this.getPubnub().getConfiguration().getCipherKey() != null) {
+            stringifiedMessage = "\"".concat(stringifiedMessage).concat("\"");
+        }
 
-        return pnPublishResult.build();
-    }
+        stringifiedMessage = PubNubUtil.urlEncode(stringifiedMessage);
 
-    @Override
-    protected PNOperationType getOperationType() {
-        return PNOperationType.PNPublishOperation;
-    }
-
-    @Override
-    protected boolean isAuthRequired() {
-        return true;
+        return this.getRetrofit().getPublishService().publish(this.getPubnub().getConfiguration().getPublishKey(),
+                this.getPubnub().getConfiguration().getSubscribeKey(),
+                channel, stringifiedMessage, publishSpecificParams);
     }
 
 }

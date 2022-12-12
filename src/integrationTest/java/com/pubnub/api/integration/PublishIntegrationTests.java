@@ -4,10 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.history.MessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadataResult;
@@ -49,7 +51,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishMessage() throws PubNubException {
+    public void testPublishMessage() {
         final AtomicBoolean success = new AtomicBoolean();
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
@@ -57,6 +59,26 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
         pubNub.publish()
                 .message(messagePayload)
                 .channel(expectedChannel)
+                .async((result, status) -> {
+                    assertFalse(status.isError());
+                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUserId().getValue());
+                    success.set(true);
+                });
+
+        Awaitility.await().atMost(Durations.FIVE_SECONDS).untilTrue(success);
+    }
+
+    @Test
+    public void testPublishMessageWithMessageTypeAndSpaceId() {
+        final AtomicBoolean success = new AtomicBoolean();
+        final String expectedChannel = randomChannel();
+        final JsonObject messagePayload = generateMessage(pubNub);
+
+        pubNub.publish()
+                .message(messagePayload)
+                .channel(expectedChannel)
+                .messageType(new MessageType("userChosenMessageType"))
+                .spaceId(new SpaceId("chatIndeed"))
                 .async((result, status) -> {
                     assertFalse(status.isError());
                     assertEquals(status.getUuid(), pubNub.getConfiguration().getUserId().getValue());
@@ -272,6 +294,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -330,6 +353,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
         pubNub.publish()
                 .message(payload)
                 .channel(channel)
+                .messageType(new MessageType("test"))
+                .spaceId(new SpaceId("1-to-1_chat"))
                 .sync();
 
         listen(success);
@@ -346,6 +371,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -484,6 +510,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -563,6 +590,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -651,6 +679,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
