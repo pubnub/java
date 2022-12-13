@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MessageTypeTest {
     private MessageType objectUnderTest;
@@ -31,14 +30,24 @@ class MessageTypeTest {
     }
 
     @Test
-    void should_return_null_when_userMessageType_is_null_and_pnMessageType_is_null() {
+    void should_throw_exception_when_creating_MessageType_having_pnMessageType_as_null() {
         PNMessageType pnMessageType = null;
-        String userMessageType = null;
+        String userMessageType = "userSpecificMessageType";
 
         PubNubRuntimeException pubNubRuntimeException = Assertions.assertThrows(PubNubRuntimeException.class, () -> {
             objectUnderTest = new MessageType(pnMessageType, userMessageType);
         });
 
         assertEquals("PNMessageType can't be null nor empty.", pubNubRuntimeException.getPubnubError().getMessage());
+    }
+
+    @Test
+    void should_throw_exception_when_creating_MessageType_having_userMessageType_as_null() {
+        String userMessageType = null;
+
+        PubNubRuntimeException pubNubRuntimeException = Assertions.assertThrows(PubNubRuntimeException.class, () -> {
+            objectUnderTest = new MessageType(userMessageType);
+        });
+        assertEquals("UserMessageType can't be null nor empty.", pubNubRuntimeException.getPubnubError().getMessage());
     }
 }
