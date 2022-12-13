@@ -13,7 +13,7 @@ import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.PNPublishResult;
-import com.pubnub.api.models.consumer.history.MessageType;
+import com.pubnub.api.MessageType;
 import com.pubnub.api.vendor.Crypto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -155,11 +155,11 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
             params.put("norep", "true");
         }
 
-        if (spaceId != null && spaceId.getValue() != null) {
+        if (spaceId != null) {
             params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());
         }
 
-        if (messageType != null && messageType.getType() != null) {
+        if (messageType != null) {
             params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getType());
         }
 
@@ -169,7 +169,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
     }
 
     private boolean shouldSendViaPOST() {
-        return usePOST != null && usePOST;
+        return Boolean.TRUE.equals(usePOST);
     }
 
     private Call<List<Object>> sendRequestViaPOST(String stringifiedMessage, Map<String, String> publishSpecificParams) {

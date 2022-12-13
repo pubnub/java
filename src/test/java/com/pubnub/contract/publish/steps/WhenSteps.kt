@@ -1,6 +1,6 @@
 package com.pubnub.contract.publish.steps
 
-import com.pubnub.api.models.consumer.history.MessageType
+import com.pubnub.api.MessageType
 import com.pubnub.api.PubNubException
 import com.pubnub.api.SpaceId
 import com.pubnub.contract.state.World

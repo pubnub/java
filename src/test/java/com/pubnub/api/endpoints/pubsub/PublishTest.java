@@ -10,7 +10,7 @@ import com.pubnub.api.endpoints.TestHarness;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
-import com.pubnub.api.models.consumer.history.MessageType;
+import com.pubnub.api.MessageType;
 import org.awaitility.Awaitility;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;

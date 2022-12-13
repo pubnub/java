@@ -366,6 +366,21 @@ public final class PubNubErrorBuilder {
      */
     public static final int PNERR_SPACEID_NULL_OR_EMPTY = 171;
 
+    /**
+     * UserMessageType can't be null nor empty
+     */
+    public static final int PNERR_USERMESSAGETYPE_NULL_OR_EMPTY = 172;
+
+    /**
+     * UserMessageType can't be null nor empty
+     */
+    public static final int PNERR_PNMESSAGETYPE_NULL_OR_EMPTY = 173;
+
+    /**
+     * UserMessageType can't be null nor empty
+     */
+    public static final int PNERR_UNKNOWN_MESSAGE_TYPE = 174;
+
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
             .errorCode(PNERR_TIMEOUT)
@@ -728,6 +743,21 @@ public final class PubNubErrorBuilder {
     public static final PubNubError PNERROBJ_SPACEID_NULL_OR_EMPTY = PubNubError.builder()
             .errorCode(PNERR_SPACEID_NULL_OR_EMPTY)
             .message("SpaceId can't be null nor empty.")
+            .build();
+
+    public static final PubNubError PNERROBJ_USERMESSAGETYPE_NULL_OR_EMPTY = PubNubError.builder()
+            .errorCode(PNERR_USERMESSAGETYPE_NULL_OR_EMPTY)
+            .message("UserMessageType can't be null nor empty.")
+            .build();
+
+    public static final PubNubError PNERROBJ_PNMESSAGETYPE_NULL = PubNubError.builder()
+            .errorCode(PNERR_PNMESSAGETYPE_NULL_OR_EMPTY)
+            .message("PNMessageType can't be null nor empty.")
+            .build();
+
+    public static final PubNubError PNERROBJ_UNKNOWN_MESSAGE_TYPE = PubNubError.builder()
+            .errorCode(PNERR_UNKNOWN_MESSAGE_TYPE)
+            .message("Unknown PNMessageType.")
             .build();
 
     private PubNubErrorBuilder() {

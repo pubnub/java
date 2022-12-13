@@ -10,10 +10,8 @@ class ThenSteps(
     private val world: World
 ) {
 
-    val EXPECTED_ERROR_CODE = 400
-
     @Then("I receive error response")
     fun I_receive_error_response() {
-        Assert.assertEquals(EXPECTED_ERROR_CODE, world.pnException?.statusCode)
+        Assert.assertNotNull(world.pnException)
     }
 }

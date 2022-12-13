@@ -8,8 +8,9 @@ import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
+import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
-import com.pubnub.api.models.consumer.history.MessageType;
+import com.pubnub.api.MessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadataResult;
@@ -37,6 +38,7 @@ import static com.pubnub.api.integration.util.Utils.random;
 import static com.pubnub.api.integration.util.Utils.randomChannel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 public class PublishIntegrationTests extends BaseIntegrationTest {
 
@@ -69,23 +71,18 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishMessageWithMessageTypeAndSpaceId() {
-        final AtomicBoolean success = new AtomicBoolean();
+    public void testPublishMessageWithMessageTypeAndSpaceId() throws PubNubException {
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
 
-        pubNub.publish()
+        PNPublishResult pnPublishResult = pubNub.publish()
                 .message(messagePayload)
                 .channel(expectedChannel)
                 .messageType(new MessageType("userChosenMessageType"))
                 .spaceId(new SpaceId("chatIndeed"))
-                .async((result, status) -> {
-                    assertFalse(status.isError());
-                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUserId().getValue());
-                    success.set(true);
-                });
+                .sync();
 
-        Awaitility.await().atMost(Durations.FIVE_SECONDS).untilTrue(success);
+        assertNotNull(pnPublishResult.getTimetoken());
     }
 
     @Test

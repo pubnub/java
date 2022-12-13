@@ -1,5 +1,7 @@
-package com.pubnub.api.models.consumer.history;
+package com.pubnub.api;
 
+import com.pubnub.api.enums.PNMessageType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,7 +12,7 @@ class MessageTypeTest {
 
     @Test
     void should_return_userMessageType_when_userMessageType_is_provided() {
-        PnMessageType pnMessageType = PnMessageType.MESSAGE01;
+        PNMessageType pnMessageType = PNMessageType.MESSAGE01;
         String userMessageType = "userSpecificMessageType";
 
         objectUnderTest = new MessageType(pnMessageType, userMessageType);
@@ -20,7 +22,7 @@ class MessageTypeTest {
 
     @Test
     void should_return_pnMessageType_when_userMessageType_is_null() {
-        PnMessageType pnMessageType = PnMessageType.MESSAGE01;
+        PNMessageType pnMessageType = PNMessageType.MESSAGE01;
         String userMessageType = null;
 
         objectUnderTest = new MessageType(pnMessageType, userMessageType);
@@ -30,11 +32,13 @@ class MessageTypeTest {
 
     @Test
     void should_return_null_when_userMessageType_is_null_and_pnMessageType_is_null() {
-        PnMessageType pnMessageType = null;
+        PNMessageType pnMessageType = null;
         String userMessageType = null;
 
-        objectUnderTest = new MessageType(pnMessageType, userMessageType);
+        PubNubRuntimeException pubNubRuntimeException = Assertions.assertThrows(PubNubRuntimeException.class, () -> {
+            objectUnderTest = new MessageType(pnMessageType, userMessageType);
+        });
 
-        assertNull(objectUnderTest.getType());
+        assertEquals("PNMessageType can't be null nor empty.", pubNubRuntimeException.getPubnubError().getMessage());
     }
 }

@@ -1,9 +1,13 @@
-package com.pubnub.api.models.consumer.history;
+package com.pubnub.api.enums;
+
+import com.pubnub.api.PubNubRuntimeException;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public enum PnMessageType {
+import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_UNKNOWN_MESSAGE_TYPE;
+
+public enum PNMessageType {
 
     MESSAGE01(null, "message"),
     MESSAGE02(0, "message"),
@@ -12,22 +16,25 @@ public enum PnMessageType {
     MESSAGE_ACTION(3, "messageAction"),
     FILES(4, "files");
 
-    private static final Map<Integer, PnMessageType> BY_E_VALUE_FROM_SERVER = new HashMap<>();
+    private static final Map<Integer, PNMessageType> BY_E_VALUE_FROM_SERVER = new HashMap<>();
 
     static {
-        for (PnMessageType type : values()) {
+        for (PNMessageType type : values()) {
             BY_E_VALUE_FROM_SERVER.put(type.eValueFromServer, type);
         }
     }
 
-    public static PnMessageType valueByPnMessageType(Integer eValueFromServer) {
+    public static PNMessageType valueByPnMessageType(Integer eValueFromServer) {
+        if (null == BY_E_VALUE_FROM_SERVER.get(eValueFromServer)) {
+            throw PubNubRuntimeException.builder().pubnubError(PNERROBJ_UNKNOWN_MESSAGE_TYPE).build();
+        }
         return BY_E_VALUE_FROM_SERVER.get(eValueFromServer);
     }
 
     private final Integer eValueFromServer;
     private final String name;
 
-    PnMessageType(Integer eValueFromServer, String name) {
+    PNMessageType(Integer eValueFromServer, String name) {
         this.eValueFromServer = eValueFromServer;
         this.name = name;
     }
