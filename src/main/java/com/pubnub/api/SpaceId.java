@@ -8,6 +8,7 @@ import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_SPACEID_NULL_OR
 public class SpaceId {
 
     @Getter
+    @NotNull
     private final String value;
 
     public SpaceId(@NotNull String value) {
