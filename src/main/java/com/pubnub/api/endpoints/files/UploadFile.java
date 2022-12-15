@@ -87,9 +87,9 @@ class UploadFile implements RemoteAction<Void> {
 
         RequestBody requestBody;
         if (cipherKey == null) {
-            requestBody = RequestBody.create(mediaType, content);
+            requestBody = RequestBody.create(content, mediaType);
         } else {
-            requestBody = RequestBody.create(mediaType, FileEncryptionUtil.encryptToBytes(cipherKey, content));
+            requestBody = RequestBody.create(FileEncryptionUtil.encryptToBytes(cipherKey, content), mediaType);
         }
 
         builder.addFormDataPart(FILE_PART_MULTIPART, fileName, requestBody);

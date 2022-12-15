@@ -105,12 +105,12 @@ public class PNConfiguration {
     /**
      * @deprecated Use {@link #setUserId(UserId)} instead.
      */
-    public void setUuid(@NotNull String uuid) throws PubNubException {
-        PubNubUtil.require(uuid != null && !uuid.trim().isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+    public void setUuid(@NotNull String uuid) {
+        PubNubUtil.require(!uuid.trim().isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
         this.uuid = uuid;
     }
 
-    public UserId getUserId() throws PubNubException {
+    public UserId getUserId()  {
         return new UserId(this.uuid);
     }
 

@@ -10,7 +10,7 @@ public class SpaceId {
     @Getter
     private final String value;
 
-    public SpaceId(@NotNull String value) throws PubNubException {
+    public SpaceId(@NotNull String value) {
         PubNubUtil.require(value != null && !value.isEmpty(), PNERROBJ_SPACEID_NULL_OR_EMPTY);
         this.value = value;
     }

@@ -10,6 +10,7 @@ import com.pubnub.api.models.server.objects_api.PatchMemberPayload;
 import com.pubnub.api.models.server.objects_api.EntityArrayEnvelope;
 import com.pubnub.api.services.ChannelMetadataService;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +58,7 @@ public class SetChannelMembersTest extends BaseObjectApiTest {
                 }));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setChanelMembersTest() throws PubNubException {
         //given

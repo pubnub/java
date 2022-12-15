@@ -1,5 +1,6 @@
 package com.pubnub.contract.objectV2.uuidmetadata.step
 
+import com.pubnub.api.UserId
 import com.pubnub.contract.objectV2.membership.state.MembershipState
 import com.pubnub.contract.objectV2.uuidmetadata.state.GetUUIDMetadataState
 import com.pubnub.contract.objectV2.uuidmetadata.state.RemoveUUIDMetadataState
@@ -28,7 +29,7 @@ class GivenSteps(
     fun current_user_is_persona(personaName: String) {
         val pnUUIDMetadata = loadPersonaUUIDMetadata(personaName)
         val id = pnUUIDMetadata.id
-        world.configuration.uuid = id
+        world.configuration.userId = UserId(id)
     }
 
     @Given("the data for {string} persona")

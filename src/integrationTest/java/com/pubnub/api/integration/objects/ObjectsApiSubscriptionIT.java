@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ObjectsApiSubscriptionIT extends ObjectsApiBaseIT {
     private final String TEST_CHANNEL = UUID.randomUUID().toString();

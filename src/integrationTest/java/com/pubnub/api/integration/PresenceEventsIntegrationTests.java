@@ -38,6 +38,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -101,6 +102,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -169,6 +171,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -236,6 +239,7 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -249,11 +253,12 @@ public class PresenceEventsIntegrationTests extends BaseIntegrationTest {
             @Override
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
                 if (presence.getEvent().equals("state-change") && presence.getUuid()
-                        .equals(pubNub.getConfiguration().getUuid())) {
+                        .equals(pubNub.getConfiguration().getUserId().getValue())) {
                     assertEquals("state-change", presence.getEvent());
                     pubNub.removeListener(this);
                     success.set(true);
                 }
+
             }
 
             @Override

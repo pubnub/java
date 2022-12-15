@@ -7,9 +7,9 @@ import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_USERID_NULL_OR_
 
 @Data
 public class UserId {
-
     private final String value;
-    public UserId(@NotNull String value) throws PubNubException {
+
+    public UserId(@NotNull String value) {
         PubNubUtil.require(value != null && !value.isEmpty(), PNERROBJ_USERID_NULL_OR_EMPTY);
         this.value = value;
     }

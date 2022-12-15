@@ -21,7 +21,6 @@ import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import retrofit2.Response;
 
 import java.net.SocketException;
@@ -42,7 +41,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -132,7 +130,7 @@ public class FastSubscriptionManagerTest {
                 channel);
 
         final ResponseSupplier<SubscribeEnvelope> responseSupplier = requestDetails -> {
-            final ResponseBody responseBody = ResponseBody.create(MediaType.parse("json"), rawResponseBody);
+            final ResponseBody responseBody = ResponseBody.create(rawResponseBody, MediaType.parse("json"));
             return new ResponseHolder<>(Response.error(403, responseBody));
         };
 
@@ -278,7 +276,7 @@ public class FastSubscriptionManagerTest {
                 }
                 if (first) {
                     first = false;
-                    return new ResponseHolder<>(Response.error(500, ResponseBody.create(MediaType.parse("application/json"), "{}")));
+                    return new ResponseHolder<>(Response.error(500, ResponseBody.create("{}", MediaType.parse("application/json"))));
                 }
                 final SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope(emptyList(),
                         new SubscribeMetadata(timeToken, FAKE_REGION));
@@ -302,6 +300,7 @@ public class FastSubscriptionManagerTest {
         MatcherAssert.assertThat(statusCategories, Matchers.hasItem(PNStatusCategory.PNReconnectedCategory));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void reconnectUsesTT0ForFastUserNotification() {
         final ResponseSupplier<SubscribeEnvelope> responseSupplier = requestDetails -> {

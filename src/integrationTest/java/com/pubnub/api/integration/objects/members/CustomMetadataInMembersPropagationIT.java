@@ -15,18 +15,20 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNUUIDDetailsLevel;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class CustomMetadataInMembersPropagationIT extends ObjectsApiBaseIT {
     private final String testUUID = UUID.randomUUID().toString();
     private final String testChannelMetadataId = UUID.randomUUID().toString();
     private final String testExternalId = UUID.randomUUID().toString();
+
+    //Double Brace initialization is done on purpose here to test that GSON can handle that
     private final Map<String, Object> testCustomObjectForUUIDMetadata = new HashMap() {{
         put("key1", "val1");
         put("key2", "val2");
@@ -36,9 +38,11 @@ public class CustomMetadataInMembersPropagationIT extends ObjectsApiBaseIT {
         put("key3", "val3");
         put("key4", "val4");
     }};
+
     private PNSetUUIDMetadataResult setUUIDMetadataResult;
     private PNSetChannelMembersResult setChannelMembersResult;
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setMembersCustomHappyPath() throws PubNubException {
         final String testProfileUrl = "http://example.com";

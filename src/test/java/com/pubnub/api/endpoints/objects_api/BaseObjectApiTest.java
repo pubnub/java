@@ -2,6 +2,8 @@ package com.pubnub.api.endpoints.objects_api;
 
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +45,7 @@ public abstract class BaseObjectApiTest {
     @Before
     public void configureMocks() {
         when(configurationMock.getSubscribeKey()).thenReturn(testSubscriptionKey);
-        when(configurationMock.getUuid()).thenReturn(testUUID);
+        when(configurationMock.getUserId()).thenReturn(new UserId(testUUID));
         when(pubNubMock.getConfiguration()).thenReturn(configurationMock);
         when(pubNubMock.getVersion()).thenReturn(TEST_PUBNUB_VERSION);
     }

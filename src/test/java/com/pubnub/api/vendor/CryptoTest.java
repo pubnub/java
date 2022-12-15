@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.Random;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CryptoTest {
     private static final int MAX_FILE_SIZE_IN_BYTES = 1024 * 1024 * 5;

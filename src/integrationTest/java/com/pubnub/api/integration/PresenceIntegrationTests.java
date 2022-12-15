@@ -127,7 +127,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
 
                             final List<String> expectedUuidList = new ArrayList<>();
                             for (PubNub client : clients) {
-                                expectedUuidList.add(client.getConfiguration().getUuid());
+                                expectedUuidList.add(client.getConfiguration().getUserId().getValue());
                             }
 
                             Collections.sort(expectedUuidList);
@@ -191,7 +191,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
                             final String uuid = occupant.getUuid();
                             boolean contains = false;
                             for (PubNub client : clients) {
-                                if (client.getConfiguration().getUuid().equals(uuid)) {
+                                if (client.getConfiguration().getUserId().getValue().equals(uuid)) {
                                     contains = true;
                                     break;
                                 }
@@ -219,6 +219,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
@@ -233,7 +234,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
                 if (presence.getEvent().equals("state-change")
                         && presence.getChannel().equals(expectedChannel)
-                        && presence.getUuid().equals(pubNub.getConfiguration().getUuid())) {
+                        && presence.getUuid().equals(pubNub.getConfiguration().getUserId().getValue())) {
                     assertEquals(expectedStatePayload, presence.getState());
                     hits.incrementAndGet();
                 }
@@ -312,6 +313,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (!status.isError()) {
@@ -395,6 +397,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (!status.isError()) {

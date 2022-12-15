@@ -3,10 +3,10 @@ package com.pubnub.api.endpoints.files;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.models.consumer.files.PNFileUrlResult;
 import okhttp3.HttpUrl;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -14,6 +14,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class GetFileUrlTest {
 
@@ -37,7 +41,7 @@ public class GetFileUrlTest {
         //then
         Collection<String> queryParamNames = queryParameterNames(result.getUrl());
         queryParamNames.removeAll(defaultQueryParams);
-        Assert.assertEquals(Collections.emptySet(), queryParamNames);
+        assertEquals(Collections.emptySet(), queryParamNames);
     }
 
     @Test
@@ -55,7 +59,7 @@ public class GetFileUrlTest {
         //then
         Collection<String> queryParamNames = queryParameterNames(result.getUrl());
         queryParamNames.removeAll(defaultQueryParams);
-        Assert.assertThat(queryParamNames, Matchers.containsInAnyOrder("signature", "timestamp"));
+        assertThat(queryParamNames, Matchers.containsInAnyOrder("signature", "timestamp"));
     }
 
     @Test
@@ -73,7 +77,7 @@ public class GetFileUrlTest {
         //then
         Collection<String> queryParamNames = queryParameterNames(result.getUrl());
         queryParamNames.removeAll(defaultQueryParams);
-        Assert.assertThat(queryParamNames, Matchers.containsInAnyOrder("auth"));
+        assertThat(queryParamNames, Matchers.containsInAnyOrder("auth"));
     }
 
     @Test
@@ -92,11 +96,11 @@ public class GetFileUrlTest {
         System.out.println(result.getUrl());
         Collection<String> queryParamNames = queryParameterNames(result.getUrl());
         queryParamNames.removeAll(defaultQueryParams);
-        Assert.assertThat(queryParamNames, Matchers.containsInAnyOrder("auth", "signature", "timestamp"));
+        assertThat(queryParamNames, Matchers.containsInAnyOrder("auth", "signature", "timestamp"));
     }
 
     private PNConfiguration config() throws PubNubException {
-        PNConfiguration config = new PNConfiguration(PubNub.generateUUID());
+        PNConfiguration config = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         config.setPublishKey("pk");
         config.setSubscribeKey("sk");
         return config;

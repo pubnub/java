@@ -54,6 +54,7 @@ public class SetMembershipsTest extends BaseObjectApiTest {
                 }));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setMembershipTest() throws PubNubException {
         //given

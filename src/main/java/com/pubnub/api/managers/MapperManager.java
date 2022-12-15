@@ -10,7 +10,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
@@ -170,15 +169,6 @@ public class MapperManager {
                     .errormsg(e.getMessage())
                     .cause(e)
                     .build();
-        }
-    }
-
-    public void isValidJsonObject(Object object) throws PubNubException {
-        String json = toJson(object);
-        JsonElement jsonElement = new JsonParser().parse(json);
-        boolean isValid = isJsonObject(jsonElement);
-        if (!isValid) {
-            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_JSON).build();
         }
     }
 

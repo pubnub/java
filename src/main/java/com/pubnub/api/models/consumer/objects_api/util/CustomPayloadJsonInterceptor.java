@@ -20,6 +20,6 @@ public class CustomPayloadJsonInterceptor implements JsonDeserializer<Object>, J
 
     @Override
     public JsonElement serialize(Object o, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonParser().parse(new Gson().toJson(o));
+        return JsonParser.parseString(new Gson().toJson(o));
     }
 }

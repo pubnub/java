@@ -83,12 +83,12 @@ class GivenSteps(private val grantTokenState: GrantTokenState,
     }
 
     @Given("a valid token with permissions to publish with channel {string}")
-    fun a_valid_token_with_permissions_to_publish_with_channel(string: String?) {
+    fun a_valid_token_with_permissions_to_publish_with_channel(@Suppress("UNUSED_PARAMETER")string: String?) {
         return a_token()
     }
 
     @Given("an expired token with permissions to publish with channel {string}")
-    fun an_expired_token_with_permissions_to_publish_with_channel(string: String) {
+    fun an_expired_token_with_permissions_to_publish_with_channel(@Suppress("UNUSED_PARAMETER")string: String) {
         return a_token()
     }
 

@@ -137,8 +137,8 @@ public class StateManager {
         );
     }
 
+    @SuppressWarnings("deprecation")
     public synchronized HeartbeatStateData heartbeatStateData() {
-        //noinspection deprecation
         if (configuration.isManagePresenceListManually()) {
             return new HeartbeatStateData(createHeartbeatStatePayload(),
                     getNames(heartbeatGroups),

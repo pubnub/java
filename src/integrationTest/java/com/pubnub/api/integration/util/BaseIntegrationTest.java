@@ -5,6 +5,7 @@ import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubError;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.enums.PNOperationType;
@@ -131,8 +132,8 @@ public abstract class BaseIntegrationTest {
     protected PNConfiguration getBasicPnConfiguration()  {
         final PNConfiguration pnConfiguration;
         try {
-            pnConfiguration = new PNConfiguration(PubNub.generateUUID());
-            pnConfiguration.setUuid("client-".concat(UUID.randomUUID().toString()));
+            pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
+            pnConfiguration.setUserId(new UserId("client-".concat(UUID.randomUUID().toString())));
         } catch (PubNubException e) {
             throw new RuntimeException(e);
         }
@@ -152,8 +153,8 @@ public abstract class BaseIntegrationTest {
     private PNConfiguration getServerPnConfiguration(){
         final PNConfiguration pnConfiguration;
         try {
-            pnConfiguration = new PNConfiguration(PubNub.generateUUID());
-            pnConfiguration.setUuid("server-".concat(UUID.randomUUID().toString()));
+            pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
+            pnConfiguration.setUserId(new UserId("server-".concat(UUID.randomUUID().toString())));
         } catch (PubNubException e) {
             throw new RuntimeException(e);
         }
@@ -265,7 +266,7 @@ public abstract class BaseIntegrationTest {
 
     protected Map<String, String> generateMessage(PubNub pubNub, String message) {
         final Map<String, String> map = new HashMap<>();
-        map.put("publisher", pubNub.getConfiguration().getUuid());
+        map.put("publisher", pubNub.getConfiguration().getUserId().getValue());
         map.put("text", "mymsg" + RandomGenerator.newValue(5) + "+" + RandomGenerator.newValue(5));
         map.put("uncd", RandomGenerator.unicode(8));
         map.put("extra", message);
@@ -274,7 +275,7 @@ public abstract class BaseIntegrationTest {
 
     protected JsonObject generateMessage(PubNub pubNub) {
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("publisher", pubNub.getConfiguration().getUuid());
+        jsonObject.addProperty("publisher", pubNub.getConfiguration().getUserId().getValue());
         jsonObject.addProperty("text", RandomGenerator.newValue(8));
         jsonObject.addProperty("uncd", RandomGenerator.unicode(8));
         return jsonObject;
