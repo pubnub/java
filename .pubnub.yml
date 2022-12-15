@@ -1,9 +1,9 @@
 name: java
-version: 6.3.0
+version: 6.3.1
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-6.3.0-all.jar
+  - build/libs/pubnub-gson-6.3.1-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: GitHub
-              package-name: pubnub-gson-6.3.0
-              location: https://github.com/pubnub/java/releases/download/v6.3.0/pubnub-gson-6.3.0-all.jar
+              package-name: pubnub-gson-6.3.1
+              location: https://github.com/pubnub/java/releases/download/v6.3.1/pubnub-gson-6.3.1-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-6.3.0
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.0/pubnub-gson-6.3.0.jar
+              package-name: pubnub-gson-6.3.1
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.1/pubnub-gson-6.3.1.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,11 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2022-12-15
+    version: v6.3.1
+    changes:
+      - type: bug
+        text: "In case of an error response it checks if there's a body before reading from it."
   - date: 2022-11-07
     version: v6.3.0
     changes:

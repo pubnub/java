@@ -1,3 +1,9 @@
+## v6.3.1
+December 15 2022
+
+#### Fixed
+- In case of an error response it checks if there's a body before reading from it.
+
 ## v6.3.0
 November 07 2022
 
