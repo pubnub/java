@@ -2,7 +2,7 @@ package com.pubnub.api.models.server;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
-import com.pubnub.api.workers.SubscribeMessageProcessor;
+import com.pubnub.api.enums.PNMessageType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,10 +22,6 @@ public class SubscribeMessage {
     @SerializedName("d")
     private JsonElement payload;
 
-    // TODO: figure me out
-    //@SerializedName("ear")
-    //private String payload;
-
     @SerializedName("f")
     private String flags;
 
@@ -35,29 +31,26 @@ public class SubscribeMessage {
     @SerializedName("k")
     private String subscribeKey;
 
-    //@SerializedName("s")
-    //private String sequenceNumber;
-
     @SerializedName("o")
     private OriginationMetaData originationMetadata;
 
     @SerializedName("p")
     private PublishMetaData publishMetaData;
 
-    //@SerializedName("r")
-    //private Object replicationMap;
-
     @SerializedName("u")
     private JsonElement userMetadata;
 
-    //@SerializedName("w")
-    //private String waypointList;
-
     @SerializedName("e")
-    private Integer type;
+    private Integer pnMessageType;
+
+    @SerializedName("mt")
+    private String userMessageType;
+
+    @SerializedName("si")
+    private String spaceId;
 
     public boolean supportsEncryption() {
-        return type == null || type == SubscribeMessageProcessor.TYPE_MESSAGE || type == SubscribeMessageProcessor.TYPE_FILES;
+        return pnMessageType == PNMessageType.MESSAGE01.getEValueFromServer() || pnMessageType.equals(PNMessageType.MESSAGE02.getEValueFromServer()) || pnMessageType.equals(PNMessageType.FILES.getEValueFromServer());
     }
 
 }

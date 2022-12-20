@@ -16,7 +16,7 @@ class MessageTypeTest {
 
         objectUnderTest = new MessageType(pnMessageType, userMessageType);
 
-        assertEquals(userMessageType, objectUnderTest.getType());
+        assertEquals(userMessageType, objectUnderTest.getValue());
     }
 
     @Test
@@ -26,7 +26,7 @@ class MessageTypeTest {
 
         objectUnderTest = new MessageType(pnMessageType, userMessageType);
 
-        assertEquals(pnMessageType.toString(), objectUnderTest.getType());
+        assertEquals(pnMessageType.toString(), objectUnderTest.getValue());
     }
 
     @Test

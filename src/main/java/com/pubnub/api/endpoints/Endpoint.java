@@ -393,9 +393,7 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
 
     protected Map<String, String> encodeParams(Map<String, String> params) {
         Map<String, String> encodedParams = new HashMap<>(params);
-        if (encodedParams.containsKey(PubNubUtil.AUTH_QUERY_PARAM_NAME)) {
-            encodedParams.put(PubNubUtil.AUTH_QUERY_PARAM_NAME, PubNubUtil.urlEncode(encodedParams.get(PubNubUtil.AUTH_QUERY_PARAM_NAME)));
-        }
+        encodedParams.computeIfPresent(PubNubUtil.AUTH_QUERY_PARAM_NAME, (key, val) -> PubNubUtil.urlEncode(encodedParams.get(PubNubUtil.AUTH_QUERY_PARAM_NAME)));
         return encodedParams;
     }
 

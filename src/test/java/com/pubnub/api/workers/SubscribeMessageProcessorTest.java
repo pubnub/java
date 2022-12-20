@@ -13,6 +13,7 @@ import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.UserId;
 import com.pubnub.api.managers.DuplicationManager;
 import com.pubnub.api.models.consumer.pubsub.PNEvent;
+import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.server.SubscribeEnvelope;
 import com.pubnub.api.models.server.SubscribeMessage;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -143,6 +145,29 @@ public class SubscribeMessageProcessorTest {
         testDifferentJsonMessages(object);
     }
 
+    @Test
+    public void pnMessageResult_should_contain_messageType_and_spaceId_when_they_are_provided_in_subscribeMessage() throws PubNubException {
+        String message = "message content something interesting";
+        String messageType = "myMessageType";
+        String spaceId = "mySpace";
+        String subscribeResponse = getSubscribeResponseWithMessageTypeAndSpaceId(message, messageType, spaceId);
+
+        //given
+        Gson gson = new Gson();
+        SubscribeMessageProcessor subscribeMessageProcessor = subscribeMessageProcessor(config());
+        SubscribeEnvelope subscribeEnvelope = gson.fromJson(subscribeResponse, SubscribeEnvelope.class);
+        //when
+        PNEvent result = subscribeMessageProcessor.processIncomingPayload(subscribeEnvelope.getMessages().get(0));
+
+        //then
+        PNMessageResult messageResult = (PNMessageResult) result;
+
+        assertThat(result, is(instanceOf(PNMessageResult.class)));
+        assertThat(messageResult.getMessage().getAsString(), is(message));
+        assertThat(messageResult.getMessageType().getValue(), equalTo(messageType));
+        assertThat(messageResult.getSpaceId().getValue(), equalTo(spaceId));
+    }
+
     private void testDifferentJsonMessages(JsonElement jsonMessage) throws PubNubException {
         //given
         Gson gson = new Gson();
@@ -205,4 +230,31 @@ public class SubscribeMessageProcessorTest {
         }
         return queryParameters;
     }
+
+    private String getSubscribeResponseWithMessageTypeAndSpaceId(String message, String messageType, String spaceId) {
+        String subscribeResponse = "{\n" +
+                "    \"t\": {\n" +
+                "        \"t\": \"16710463904083117\",\n" +
+                "        \"r\": 21\n" +
+                "    },\n" +
+                "    \"m\": [\n" +
+                "        {\n" +
+                "            \"a\": \"4\",\n" +
+                "            \"f\": 0,\n" +
+                "            \"p\": {\n" +
+                "                \"t\": \"16710463855524468\",\n" +
+                "                \"r\": 21\n" +
+                "            },\n" +
+                "            \"k\": \"demo\",\n" +
+                "            \"c\": \"testChannel\",\n" +
+                "            \"d\":  \"" + message + "\",\n" +
+                "            \"mt\": \"" + messageType + "\",\n" +
+                "            \"si\": \"" + spaceId + "\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        return subscribeResponse;
+    }
+
 }

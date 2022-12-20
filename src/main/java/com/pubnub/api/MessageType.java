@@ -2,6 +2,7 @@ package com.pubnub.api;
 
 
 import com.pubnub.api.enums.PNMessageType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_PNMESSAGETYPE_NULL;
@@ -16,14 +17,15 @@ public class MessageType {
         this.userMessageType = userMessageType;
     }
 
-    MessageType(@NotNull PNMessageType pnMessageType, String userMessageType) {
+    @ApiStatus.Internal
+    public MessageType(@NotNull PNMessageType pnMessageType, String userMessageType) {
         PubNubUtil.require(pnMessageType != null, PNERROBJ_PNMESSAGETYPE_NULL);
         this.pnMessageType = pnMessageType;
         this.userMessageType = userMessageType;
     }
 
     @NotNull
-    public String getType() {
+    public String getValue() {
         if (userMessageType != null && !userMessageType.isEmpty()) {
             return userMessageType;
         } else {

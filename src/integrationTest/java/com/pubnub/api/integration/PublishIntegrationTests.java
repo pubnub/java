@@ -6,6 +6,7 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.SubscribeCallback;
+import com.pubnub.api.enums.PNMessageType;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNPublishResult;
@@ -281,9 +282,9 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     @Test
     public void testOrgJsonObject_Get_Receive() throws PubNubException {
         final String channel = random();
-
+        final String expectedUserMessageType = "test";
+        final String expectedSpaceIdValue = "1-to-1_chat";
         final JSONObject payload = generatePayloadJSON();
-
         final AtomicBoolean success = new AtomicBoolean();
 
         pubNub.addListener(new SubscribeCallback() {
@@ -300,6 +301,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
                 final JsonElement receivedMessage = pnMessageResult.getMessage();
+                assertEquals(expectedUserMessageType, pnMessageResult.getMessageType().getValue());
+                assertEquals(expectedSpaceIdValue, pnMessageResult.getSpaceId().getValue());
                 try {
                     final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
                     assertEquals(payload.toString(), receivedObject.toString());
@@ -350,8 +353,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
         pubNub.publish()
                 .message(payload)
                 .channel(channel)
-                .messageType(new MessageType("test"))
-                .spaceId(new SpaceId("1-to-1_chat"))
+                .messageType(new MessageType(expectedUserMessageType))
+                .spaceId(new SpaceId(expectedSpaceIdValue))
                 .sync();
 
         listen(success);
@@ -516,6 +519,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
                 final JsonElement receivedMessage = pnMessageResult.getMessage();
+                assertEquals(PNMessageType.MESSAGE01.toString(), pnMessageResult.getMessageType().getValue());
+                assertEquals(PNMessageType.MESSAGE02.toString(), pnMessageResult.getMessageType().getValue());
                 try {
                     final JSONArray receivedArray = new JSONArray(receivedMessage.toString());
                     assertEquals(payload.toString(), receivedArray.toString());
