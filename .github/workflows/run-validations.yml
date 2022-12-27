@@ -1,0 +1,30 @@
+name: Validations
+
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  repository-validators:
+    name: "Validate .pubnub.yml"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Checkout validator action
+        uses: actions/checkout@v3
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: "Run '.pubnub.yml' file validation"
+        uses: ./.github/.release/actions/actions/validators/pubnub-yml
+        with:
+          token: ${{ secrets.GH_TOKEN }}

@@ -3,6 +3,12 @@ name: Tests
 on:
   push:
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 
 jobs:
   tests:
@@ -16,28 +22,37 @@ jobs:
       PAM_SEC_KEY: ${{ secrets.PAM_SEC_KEY }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.GH_TOKEN }}
       - name: Build and run tests
         run: |
           ./gradlew assemble
           ./gradlew check
-  acceptance:
+  acceptance-tests:
     name: Acceptance tests
     runs-on: ubuntu-latest
+    env:
+      pubKey: somePubKey
+      subKey: someSubKey
+      pamPubKey: somePamPubKey
+      pamSubKey: somePamSubKey
+      pamSecKey: someSecKey
+      serverHostPort: "localhost:8090"
+      serverMock: true
+      dataFileLocation: "src/test/resources/sdk-specifications/features/data"
     steps:
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Checkout mock-server action
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
-          path: client-engineering-deployment-tools
+          path: .github/.release/actions
       - name: Run mock server action
-        uses: ./client-engineering-deployment-tools/actions/mock-server
+        uses: ./.github/.release/actions/actions/mock-server
         with:
           token: ${{ secrets.GH_TOKEN }}
       - name: Cache
@@ -51,31 +66,13 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Run acceptance tests (optional)
         run: |
-          export pubKey=somePubKey
-          export subKey=someSubKey
-          export pamPubKey=somePamPubKey
-          export pamSubKey=somePamSubKey
-          export pamSecKey=someSecKey
-          export serverHostPort=localhost:8090
-          export serverMock=true
-          export dataFileLocation=src/test/resources/sdk-specifications/features/data
           ln -s /home/runner/work/java/java/sdk-specifications src/test/resources/sdk-specifications
-          ./gradlew cucumber --tests RunBetaCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
+          ./gradlew cucumber --tests RunBetaCucumberTest -Dcucumber.features="sdk-specifications/features/" -i
         continue-on-error: true
       - name: Run acceptance tests (required)
-        run: |
-          export pubKey=somePubKey
-          export subKey=someSubKey
-          export pamPubKey=somePamPubKey
-          export pamSubKey=somePamSubKey
-          export pamSecKey=someSecKey
-          export serverHostPort=localhost:8090
-          export serverMock=true
-          export dataFileLocation=src/test/resources/sdk-specifications/features/data
-           ln -s /home/runner/work/java/java/sdk-specifications src/test/resources/sdk-specifications
-          ./gradlew cucumber --tests RunMainCucumberTest  -Dcucumber.features="sdk-specifications/features/" -i
+        run: ./gradlew cucumber --tests RunMainCucumberTest -Dcucumber.features="sdk-specifications/features/" -i
       - name: Expose acceptance tests reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: acceptance-test-reports
