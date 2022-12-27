@@ -39,7 +39,7 @@ public abstract class GetChannelMembers extends ChannelEnpoint<EntityArrayEnvelo
                                   final TelemetryManager telemetry,
                                   final RetrofitManager retrofitInstance,
                                   final TokenManager tokenManager) {
-        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, false);
         return new Builder(pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher, tokenManager);
     }
 

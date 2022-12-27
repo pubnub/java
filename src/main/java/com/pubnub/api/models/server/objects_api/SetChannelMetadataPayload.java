@@ -9,4 +9,6 @@ public class SetChannelMetadataPayload {
     private final String name;
     private final String description;
     private final Object custom;
+    private final String status;
+    private final String type;
 }

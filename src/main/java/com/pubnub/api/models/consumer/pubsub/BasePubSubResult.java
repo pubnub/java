@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class BasePubSubResult {
+public class BasePubSubResult implements PNEvent {
 
     @Deprecated
     private String subscribedChannel;

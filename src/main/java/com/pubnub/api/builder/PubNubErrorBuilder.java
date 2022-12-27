@@ -356,6 +356,16 @@ public final class PubNubErrorBuilder {
      */
     public static final int PNERR_UUID_NULL_OR_EMPTY = 169;
 
+    /**
+     * UserId can't be null nor empty
+     */
+    public static final int PNERR_USERID_NULL_OR_EMPTY = 170;
+
+    /**
+     * SpaceId can't be null nor empty
+     */
+    public static final int PNERR_SPACEID_NULL_OR_EMPTY = 171;
+
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
             .errorCode(PNERR_TIMEOUT)
@@ -708,6 +718,16 @@ public final class PubNubErrorBuilder {
     public static final PubNubError PNERROBJ_UUID_NULL_OR_EMPTY = PubNubError.builder()
             .errorCode(PNERR_UUID_NULL_OR_EMPTY)
             .message("Uuid can't be null nor empty.")
+            .build();
+
+    public static final PubNubError PNERROBJ_USERID_NULL_OR_EMPTY = PubNubError.builder()
+            .errorCode(PNERR_USERID_NULL_OR_EMPTY)
+            .message("UserId can't be null nor empty.")
+            .build();
+
+    public static final PubNubError PNERROBJ_SPACEID_NULL_OR_EMPTY = PubNubError.builder()
+            .errorCode(PNERR_SPACEID_NULL_OR_EMPTY)
+            .message("SpaceId can't be null nor empty.")
             .build();
 
     private PubNubErrorBuilder() {

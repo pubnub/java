@@ -49,7 +49,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishMessage() {
+    public void testPublishMessage() throws PubNubException {
         final AtomicBoolean success = new AtomicBoolean();
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
@@ -59,7 +59,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .channel(expectedChannel)
                 .async((result, status) -> {
                     assertFalse(status.isError());
-                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUuid());
+                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUserId().getValue());
                     success.set(true);
                 });
 
@@ -116,7 +116,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .shouldStore(false)
                 .async((result, status) -> {
                     assertFalse(status.isError());
-                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUuid());
+                    assertEquals(status.getUuid(), pubNub.getConfiguration().getUserId().getValue());
                 });
 
         pause(2);
@@ -163,7 +163,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult message) {
                 assertEquals(expectedChannel, message.getChannel());
-                assertEquals(observer.getConfiguration().getUuid(), message.getPublisher());
+                assertEquals(observer.getConfiguration().getUserId().getValue(), message.getPublisher());
                 assertEquals(messagePayload, message.getMessage());
                 success.set(true);
             }

@@ -35,7 +35,7 @@ public abstract class SetUUIDMetadata extends UUIDEndpoint<SetUUIDMetadata, Enti
                                          final TelemetryManager telemetryManager,
                                          final RetrofitManager retrofitManager,
                                          final TokenManager tokenManager) {
-        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, true);
         return new SetUUIDMetadataCommand(pubNub, telemetryManager, retrofitManager, compositeParameterEnricher, tokenManager);
     }
 
@@ -44,6 +44,8 @@ public abstract class SetUUIDMetadata extends UUIDEndpoint<SetUUIDMetadata, Enti
     public abstract SetUUIDMetadata profileUrl(String profileUrl);
     public abstract SetUUIDMetadata externalId(String externalId);
     public abstract SetUUIDMetadata custom(Map<String, Object> custom);
+    public abstract SetUUIDMetadata status(String name);
+    public abstract SetUUIDMetadata type(String name);
 }
 
 final class SetUUIDMetadataCommand extends SetUUIDMetadata implements HavingCustomInclude<SetUUIDMetadata> {
@@ -52,6 +54,8 @@ final class SetUUIDMetadataCommand extends SetUUIDMetadata implements HavingCust
     private String profileUrl;
     private String externalId;
     private Map<String, Object> custom;
+    private String status;
+    private String type;
 
     SetUUIDMetadataCommand(final PubNub pubNub,
                            final TelemetryManager telemetryManager,
@@ -67,13 +71,13 @@ final class SetUUIDMetadataCommand extends SetUUIDMetadata implements HavingCust
     protected Call<EntityEnvelope<PNUUIDMetadata>> executeCommand(final Map<String, String> effectiveParams)
             throws PubNubException {
         //This is workaround to accept custom maps that are instances of anonymous classes not handled by gson
-        final HashMap<String, Object> customHashMap = new HashMap<String, Object>();
+        final HashMap<String, Object> customHashMap = new HashMap<>();
         if (custom != null) {
             customHashMap.putAll(custom);
         }
 
         final SetUUIDMetadataPayload setUUIDMetadataPayload = new SetUUIDMetadataPayload(name, email, externalId,
-                profileUrl, customHashMap);
+                profileUrl, customHashMap, status, type);
 
         return getRetrofit()
                 .getUuidMetadataService()
@@ -128,6 +132,18 @@ final class SetUUIDMetadataCommand extends SetUUIDMetadata implements HavingCust
     @Override
     public SetUUIDMetadata custom(Map<String, Object> custom) {
         this.custom = custom;
+        return this;
+    }
+
+    @Override
+    public SetUUIDMetadata status(String status) {
+       this.status = status;
+       return this;
+    }
+
+    @Override
+    public SetUUIDMetadata type(String type) {
+        this.type = type;
         return this;
     }
 }

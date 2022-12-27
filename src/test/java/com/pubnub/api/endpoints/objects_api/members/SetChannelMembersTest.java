@@ -10,6 +10,7 @@ import com.pubnub.api.models.server.objects_api.PatchMemberPayload;
 import com.pubnub.api.models.server.objects_api.EntityArrayEnvelope;
 import com.pubnub.api.services.ChannelMetadataService;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -57,6 +58,7 @@ public class SetChannelMembersTest extends BaseObjectApiTest {
                 }));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setChanelMembersTest() throws PubNubException {
         //given

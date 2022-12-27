@@ -388,7 +388,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
 
         pubNub.setPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(pubNub.getConfiguration().getUuid())
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .state(expectedStatePayload)
                 .async((pnSetStateResult, status) -> {
                     try {
@@ -412,9 +412,10 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
         final JsonObject expectedStatePayload = generatePayload();
 
         requestAccess(READ);
+
         pubNub.setPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(pubNub.getConfiguration().getUuid())
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .state(expectedStatePayload)
                 .async((result, status) -> {
                     try {
@@ -440,7 +441,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
 
         pubNub.getPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(pubNub.getConfiguration().getUuid())
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .async((result, status) -> {
                     try {
                         assertAuthKey(status);
@@ -464,7 +465,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
         requestAccess(READ);
         pubNub.getPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(pubNub.getConfiguration().getUuid())
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .async((result, status) -> {
                     try {
                         requestAccess(READ);
@@ -489,7 +490,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
         requestAccess(READ);
         pubNub.setPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(pubNub.getConfiguration().getUuid())
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .state(expectedStatePayload)
                 .async((result, status) -> {
                     try {
@@ -509,7 +510,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
 
         pubNub.getPresenceState()
                 .channels(Collections.singletonList(expectedChannel))
-                .uuid(pubNub.getConfiguration().getUuid())
+                .uuid(pubNub.getConfiguration().getUserId().getValue())
                 .async((result, status) -> {
                     try {
                         assertAuthKey(status);
@@ -540,13 +541,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
             }
             @Override
             public void status(@NotNull PubNub pubNub, @NotNull PNStatus pnStatus) {
-                /*if (pnStatus.getOperation() == PNOperationType.PNSubscribeOperation &&
-                        pnStatus.getCategory() == PNConnectedCategory) {
-                    server.subscribe()
-                            .withPresence()
-                            .channels(Collections.singletonList(mChannel))
-                            .execute();
-                }*/
+
             }
 
             @Override
@@ -558,7 +553,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
             public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult pnPresenceEventResult) {
                 if ((pnPresenceEventResult.getEvent().equals("join"))
                         && (pnPresenceEventResult.getChannel().equals(expectedChannel))) {
-                    if (pnPresenceEventResult.getUuid().equals(server.getConfiguration().getUuid())) {
+                    if (pnPresenceEventResult.getUuid().equals(server.getConfiguration().getUserId().getValue())) {
                         success.set(true);
                     }
                 }
@@ -1071,7 +1066,7 @@ abstract class AccessManagerIntegrationTest extends BaseIntegrationTest {
     }
 
     private void assertUuid(PNStatus pnStatus) throws AssertionError {
-        assertEquals(pubNub.getConfiguration().getUuid(), pnStatus.getUuid());
+        assertEquals(pubNub.getConfiguration().getUserId().getValue(), pnStatus.getUuid());
     }
 
     abstract String getPamLevel();

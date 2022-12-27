@@ -1,27 +1,55 @@
 package com.pubnub.api.endpoints.objects_api;
 
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.endpoints.objects_api.utils.*;
+import com.pubnub.api.endpoints.objects_api.utils.Filter;
+import com.pubnub.api.endpoints.objects_api.utils.Include;
+import com.pubnub.api.endpoints.objects_api.utils.Limiter;
+import com.pubnub.api.endpoints.objects_api.utils.Pager;
+import com.pubnub.api.endpoints.objects_api.utils.ParameterEnricher;
+import com.pubnub.api.endpoints.objects_api.utils.Sorter;
+import com.pubnub.api.endpoints.objects_api.utils.TotalCounter;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CompositeParameterEnricher implements ParameterEnricher {
+    private static final String STATUS = "status";
+    private static final String TYPE = "type";
     @Getter
     private final Include include;
-    @Getter private final Sorter sorter;
-    @Getter private final Pager pager;
-    @Getter private final Filter filter;
-    @Getter private final TotalCounter totalCounter;
-    @Getter private final Limiter limiter;
+    @Getter
+    private final Sorter sorter;
+    @Getter
+    private final Pager pager;
+    @Getter
+    private final Filter filter;
+    @Getter
+    private final TotalCounter totalCounter;
+    @Getter
+    private final Limiter limiter;
+
 
     public static CompositeParameterEnricher createDefault() {
+        return createDefault(false, false);
+    }
+
+    public static CompositeParameterEnricher createDefault(boolean includeStatusInParams, boolean includeTypeInParams) {
         final Include include = new Include();
         final Sorter sorter = new Sorter();
         final Pager pager = new Pager();
         final Filter filter = new Filter();
         final Limiter limiter = new Limiter();
         final TotalCounter totalCounter = new TotalCounter();
+        if (includeStatusInParams) {
+            include.addInclusionFlag(STATUS);
+        }
+        if (includeTypeInParams) {
+            include.addInclusionFlag(TYPE);
+        }
 
         return new CompositeParameterEnricher(include, sorter, pager, filter, totalCounter, limiter);
     }
@@ -39,7 +67,6 @@ public class CompositeParameterEnricher implements ParameterEnricher {
         this.totalCounter = totalCounter;
         this.limiter = limiter;
     }
-
 
 
     @Override

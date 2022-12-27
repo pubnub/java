@@ -2,10 +2,14 @@ package com.pubnub.api.integration.objects;
 
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.integration.util.ITTestConfig;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.Before;
+
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
@@ -18,7 +22,12 @@ public abstract class ObjectsApiBaseIT {
     protected final PubNub pubNubUnderTest = pubNub();
 
     private PubNub pubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        PNConfiguration pnConfiguration;
+        try {
+            pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
+        } catch (PubNubException e) {
+            throw new RuntimeException(e);
+        }
         pnConfiguration.setSubscribeKey(itTestConfig.subscribeKey());
         pnConfiguration.setLogVerbosity(PNLogVerbosity.BODY);
 

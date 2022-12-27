@@ -85,6 +85,7 @@ public class ModifyPushChannelsForDeviceTest extends TestHarness {
         assertFalse(requests.get(0).queryParameter("topic").isPresent());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGoogleSuccessSyncRemoveAll() throws PubNubException, InterruptedException {
         stubFor(get(urlPathEqualTo("/v1/push/sub-key/mySubscribeKey/devices/niceDevice/remove"))
@@ -243,6 +244,7 @@ public class ModifyPushChannelsForDeviceTest extends TestHarness {
         assertFalse(requests.get(0).queryParameter("topic").isPresent());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testAddGoogleSuccessSync() throws PubNubException, InterruptedException {
 
@@ -451,6 +453,7 @@ public class ModifyPushChannelsForDeviceTest extends TestHarness {
         assertFalse(requests.get(0).queryParameter("topic").isPresent());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testRemoveGoogleSuccessSync() throws PubNubException, InterruptedException {
 

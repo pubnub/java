@@ -45,6 +45,7 @@ public class BasePathManager {
      *
      * @return usable base url.
      */
+    @SuppressWarnings("deprecation")
     public String getBasePath() {
         StringBuilder constructedUrl = new StringBuilder("http");
 

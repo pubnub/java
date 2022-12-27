@@ -24,16 +24,17 @@ import java.util.concurrent.TimeUnit;
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNChannelDetailsLevel.CHANNEL;
 import static com.pubnub.api.endpoints.objects_api.utils.Include.PNChannelDetailsLevel.CHANNEL_WITH_CUSTOM;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
     private final String testChannelMetadataId = UUID.randomUUID().toString();
+    //Double Brace initialization is done on purpose here to test that GSON can handle that
     private final Map<String, Object> testCustomObjectForChannelMetadata = new HashMap() {{
         put("key1", "val1");
         put("key2", "val2");
@@ -63,6 +64,7 @@ public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
                 .execute();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setMembershipCustomHappyPath() throws PubNubException {
         final String testChannelName = "The Name of the Channel";
@@ -111,11 +113,12 @@ public class CustomMetadataInMembershipPropagationIT extends ObjectsApiBaseIT {
                                                 hasProperty("description", is(testDescription)),
                                                 hasProperty("custom", nullValue()))))))));
 
+        String userIdValue = pubNubUnderTest.getConfiguration().getUserId().getValue();
         await().atMost(1, TimeUnit.SECONDS).untilAsserted(new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
                 assertThat(pnMembershipResults, hasItem(
-                        hasProperty("data", hasProperty("uuid", is(pubNubUnderTest.getConfiguration().getUuid())))));
+                        hasProperty("data", hasProperty("uuid", is(userIdValue)))));
             }
         });
     }

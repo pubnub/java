@@ -1,3 +1,45 @@
+## v6.3.1
+December 15 2022
+
+#### Fixed
+- In case of an error response it checks if there's a body before reading from it.
+
+## v6.3.0
+November 07 2022
+
+#### Added
+- Added acceptance tests for ObjectsV2 feature.
+-  Added possibility to add status when setting ChannelMembers.
+- Added status and type to query parameters for objectV2 REST calls. For membership and member only status.
+
+#### Modified
+- Upgrade OkHttp lib to 4.9.3.
+
+## v6.2.0
+September 20 2022
+
+#### Added
+- PNFileEventResult has messageJson field with the same JsonElement type as in other events.
+
+## v6.1.0
+July 21 2022
+
+#### Added
+- Add support for spaces and users permissions in grantToken.
+- Add userId to PNConfiguration and deprecate uuid .
+
+## v6.0.2
+May 19 2022
+
+#### Fixed
+- Upgraded gson to 2.9.0 to make SDK working under Java 17.
+
+## v6.0.1
+May 09 2022
+
+#### Fixed
+- Do heartbeat and leave calls sequentially to prevent race condition between these two calls and 'phantom' join after leave.
+
 ## v6.0.0
 January 12 2022
 

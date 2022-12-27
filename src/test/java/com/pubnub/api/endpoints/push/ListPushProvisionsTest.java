@@ -20,7 +20,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -73,6 +75,7 @@ public class ListPushProvisionsTest extends TestHarness {
         assertFalse(requests.get(0).queryParameter("news").isPresent());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGoogleSuccessSync() throws PubNubException, InterruptedException {
 
@@ -225,7 +228,7 @@ public class ListPushProvisionsTest extends TestHarness {
         try {
             instance.deviceId("niceDevice").pushType(PNPushType.APNS2).sync();
         } catch (PubNubException e) {
-            Assert.assertEquals(e.getPubnubError(), PubNubErrorBuilder.PNERROBJ_PUSH_TOPIC_MISSING);
+            Assert.assertEquals(PubNubErrorBuilder.PNERROBJ_PUSH_TOPIC_MISSING, e.getPubnubError());
         }
     }
 
@@ -242,6 +245,7 @@ public class ListPushProvisionsTest extends TestHarness {
         assertEquals("development", requests.get(0).queryParameter("environment").firstValue());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testPushTypeNames() {
         String expectedName = "gcm";

@@ -26,6 +26,10 @@ interface ContractTestConfig : Config {
 
     @Config.Key("serverMock")
     fun serverMock(): Boolean
+
+    @Config.Key("dataFileLocation")
+    @Config.DefaultValue("src/test/resources/sdk-specifications/features/data")
+    fun dataFileLocation(): String
 }
 
 val CONTRACT_TEST_CONFIG: ContractTestConfig = ConfigFactory.create(ContractTestConfig::class.java, System.getenv())

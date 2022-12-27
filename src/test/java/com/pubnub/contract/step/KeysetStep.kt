@@ -1,7 +1,6 @@
 package com.pubnub.contract.step
 
 import com.pubnub.contract.CONTRACT_TEST_CONFIG
-import com.pubnub.contract.ContractTestConfig
 import com.pubnub.contract.state.World
 import io.cucumber.java.en.Given
 import org.hamcrest.MatcherAssert
@@ -29,6 +28,15 @@ class KeysetStep(private val world: World) {
         world.configuration.apply {
             subscribeKey = CONTRACT_TEST_CONFIG.subKey()
             publishKey = CONTRACT_TEST_CONFIG.pubKey()
+        }
+    }
+
+    @Given("I have a keyset with Objects V2 enabled")
+    fun i_have_a_keyset_with_objects_v2_enabled() {
+        MatcherAssert.assertThat(CONTRACT_TEST_CONFIG.pubKey(), Matchers.notNullValue())
+        MatcherAssert.assertThat(CONTRACT_TEST_CONFIG.subKey(), Matchers.notNullValue())
+        world.configuration.apply {
+            subscribeKey = CONTRACT_TEST_CONFIG.subKey()
         }
     }
 }

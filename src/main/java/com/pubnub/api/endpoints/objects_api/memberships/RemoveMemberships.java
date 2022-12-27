@@ -57,7 +57,7 @@ public abstract class RemoveMemberships extends UUIDEndpoint<RemoveMemberships, 
 
         @Override
         public RemoveMemberships channelMemberships(@NotNull final Collection<PNChannelMembership> channelMemberships) {
-            final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+            final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, false);
             return new RemoveMembershipsCommand(channelMemberships, pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher,
                     tokenManager);
         }

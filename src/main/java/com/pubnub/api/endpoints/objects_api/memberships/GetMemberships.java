@@ -38,7 +38,7 @@ public abstract class GetMemberships extends UUIDEndpoint<GetMemberships, Entity
                                         final TelemetryManager telemetry,
                                         final RetrofitManager retrofitInstance,
                                         final TokenManager tokenManager) {
-        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault();
+        final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher.createDefault(true, false);
         return new GetMembershipsCommand(pubnubInstance, telemetry, retrofitInstance, compositeParameterEnricher,
                 tokenManager);
     }

@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @ToString
 @Data
-public class PNPresenceEventResult {
+public class PNPresenceEventResult implements PNEvent {
 
     private String event;
 

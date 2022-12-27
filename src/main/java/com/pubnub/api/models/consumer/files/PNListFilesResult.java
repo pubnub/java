@@ -8,10 +8,8 @@ import java.util.Collection;
 
 @Data
 public class PNListFilesResult {
-    @NonNull
     private final int count;
     private final PNPage.Next next;
-    @NonNull
     private final int status;
     @NonNull
     private final Collection<PNUploadedFile> data;

@@ -1,6 +1,17 @@
 {
+  "gradle.properties": [
+    {
+      "pattern": "^VERSION_NAME=(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    }
+  ],
   ".pubnub.yml": [
-    { "pattern": "^version: (v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$", "cleared": false },
+    { 
+      "pattern": "^version: (v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
+    },
     {
       "pattern": "^\\s+\\-\\s+build/libs/pubnub-gson-(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)-all.jar$",
       "clearedPrefix": true,

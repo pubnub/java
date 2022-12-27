@@ -2,49 +2,60 @@ package com.pubnub.api.models.consumer.objects_api.member;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.pubnub.api.models.consumer.objects_api.util.CustomPayloadJsonInterceptor;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
+@Data
 public abstract class PNUUID {
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Getter
-    public static class UUIDId {
-        private String id;
-    }
-
-    @Getter
+    @NonNull
     private final UUIDId uuid;
+    private final String status;
 
     public static PNUUID uuid(final String uuid) {
-        return new JustUUID(new UUIDId(uuid));
+        return new UUIDWithoutCustom(new UUIDId(uuid), null);
     }
+
+    public static PNUUID uuid(final String uuid, final String status) {
+        return new UUIDWithoutCustom(new UUIDId(uuid), status);
+    }
+
     public static PNUUID uuidWithCustom(final String uuid, final Map<String, Object> custom) {
-        return new UUIDWithCustom(new UUIDId(uuid), new HashMap<>(custom));
+        return new UUIDWithCustom(new UUIDId(uuid), new HashMap<>(custom), null);
+    }
+
+    public static PNUUID uuidWithCustom(final String uuid, final Map<String, Object> custom, final String status) {
+        return new UUIDWithCustom(new UUIDId(uuid), new HashMap<>(custom), status);
+    }
+
+    @Data
+    public static class UUIDId {
+        private final String id;
     }
 
     @Getter
     @EqualsAndHashCode(callSuper = true)
-    public static class JustUUID extends PNUUID {
-        JustUUID(UUIDId uuid) {
-            super(uuid);
+    @ToString
+    private static class UUIDWithoutCustom extends PNUUID {
+        private UUIDWithoutCustom(UUIDId uuid, String status) {
+            super(uuid, status);
         }
     }
 
     @Getter
     @EqualsAndHashCode(callSuper = true)
+    @ToString
     public static class UUIDWithCustom extends PNUUID {
         @JsonAdapter(CustomPayloadJsonInterceptor.class)
         private final Object custom;
 
-        UUIDWithCustom(UUIDId uuid, Object custom) {
-            super(uuid);
+        private UUIDWithCustom(UUIDId uuid, Object custom, String status) {
+            super(uuid, status);
             this.custom = custom;
         }
     }

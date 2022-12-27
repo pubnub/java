@@ -13,6 +13,7 @@ import com.pubnub.api.endpoints.Time;
 import com.pubnub.api.endpoints.access.Grant;
 import com.pubnub.api.endpoints.access.GrantToken;
 import com.pubnub.api.endpoints.access.RevokeToken;
+import com.pubnub.api.endpoints.access.builder.GrantTokenBuilder;
 import com.pubnub.api.endpoints.channel_groups.AddChannelChannelGroup;
 import com.pubnub.api.endpoints.channel_groups.AllChannelsChannelGroup;
 import com.pubnub.api.endpoints.channel_groups.DeleteChannelGroup;
@@ -104,7 +105,7 @@ public class PubNub {
     private static final int TIMESTAMP_DIVIDER = 1000;
     private static final int MAX_SEQUENCE = 65535;
 
-    private static final String SDK_VERSION = "6.0.0";
+    private static final String SDK_VERSION = "6.3.1";
     private final ListenerManager listenerManager;
     private final StateManager stateManager;
 
@@ -136,6 +137,9 @@ public class PubNub {
         instanceId = UUID.randomUUID().toString();
     }
 
+    /**
+     * @deprecated
+     */
     @NotNull
     public static String generateUUID() {
         return "pn-" + UUID.randomUUID();
@@ -234,9 +238,18 @@ public class PubNub {
         return new Grant(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
+    /**
+     * @deprecated Use {@link #grantToken(Integer)} instead.
+     */
     @NotNull
-    public GrantToken grantToken() {
-        return new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager);
+    public GrantTokenBuilder grantToken() {
+        return new GrantTokenBuilder(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager));
+    }
+
+    @NotNull
+    @SuppressWarnings("deprecation")
+    public GrantTokenBuilder grantToken(Integer ttl) {
+        return new GrantTokenBuilder(new GrantToken(this, this.telemetryManager, this.retrofitManager, this.tokenManager)).ttl(ttl);
     }
 
     @NotNull

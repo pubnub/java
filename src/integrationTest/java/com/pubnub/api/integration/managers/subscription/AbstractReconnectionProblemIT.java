@@ -3,6 +3,7 @@ package com.pubnub.api.integration.managers.subscription;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.integration.util.ITTestConfig;
 import com.pubnub.api.models.consumer.PNStatus;
@@ -28,7 +29,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -53,7 +54,7 @@ class AssumingProperConfig implements TestRule {
     }
 }
 
-public abstract class AbstractReconnectionProblem {
+public abstract class AbstractReconnectionProblemIT {
     protected ITTestConfig itPamTestConfig = ConfigFactory.create(ITTestConfig.class, System.getenv());
 
     @ClassRule
@@ -180,8 +181,18 @@ public abstract class AbstractReconnectionProblem {
 
     protected abstract PubNub privilegedClientPubNub();
 
+    PNConfiguration getPNConfiguration(){
+        PNConfiguration pnConfiguration = null;
+        try {
+            pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
+        } catch (PubNubException e) {
+            throw new RuntimeException(e);
+        }
+        return pnConfiguration;
+    }
+
     private PubNub adminPubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        PNConfiguration pnConfiguration = getPNConfiguration();
         pnConfiguration.setSubscribeKey(itPamTestConfig.pamSubKey());
         pnConfiguration.setPublishKey(itPamTestConfig.pamPubKey());
         pnConfiguration.setSecretKey(itPamTestConfig.pamSecKey());

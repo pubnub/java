@@ -3,6 +3,7 @@ package com.pubnub.api.endpoints;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
@@ -23,13 +24,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -339,7 +341,7 @@ public class HistoryBatchEndpointTest {
     }
 
     private PubNub pubNubMock() throws PubNubException {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        final PNConfiguration pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         pnConfiguration.setSubscribeKey(SUBSCRIBE_KEY);
 
         final PubNub pubnub = mock(PubNub.class);

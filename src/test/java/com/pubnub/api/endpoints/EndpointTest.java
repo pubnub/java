@@ -89,7 +89,7 @@ public class EndpointTest extends TestHarness {
     @Test
     public void payloadTooLargeTest_Sync() {
         Endpoint<Object, Object> endpoint = testEndpoint(call(Response.error(HttpURLConnection.HTTP_ENTITY_TOO_LARGE,
-                ResponseBody.create(MediaType.get("application/json"), "{}"))));
+                ResponseBody.create("{}", MediaType.get("application/json")))));
 
         try {
             endpoint.sync();
@@ -102,7 +102,7 @@ public class EndpointTest extends TestHarness {
     @Test
     public void payloadTooLargeTest_Async() {
         Endpoint<Object, Object> endpoint = testEndpoint(call(Response.error(HttpURLConnection.HTTP_ENTITY_TOO_LARGE,
-                ResponseBody.create(MediaType.get("application/json"), "{}"))));
+                ResponseBody.create("{}", MediaType.get("application/json")))));
 
         endpoint.async((result, status) -> {
             if (status.isError()) {

@@ -32,10 +32,10 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ChannelMetadataIT extends ObjectsApiBaseIT {
-    private final static Logger LOG = LoggerFactory.getLogger(ChannelMetadataIT.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelMetadataIT.class);
     private static final int NUMBER_OF_RANDOM_TEST_NAMES = 10;
     private static final int FETCH_LIMIT = 3;
 
@@ -43,6 +43,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
     private final String randomChannelMetadataId = randomChannelMetadataIds.get(0);
 
     private final String randomDescription = randomDescription();
+    private final String statusValue = "active";
+    private final String typeValue = "chat";
 
     private final List<PNSetChannelMetadataResult> createdChannelMetadataList = new ArrayList<>();
 
@@ -56,6 +58,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
                 .description(randomDescription)
                 .custom(customChannelObject())
                 .includeCustom(true)
+                .status(statusValue)
+                .type(typeValue)
                 .sync();
 
         //then
@@ -66,6 +70,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
         assertEquals(setChannelMetadataResult.getData().getDescription(),
                 setChannelMetadataResult.getData().getDescription());
         assertNotNull(setChannelMetadataResult.getData().getCustom());
+        assertEquals(statusValue, setChannelMetadataResult.getData().getStatus());
+        assertEquals(typeValue, setChannelMetadataResult.getData().getType());
     }
 
     @Test
@@ -76,6 +82,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
                 .description(randomDescription)
                 .custom(customChannelObject())
                 .includeCustom(true)
+                .status(statusValue)
+                .type(typeValue)
                 .sync();
         createdChannelMetadataList.add(setChannelMetadataResult);
 
@@ -94,6 +102,10 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
         assertEquals(setChannelMetadataResult.getData().getDescription(),
                 getChannelMetadataResult.getData().getDescription());
         assertNotNull(setChannelMetadataResult.getData().getCustom());
+        assertEquals(statusValue, setChannelMetadataResult.getData().getStatus());
+        assertEquals(typeValue, setChannelMetadataResult.getData().getType());
+        assertEquals(statusValue, getChannelMetadataResult.getData().getStatus());
+        assertEquals(typeValue, getChannelMetadataResult.getData().getType());
     }
 
     @Test
@@ -188,6 +200,8 @@ public class ChannelMetadataIT extends ObjectsApiBaseIT {
                 .description(randomDescription)
                 .custom(customChannelObject())
                 .includeCustom(true)
+                .status(statusValue)
+                .type(typeValue)
                 .sync();
         createdChannelMetadataList.add(setChannelMetadataResult);
 

@@ -97,12 +97,27 @@ public class PNConfiguration {
     private String cipherKey;
     private String authKey;
 
-    public void setUuid(@NotNull String uuid) throws PubNubException {
-        PubNubUtil.require(uuid != null && !uuid.trim().isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+    /**
+     * @deprecated Use {@link #getUserId()} instead.
+     */
+    private volatile String uuid;
+
+    /**
+     * @deprecated Use {@link #setUserId(UserId)} instead.
+     */
+    public void setUuid(@NotNull String uuid) {
+        PubNubUtil.require(!uuid.trim().isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
         this.uuid = uuid;
     }
 
-    private String uuid;
+    public UserId getUserId()  {
+        return new UserId(this.uuid);
+    }
+
+    public void setUserId(@NotNull UserId userId) {
+        this.uuid = userId.getValue();
+    }
+
     /**
      * If proxies are forcefully caching requests, set to true to allow the client to randomize the subdomain.
      * This configuration is not supported if custom origin is enabled.
@@ -217,13 +232,12 @@ public class PNConfiguration {
     /**
      * Initialize the PNConfiguration with default values
      *
-     * @param uuid
+     * @param userId
      */
-    public PNConfiguration(@NotNull String uuid) throws PubNubException {
-        PubNubUtil.require(uuid != null && !uuid.isEmpty(), PNERROBJ_UUID_NULL_OR_EMPTY);
+    public PNConfiguration(@NotNull UserId userId) throws PubNubException {
         setPresenceTimeoutWithCustomInterval(PRESENCE_TIMEOUT, 0);
 
-        this.uuid = uuid;
+        this.uuid = userId.getValue();
         nonSubscribeRequestTimeout = NON_SUBSCRIBE_REQUEST_TIMEOUT;
         subscribeTimeout = SUBSCRIBE_TIMEOUT;
         connectTimeout = CONNECT_TIMEOUT;
@@ -249,6 +263,17 @@ public class PNConfiguration {
         useRandomInitializationVector = true;
         fileMessagePublishRetryLimit = FILE_MESSAGE_PUBLISH_RETRY_LIMIT;
         managePresenceListManually = false;
+    }
+
+    /**
+     * Initialize the PNConfiguration with default values
+     *
+     * @param uuid
+     * @deprecated Use {@link PNConfiguration(UserId)} instead.
+     */
+    @Deprecated
+    public PNConfiguration(@NotNull String uuid) throws PubNubException {
+        this(new UserId(uuid));
     }
 
     /**

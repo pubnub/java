@@ -56,6 +56,7 @@ public class HeartbeatIntegrationTest extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pn, @NotNull PNStatus status) {
                 if (status.getOperation() == PNOperationType.PNSubscribeOperation) {
@@ -77,7 +78,7 @@ public class HeartbeatIntegrationTest extends BaseIntegrationTest {
 
             @Override
             public void presence(@NotNull PubNub p, @NotNull PNPresenceEventResult presence) {
-                if (presence.getUuid().equals(pubNub.getConfiguration().getUuid())
+                if (presence.getUuid().equals(pubNub.getConfiguration().getUserId().getValue())
                         && presence.getChannel().equals(expectedChannel)) {
                     switch (presence.getEvent()) {
                         case "state-change":

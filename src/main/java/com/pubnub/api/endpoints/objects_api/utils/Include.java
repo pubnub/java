@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Include implements ParameterEnricher {
-    static final String INCLUDE_PARAM_NAME = "include";
+    public static final String INCLUDE_PARAM_NAME = "include";
     static final String INCLUDE_CUSTOM_PARAM_VALUE = "custom";
     static final String INCLUDE_CHANNEL_PARAM_VALUE = "channel";
     static final String INCLUDE_CHANNEL_CUSTOM_PARAM_VALUE = "channel.custom";

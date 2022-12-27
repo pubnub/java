@@ -23,7 +23,7 @@ public class RemoveUUIDMetadata extends UUIDEndpoint<RemoveUUIDMetadata, EntityE
                               final TelemetryManager telemetry,
                               final RetrofitManager retrofitInstance,
                               TokenManager tokenManager) {
-        super(pubnubInstance, telemetry, retrofitInstance, CompositeParameterEnricher.createDefault(), tokenManager);
+        super(pubnubInstance, telemetry, retrofitInstance, CompositeParameterEnricher.createDefault(true, true), tokenManager);
     }
 
     @Override

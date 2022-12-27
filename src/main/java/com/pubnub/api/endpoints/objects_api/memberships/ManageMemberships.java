@@ -60,7 +60,7 @@ public abstract class ManageMemberships extends UUIDEndpoint<ManageMemberships, 
                 @Override
                 public ManageMemberships remove(final Collection<PNChannelMembership> channelsToRemove) {
                     final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher
-                            .createDefault();
+                            .createDefault(true, false);
                     return new ManageMembershipsCommand(channelsToSet,
                             channelsToRemove,
                             pubnubInstance,
@@ -78,7 +78,7 @@ public abstract class ManageMemberships extends UUIDEndpoint<ManageMemberships, 
                 @Override
                 public ManageMemberships set(final Collection<PNChannelMembership> channelsToSet) {
                     final CompositeParameterEnricher compositeParameterEnricher = CompositeParameterEnricher
-                            .createDefault();
+                            .createDefault(true, false);
                     return new ManageMembershipsCommand(channelsToSet,
                             channelsToRemove,
                             pubnubInstance,

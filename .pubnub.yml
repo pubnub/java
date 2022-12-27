@@ -1,9 +1,9 @@
 name: java
-version: v6.0.0
+version: 6.3.1
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-6.0.0-all.jar
+  - build/libs/pubnub-gson-6.3.1-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: GitHub
-              package-name: pubnub-gson-6.0.0
-              location: https://github.com/pubnub/java/releases/download/v6.0.0/pubnub-gson-6.0.0-all.jar
+              package-name: pubnub-gson-6.3.1
+              location: https://github.com/pubnub/java/releases/download/v6.3.1/pubnub-gson-6.3.1-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-6.0.0
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.0.0/pubnub-gson-6.0.0.jar
+              package-name: pubnub-gson-6.3.1
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.1/pubnub-gson-6.3.1.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,44 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2022-12-15
+    version: v6.3.1
+    changes:
+      - type: bug
+        text: "In case of an error response it checks if there's a body before reading from it."
+  - date: 2022-11-07
+    version: v6.3.0
+    changes:
+      - type: feature
+        text: "Added acceptance tests for ObjectsV2 feature."
+      - type: feature
+        text: " Added possibility to add status when setting ChannelMembers."
+      - type: feature
+        text: "Added status and type to query parameters for objectV2 REST calls. For membership and member only status."
+      - type: improvement
+        text: "Upgrade OkHttp lib to 4.9.3."
+  - date: 2022-09-20
+    version: v6.2.0
+    changes:
+      - type: feature
+        text: "PNFileEventResult has messageJson field with the same JsonElement type as in other events."
+  - date: 2022-07-21
+    version: v6.1.0
+    changes:
+      - type: feature
+        text: "Add support for spaces and users permissions in grantToken."
+      - type: feature
+        text: "Add userId to PNConfiguration and deprecate uuid ."
+  - date: 2022-05-19
+    version: v6.0.2
+    changes:
+      - type: bug
+        text: "Upgraded gson to 2.9.0 to make SDK working under Java 17."
+  - date: 2022-05-09
+    version: v6.0.1
+    changes:
+      - type: bug
+        text: "Do heartbeat and leave calls sequentially to prevent race condition between these two calls and 'phantom' join after leave."
   - date: 2022-01-12
     version: v6.0.0
     changes:
@@ -799,7 +837,6 @@ features:
     - PUSH-TYPE-APNS
     - PUSH-TYPE-APNS2
     - PUSH-TYPE-FCM
-    - PUSH-TYPE-MPNS
   presence:
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
@@ -847,27 +884,24 @@ features:
   signal:
     - SIGNAL-SEND
   objects:
-    - OBJECTS-GET-USERS
-    - OBJECTS-GET-USER
-    - OBJECTS-CREATE-USER
-    - OBJECTS-UPDATE-USER
-    - OBJECTS-DELETE-USER
-    - OBJECTS-GET-SPACES
-    - OBJECTS-CREATE-SPACE
-    - OBJECTS-GET-SPACE
-    - OBJECTS-UPDATE-SPACE
-    - OBJECTS-DELETE-SPACE
-    - OBJECTS-GET-MEMBERSHIPS
-    - OBJECTS-MANAGE-MEMBERSHIPS
-    - OBJECTS-GET-MEMBERS
-    - OBJECTS-MANAGE-MEMBERS
-    - OBJECTS-JOIN-SPACES
-    - OBJECTS-UPDATE-MEMBERSHIPS
-    - OBJECTS-LEAVE-SPACES
-    - OBJECTS-ADD-MEMBERS
-    - OBJECTS-REMOVE-MEMBERS
-    - OBJECTS-UPDATE-MEMBERS
     - OBJECTS-FILTERING
+    - OBJECTS-SORTING
+    - OBJECTS-GET-ALL-UUID-METADATA
+    - OBJECTS-GET-UUID-METADATA
+    - OBJECTS-SET-UUID-METADATA
+    - OBJECTS-REMOVE-UUID-METADATA
+    - OBJECTS-GET-ALL-CHANNEL-METADATA
+    - OBJECTS-GET-CHANNEL-METADATA
+    - OBJECTS-SET-CHANNEL-METADATA
+    - OBJECTS-REMOVE-CHANNEL-METADATA
+    - OBJECTS-GET-MEMBERSHIPS-V2
+    - OBJECTS-SET-MEMBERSHIPS-V2
+    - OBJECTS-REMOVE-MEMBERSHIPS-V2
+    - OBJECTS-GET-CHANNEL-MEMBERS-V2
+    - OBJECTS-SET-CHANNEL-MEMBERS-V2
+    - OBJECTS-REMOVE-CHANNEL-MEMBERS-V2
+    - OBJECTS-MANAGE-MEMBERSHIPS-V2
+    - OBJECTS-MANAGE-CHANNEL-MEMBERS-V2
   files:
     - FILES-DELETE-FILE
     - FILES-DOWNLOAD-FILE

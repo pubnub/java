@@ -10,7 +10,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
@@ -49,6 +48,7 @@ public class MapperManager {
                 .registerTypeAdapter(boolean.class, booleanAsIntAdapter)
                 .registerTypeAdapter(JSONObject.class, new JSONObjectAdapter())
                 .registerTypeAdapter(JSONArray.class, new JSONArrayAdapter())
+                .disableHtmlEscaping()
                 .create();
         this.converterFactory = GsonConverterFactory.create(this.getObjectMapper());
     }
@@ -144,6 +144,10 @@ public class MapperManager {
         return (T) fromJson(toJson(object), clazz);
     }
 
+    public JsonElement toJsonTree(Object object) {
+        return objectMapper.toJsonTree(object);
+    }
+
     public String toJson(Object input) throws PubNubException {
         try {
             return this.objectMapper.toJson(input);
@@ -165,15 +169,6 @@ public class MapperManager {
                     .errormsg(e.getMessage())
                     .cause(e)
                     .build();
-        }
-    }
-
-    public void isValidJsonObject(Object object) throws PubNubException {
-        String json = toJson(object);
-        JsonElement jsonElement = new JsonParser().parse(json);
-        boolean isValid = isJsonObject(jsonElement);
-        if (!isValid) {
-            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_JSON).build();
         }
     }
 

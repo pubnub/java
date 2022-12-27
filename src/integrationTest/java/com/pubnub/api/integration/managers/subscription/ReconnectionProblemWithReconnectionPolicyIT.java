@@ -7,10 +7,10 @@ import com.pubnub.api.enums.PNLogVerbosity;
 import static com.pubnub.api.enums.PNReconnectionPolicy.LINEAR;
 
 
-public class ReconnectionProblemWithReconnectionPolicy extends AbstractReconnectionProblem {
+public class ReconnectionProblemWithReconnectionPolicyIT extends AbstractReconnectionProblemIT {
     @Override
     protected PubNub privilegedClientPubNub() {
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        PNConfiguration pnConfiguration = getPNConfiguration();
         pnConfiguration.setSubscribeKey(itPamTestConfig.pamSubKey());
         pnConfiguration.setPublishKey(itPamTestConfig.pamPubKey());
         pnConfiguration.setSubscribeTimeout(5);

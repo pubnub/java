@@ -3,6 +3,7 @@ package com.pubnub.api.managers;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.UserId;
 import com.pubnub.api.builder.dto.PresenceOperation;
 import com.pubnub.api.builder.dto.PubSubOperation;
 import com.pubnub.api.builder.dto.StateOperation;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.pubnub.api.managers.StateManager.HeartbeatStateData;
 import static java.util.Arrays.asList;
@@ -21,7 +23,8 @@ import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class StateManagerTest {
     final private List<String> channelsToSubscribe = asList("sub1", "sub2");
@@ -31,7 +34,7 @@ public class StateManagerTest {
     @Test
     public void heartbeatSendsAllChannelsWhenManualModeTurnedOff() throws PubNubException {
         //given
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        final PNConfiguration pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         final StateManager stateManagerUnderTest = new StateManager(pnConfiguration);
 
         //when
@@ -54,10 +57,11 @@ public class StateManagerTest {
         );
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void heartbeatSendsOnlyPresenceChannelsWhenManualModeTurnedOn() throws PubNubException {
         //given
-        final PNConfiguration pnConfiguration = new PNConfiguration(PubNub.generateUUID());
+        final PNConfiguration pnConfiguration =  new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
         pnConfiguration.setManagePresenceListManually(true);
         final StateManager stateManagerUnderTest = new StateManager(pnConfiguration);
 
@@ -178,17 +182,17 @@ public class StateManagerTest {
     }
 
     private PNConfiguration config() throws PubNubException {
-        return new PNConfiguration(PubNub.generateUUID());
+        return  new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
     }
 
+    @SuppressWarnings("deprecation")
     private PNConfiguration withManualPresenceMode(PNConfiguration config) {
-        //noinspection deprecation
         config.setManagePresenceListManually(true);
         return config;
     }
 
+    @SuppressWarnings("deprecation")
     private PNConfiguration withoutManualPresenceMode(PNConfiguration config) {
-        //noinspection deprecation
         config.setManagePresenceListManually(false);
         return config;
     }

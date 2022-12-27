@@ -14,6 +14,7 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+test.properties
 
 # Eclipse project files
 .classpath
@@ -57,3 +58,4 @@ gradlew.bat
 # GitHub Actions #
 ##################
 .github/.release
+src/test/resources/sdk-specification

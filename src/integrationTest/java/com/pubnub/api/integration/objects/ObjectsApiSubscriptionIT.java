@@ -22,10 +22,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ObjectsApiSubscriptionIT extends ObjectsApiBaseIT {
     private final String TEST_CHANNEL = UUID.randomUUID().toString();
+    private final String STATUS = "active";
+    private final String TYPE = "chat";
 
     class TestSubscribeCallbackAdapter extends SubscribeCallback {
         @Override
@@ -88,6 +90,8 @@ public class ObjectsApiSubscriptionIT extends ObjectsApiBaseIT {
                 .channel(TEST_CHANNEL)
                 .name("The Channel")
                 .description("This is test description")
+                .status(STATUS)
+                .type(TYPE)
                 .sync();
 
         pubNubUnderTest.setMemberships()

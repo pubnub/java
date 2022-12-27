@@ -1,20 +1,21 @@
 package com.pubnub.contract.access.step
 
-import com.pubnub.contract.access.state.GrantTokenState
-import com.pubnub.contract.state.World
 import com.pubnub.api.PubNubException
 import com.pubnub.api.models.consumer.access_manager.v3.ChannelGrant
 import com.pubnub.api.models.consumer.access_manager.v3.ChannelGroupGrant
 import com.pubnub.api.models.consumer.access_manager.v3.UUIDGrant
+import com.pubnub.contract.access.state.GrantTokenState
+import com.pubnub.contract.state.World
 import io.cucumber.java.en.When
 import org.junit.Assert
 
 class WhenSteps(
-        private val grantTokenState: GrantTokenState,
-        private val world: World
+    private val grantTokenState: GrantTokenState,
+    private val world: World
 ) {
 
 
+    @Suppress("deprecation")
     @When("I grant a token specifying those permissions")
     fun grant_token() {
         grantTokenState.result = world.pubnub.grantToken().let {
@@ -53,7 +54,7 @@ class WhenSteps(
     fun i_revoke_the_token() {
         try {
             world.pubnub.revokeToken()
-                    .token(world.tokenString!!).sync()
+                .token(world.tokenString!!).sync()
         } catch (e: PubNubException) {
             world.pnException = e
         }
@@ -63,9 +64,9 @@ class WhenSteps(
     fun i_publish_a_message_using_that_auth_token_with_channel(channel: String) {
         world.pubnub.setToken(world.tokenString)
         world.pubnub.publish()
-                .channel(channel)
-                .message("Message")
-                .sync()
+            .channel(channel)
+            .message("Message")
+            .sync()
     }
 
     @When("I attempt to publish a message using that auth token with channel {string}")
@@ -74,9 +75,9 @@ class WhenSteps(
 
         try {
             world.pubnub.publish()
-                    .channel(channel)
-                    .message("Message")
-                    .sync()
+                .channel(channel)
+                .message("Message")
+                .sync()
         } catch (e: PubNubException) {
             world.pnException = e
         }

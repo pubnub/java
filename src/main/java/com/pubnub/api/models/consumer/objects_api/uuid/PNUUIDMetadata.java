@@ -15,6 +15,8 @@ public class PNUUIDMetadata extends PNObject {
     private String email;
     private String externalId;
     private String profileUrl;
+    private String type;
+    private String status;
 
     public PNUUIDMetadata(String id, String name) {
         super(id);

@@ -30,10 +30,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MembershipIT extends ObjectsApiBaseIT {
     private static final Logger LOG = LoggerFactory.getLogger(MembershipIT.class);
+    private static final String STATUS = "status";
+    private static final String CHANNEL = "channel";
 
     public final String testChannelId1 = UUID.randomUUID().toString();
     public final String testChannelId2 = UUID.randomUUID().toString();
@@ -58,7 +60,7 @@ public class MembershipIT extends ObjectsApiBaseIT {
         //then
         assertThat(setMembershipResult, allOf(
                 notNullValue(),
-                hasProperty("status", is(HttpStatus.SC_OK))
+                hasProperty(STATUS, is(HttpStatus.SC_OK))
         ));
         createdMembershipsList.add(setMembershipResult);
 
@@ -66,13 +68,13 @@ public class MembershipIT extends ObjectsApiBaseIT {
                 hasProperty("data",
                         hasItem(
                                 allOf(
-                                    hasProperty("channel",
+                                    hasProperty(CHANNEL,
                                             hasProperty("id", is(testChannelId1))),
                                     hasProperty("custom", nullValue())))),
                 hasProperty("data",
                         hasItem(
                                 allOf(
-                                        hasProperty("channel",
+                                        hasProperty(CHANNEL,
                                                 hasProperty("id", is(testChannelId2))),
                                         hasProperty("custom", notNullValue()))))));
     }
@@ -102,12 +104,12 @@ public class MembershipIT extends ObjectsApiBaseIT {
         //then
         assertThat(getMembershipsResult, allOf(
                 notNullValue(),
-                hasProperty("status", is(HttpStatus.SC_OK)),
+                hasProperty(STATUS, is(HttpStatus.SC_OK)),
                 hasProperty("data",
-                        hasItem(hasProperty("channel",
+                        hasItem(hasProperty(CHANNEL,
                                 hasProperty("id", is(testChannelId1))))),
                 hasProperty("data",
-                        hasItem(hasProperty("channel",
+                        hasItem(hasProperty(CHANNEL,
                                 hasProperty("id", is(testChannelId2)))))));
     }
 
@@ -136,12 +138,12 @@ public class MembershipIT extends ObjectsApiBaseIT {
         //then
         assertThat(removeMembershipResult, allOf(
                 notNullValue(),
-                hasProperty("status", is(HttpStatus.SC_OK)),
+                hasProperty(STATUS, is(HttpStatus.SC_OK)),
                 hasProperty("data",
-                        hasItem(hasProperty("channel",
+                        hasItem(hasProperty(CHANNEL,
                                 hasProperty("id", is(testChannelId1))))),
                 hasProperty("data",
-                        hasItem(hasProperty("channel",
+                        hasItem(hasProperty(CHANNEL,
                                 not(hasProperty("id", is(testChannelId2))))))));
 
     }
@@ -177,11 +179,11 @@ public class MembershipIT extends ObjectsApiBaseIT {
         //then
         assertThat(manageMembershipResult, allOf(
                 notNullValue(),
-                hasProperty("status", is(HttpStatus.SC_OK)),
+                hasProperty(STATUS, is(HttpStatus.SC_OK)),
                 hasProperty("data", allOf(
-                        hasItem(hasProperty("channel",
+                        hasItem(hasProperty(CHANNEL,
                                 hasProperty("id", is(channelMembershipsToSet.get(0).getChannel().getId())))),
-                        not(hasItem(hasProperty("channel",
+                        not(hasItem(hasProperty(CHANNEL,
                                 hasProperty("id", is(channelMembershipsToRemove.get(0).getChannel().getId())))))))));
     }
 

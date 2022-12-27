@@ -53,6 +53,7 @@ jobs:
           gpg-key-id: ${{ secrets.GPG_KEY_ID }}
           gpg-key-name: ${{ secrets.GPG_KEY_NAME }}
           gpg-key-passphrase: ${{ secrets.GPG_KEY_PASSPHRASE }}
+          maven-plugin: "gradle-maven-publish-plugin"
       - name: Create Release
         uses: ./.github/.release/actions/actions/services/github-release
         with:

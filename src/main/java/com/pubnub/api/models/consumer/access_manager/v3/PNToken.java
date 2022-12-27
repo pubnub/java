@@ -50,6 +50,7 @@ public class PNToken {
                                           @JsonProperty("uuid") final Map<String, PNResourcePermissions> uuid) {
             return new PNTokenResources(chan, grp, uuid);
         }
+
     }
 
     @Data

@@ -78,11 +78,11 @@ public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> 
 
     @Override
     protected Call<Envelope<JsonElement>> doWork(Map<String, String> params) throws PubNubException {
-        String selectedUUID = uuid != null ? uuid : this.getPubnub().getConfiguration().getUuid();
+        String selectedUUID = uuid != null ? uuid : this.getPubnub().getConfiguration().getUserId().getValue();
         String stringifiedState;
 
         // only store the state change if we are modifying it for ourselves.
-        if (selectedUUID.equals(this.getPubnub().getConfiguration().getUuid())) {
+        if (selectedUUID.equals(this.getPubnub().getConfiguration().getUserId().getValue())) {
             StateOperation stateOperation = StateOperation.builder()
                     .state(state)
                     .channels(channels)
@@ -104,7 +104,7 @@ public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> 
 
         String channelCSV = channels.size() > 0 ? PubNubUtil.joinString(channels, ",") : ",";
 
-        return this.getRetrofit().getPresenceService().setState(
+        return this.getRetrofit().getExtendedPresenceService().setState(
                 this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);
     }
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PushPayloadHelperHelperTest extends TestHarness {
+public class PushPayloadHelperTest extends TestHarness {
 
     private PubNub pubnub;
 
@@ -80,6 +80,7 @@ public class PushPayloadHelperHelperTest extends TestHarness {
         Assert.assertTrue(map.isEmpty());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testApple_Valid() {
         PushPayloadHelper pushPayloadHelper = new PushPayloadHelper();
@@ -117,6 +118,7 @@ public class PushPayloadHelperHelperTest extends TestHarness {
         Assert.assertEquals(0, pushList.size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testApple_Aps() {
         PushPayloadHelper pushPayloadHelper = new PushPayloadHelper();
@@ -149,6 +151,7 @@ public class PushPayloadHelperHelperTest extends TestHarness {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testApple_PnPushArray() {
         PushPayloadHelper pushPayloadHelper = new PushPayloadHelper();
@@ -327,6 +330,7 @@ public class PushPayloadHelperHelperTest extends TestHarness {
         Assert.assertTrue(map.isEmpty());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testGoogle_Valid_1() {
         PushPayloadHelper pushPayloadHelper = new PushPayloadHelper();

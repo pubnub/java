@@ -8,10 +8,8 @@ import java.util.Collection;
 
 @Data
 public class ListFilesResult {
-    @NonNull
     private final int count;
     private final String next;
-    @NonNull
     private final int status;
     @NonNull
     private final Collection<PNUploadedFile> data;

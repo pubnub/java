@@ -1,14 +1,13 @@
 package com.pubnub.contract.access.step
 
-import com.pubnub.contract.access.parameter.PermissionType
-import com.pubnub.contract.access.parameter.ResourceType
-import com.pubnub.contract.access.state.GrantTokenState
 import com.pubnub.api.models.consumer.access_manager.v3.ChannelGrant
 import com.pubnub.api.models.consumer.access_manager.v3.ChannelGroupGrant
 import com.pubnub.api.models.consumer.access_manager.v3.PNGrantTokenResult
 import com.pubnub.api.models.consumer.access_manager.v3.UUIDGrant
+import com.pubnub.contract.access.parameter.PermissionType
+import com.pubnub.contract.access.parameter.ResourceType
+import com.pubnub.contract.access.state.GrantTokenState
 import com.pubnub.contract.state.World
-import io.cucumber.java.PendingException
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import kotlin.random.Random
@@ -84,12 +83,12 @@ class GivenSteps(private val grantTokenState: GrantTokenState,
     }
 
     @Given("a valid token with permissions to publish with channel {string}")
-    fun a_valid_token_with_permissions_to_publish_with_channel(string: String?) {
+    fun a_valid_token_with_permissions_to_publish_with_channel(@Suppress("UNUSED_PARAMETER")string: String?) {
         return a_token()
     }
 
     @Given("an expired token with permissions to publish with channel {string}")
-    fun an_expired_token_with_permissions_to_publish_with_channel(string: String) {
+    fun an_expired_token_with_permissions_to_publish_with_channel(@Suppress("UNUSED_PARAMETER")string: String) {
         return a_token()
     }
 
