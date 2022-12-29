@@ -11,7 +11,7 @@ defaults:
     shell: bash
 
 jobs:
-  repository-validators:
+  pubnub-yml:
     name: "Validate .pubnub.yml"
     runs-on: ubuntu-latest
     steps:
@@ -28,3 +28,13 @@ jobs:
         uses: ./.github/.release/actions/actions/validators/pubnub-yml
         with:
           token: ${{ secrets.GH_TOKEN }}
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+  all-validations:
+    name: Validations
+    runs-on: ubuntu-latest
+    needs: [pubnub-yml]
+    steps:
+      - name: Validations summary
+        run: echo -e "\033[38;2;95;215;0m\033[1mAll validations passed"
