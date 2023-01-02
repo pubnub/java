@@ -1,5 +1,6 @@
 package com.pubnub.api.endpoints.pubsub;
 
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
@@ -13,7 +14,6 @@ import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.PNPublishResult;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.vendor.Crypto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -68,7 +68,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
 
     @Override
     protected List<String> getAffectedChannelGroups() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
         }
 
         if (messageType != null) {
-            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getType());
+            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
         }
 
         params.putAll(encodeParams(params));

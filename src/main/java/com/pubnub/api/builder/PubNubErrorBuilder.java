@@ -381,6 +381,11 @@ public final class PubNubErrorBuilder {
      */
     public static final int PNERR_UNKNOWN_MESSAGE_TYPE = 174;
 
+    /**
+     * Object type should be "channel", "membership" or "uuid"
+     */
+    public static final int PNERR_INVALID_OBJECT_TYPE = 175;
+
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
             .errorCode(PNERR_TIMEOUT)
@@ -757,6 +762,11 @@ public final class PubNubErrorBuilder {
 
     public static final PubNubError PNERROBJ_UNKNOWN_MESSAGE_TYPE = PubNubError.builder()
             .errorCode(PNERR_UNKNOWN_MESSAGE_TYPE)
+            .message("Unknown PNMessageType.")
+            .build();
+
+    public static final PubNubError PNERROBJ_INVALID_OBJECT_TYPE = PubNubError.builder()
+            .errorCode(PNERR_INVALID_OBJECT_TYPE)
             .message("Unknown PNMessageType.")
             .build();
 

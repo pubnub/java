@@ -1,13 +1,11 @@
 package com.pubnub.api.managers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
-import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.endpoints.TestHarness;
 import com.pubnub.api.enums.PNHeartbeatNotificationOptions;
@@ -17,7 +15,6 @@ import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadataResult;
 import com.pubnub.api.models.consumer.objects_api.membership.PNMembershipResult;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadataResult;
-import com.pubnub.api.models.consumer.presence.PNSetStateResult;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
@@ -36,12 +33,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.CheckedOutputStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
@@ -53,7 +48,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -104,7 +98,7 @@ public class SubscriptionManagerTest extends TestHarness {
                         "\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\"," +
                         "\"d\":{\"text\":\"Message\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        pubnub.subscribe().channels(Arrays.asList("")).execute();
+        pubnub.subscribe().channels(Collections.singletonList("")).execute();
 
         pubnub.addListener(new SubscribeCallback() {
             @Override
@@ -169,7 +163,7 @@ public class SubscriptionManagerTest extends TestHarness {
                         "\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\"," +
                         "\"d\":{\"text\":\"Message\"},\"b\":\"coolChan-bnel\"}]}")));
 
-        pubnub.subscribe().channelGroups(Arrays.asList("")).execute();
+        pubnub.subscribe().channelGroups(Collections.singletonList("")).execute();
 
         pubnub.addListener(new SubscribeCallback() {
             @Override
@@ -1345,7 +1339,7 @@ public class SubscriptionManagerTest extends TestHarness {
         pubnub.getConfiguration().setHeartbeatNotificationOptions(PNHeartbeatNotificationOptions.ALL);
 
         pubnub.subscribe().channels(Arrays.asList("ch1", "ch2")).channelGroups(Arrays.asList("cg1", "cg2")).execute();
-        pubnub.setPresenceState().channels(Arrays.asList("ch1")).channelGroups(Arrays.asList("cg2"))
+        pubnub.setPresenceState().channels(Collections.singletonList("ch1")).channelGroups(Collections.singletonList("cg2"))
                 .state(Arrays.asList("p1", "p2"))
                 .async((result, status) -> {
                 });
@@ -1364,8 +1358,8 @@ public class SubscriptionManagerTest extends TestHarness {
                 }));
         Awaitility.await().atMost(5, TimeUnit.SECONDS)
                 .until(() -> findAll(getRequestedFor(urlMatching(
-                            "/v2/presence/sub-key/" + pubnub.getConfiguration().getSubscribeKey() + "/channel/ch2," +
-                                    "ch1/heartbeat.*"))).stream().anyMatch(req -> !req.getQueryParams().containsKey("state")));
+                        "/v2/presence/sub-key/" + pubnub.getConfiguration().getSubscribeKey() + "/channel/ch2," +
+                                "ch1/heartbeat.*"))).stream().anyMatch(req -> !req.getQueryParams().containsKey("state")));
 
     }
 
@@ -2202,7 +2196,7 @@ public class SubscriptionManagerTest extends TestHarness {
             }
         });
 
-        pubnub.subscribe().channels(Arrays.asList("ch10")).withPresence().execute();
+        pubnub.subscribe().channels(Collections.singletonList("ch10")).withPresence().execute();
 
         Awaitility.await().atMost(2, TimeUnit.SECONDS).untilAtomic(atomic,
                 org.hamcrest.core.IsEqual.equalTo(true));
@@ -2365,7 +2359,7 @@ public class SubscriptionManagerTest extends TestHarness {
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
                 if (status.getCategory() == PNStatusCategory.PNConnectedCategory) {
-                    pubnub.unsubscribe().channels(Arrays.asList("ch1")).execute();
+                    pubnub.unsubscribe().channels(Collections.singletonList("ch1")).execute();
                 }
 
                 List<String> affectedChannels = status.getAffectedChannels();
@@ -2907,7 +2901,7 @@ public class SubscriptionManagerTest extends TestHarness {
         });
 
         pubnub.subscribe()
-                .channels(Arrays.asList("ch1"))
+                .channels(Collections.singletonList("ch1"))
                 .withPresence()
                 .execute();
 
@@ -3050,7 +3044,7 @@ public class SubscriptionManagerTest extends TestHarness {
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
 
                 if (status.getCategory() == PNStatusCategory.PNConnectedCategory) {
-                    pubnub.unsubscribe().channels(Arrays.asList("ch1")).execute();
+                    pubnub.unsubscribe().channels(Collections.singletonList("ch1")).execute();
                 }
 
                 assert status.getAffectedChannels() != null;
@@ -3060,7 +3054,7 @@ public class SubscriptionManagerTest extends TestHarness {
                 if (affectedChannels != null && affectedChannels.size() == 1 &&
                         status.getOperation() == PNOperationType.PNUnsubscribeOperation) {
                     if (affectedChannels.get(0).equals("ch1")) {
-                        pubnub.unsubscribe().channels(Arrays.asList("ch2")).execute();
+                        pubnub.unsubscribe().channels(Collections.singletonList("ch2")).execute();
                     }
                 }
 
@@ -3088,7 +3082,7 @@ public class SubscriptionManagerTest extends TestHarness {
 
             @Override
             public void uuid(@NotNull PubNub pubnub, @NotNull PNUUIDMetadataResult pnUUIDMetadataResult) {
-                
+
             }
 
             @Override

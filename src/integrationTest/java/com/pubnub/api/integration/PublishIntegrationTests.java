@@ -2,15 +2,16 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.SubscribeCallback;
+import com.pubnub.api.enums.PNMessageType;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadataResult;
@@ -166,6 +167,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (status.getOperation() == PNOperationType.PNSubscribeOperation) {
@@ -281,9 +283,9 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     @Test
     public void testOrgJsonObject_Get_Receive() throws PubNubException {
         final String channel = random();
-
+        final MessageType expectedUserMessageType = new MessageType("test");
+        final SpaceId expectedSpaceId = new SpaceId("1-to-1_chat");
         final JSONObject payload = generatePayloadJSON();
-
         final AtomicBoolean success = new AtomicBoolean();
 
         pubNub.addListener(new SubscribeCallback() {
@@ -300,6 +302,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
                 final JsonElement receivedMessage = pnMessageResult.getMessage();
+                assertEquals(expectedUserMessageType.getValue(), pnMessageResult.getMessageType().getValue());
+                assertEquals(expectedSpaceId.getValue(), pnMessageResult.getSpaceId().getValue());
                 try {
                     final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
                     assertEquals(payload.toString(), receivedObject.toString());
@@ -350,8 +354,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
         pubNub.publish()
                 .message(payload)
                 .channel(channel)
-                .messageType(new MessageType("test"))
-                .spaceId(new SpaceId("1-to-1_chat"))
+                .messageType(expectedUserMessageType)
+                .spaceId(expectedSpaceId)
                 .sync();
 
         listen(success);
@@ -516,6 +520,8 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
                 final JsonElement receivedMessage = pnMessageResult.getMessage();
+                assertEquals(PNMessageType.MESSAGE01.toString(), pnMessageResult.getMessageType().getValue());
+                assertEquals(PNMessageType.MESSAGE02.toString(), pnMessageResult.getMessageType().getValue());
                 try {
                     final JSONArray receivedArray = new JSONArray(receivedMessage.toString());
                     assertEquals(payload.toString(), receivedArray.toString());

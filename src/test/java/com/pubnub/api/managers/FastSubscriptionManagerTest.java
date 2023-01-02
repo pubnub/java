@@ -29,6 +29,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class FastSubscriptionManagerTest {
     private final DelayedReconnectionManager delayedReconnectionManagerMock = mock(DelayedReconnectionManager.class);
 
     @Test
-    public void performsLongPollingAfterTimeout() throws IllegalAccessException {
+    public void performsLongPollingAfterTimeout() {
         final ResponseSupplier<SubscribeEnvelope> responseSupplier = requestDetails -> new ResponseHolder<>(new SocketTimeoutException(
                 "timeout"));
 
@@ -101,7 +102,7 @@ public class FastSubscriptionManagerTest {
     }
 
     @Test
-    public void disconnectsAndSchedulesReconnectionOnUnknownHostException() throws IllegalAccessException {
+    public void disconnectsAndSchedulesReconnectionOnUnknownHostException() {
         final ResponseSupplier<SubscribeEnvelope> responseSupplier = requestDetails -> new ResponseHolder<>(new UnknownHostException(
                 "example.com"));
 
@@ -123,7 +124,7 @@ public class FastSubscriptionManagerTest {
     }
 
     @Test
-    public void forbiddenChannelsAddedToTemporaryUnavailable() throws IllegalAccessException, InterruptedException {
+    public void forbiddenChannelsAddedToTemporaryUnavailable() {
         final String channel = "ch1";
         final String rawResponseBody = String.format(
                 "{\"message\":\"Forbidden\",\"payload\":{\"channels\":[\"%s\"]},\"error\":true,\"service\":\"Access Manager\",\"status\":403}",
@@ -263,8 +264,9 @@ public class FastSubscriptionManagerTest {
     }
 
     @Test
-    public void sendReconnectedOnManualReconnect() {
+    public void sendReconnectedOnManualReconnect02() throws InterruptedException {
         long timeToken = System.currentTimeMillis();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         final ResponseSupplier<SubscribeEnvelope> responseSupplier = new ResponseSupplier<SubscribeEnvelope>() {
             private boolean first = true;
 
@@ -276,7 +278,7 @@ public class FastSubscriptionManagerTest {
                 }
                 if (first) {
                     first = false;
-                    return new ResponseHolder<>(Response.error(500, ResponseBody.create("{}", MediaType.parse("application/json"))));
+                    countDownLatch.countDown();
                 }
                 final SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope(emptyList(),
                         new SubscribeMetadata(timeToken, FAKE_REGION));
@@ -292,6 +294,7 @@ public class FastSubscriptionManagerTest {
                 .build();
 
         subscriptionManager.adaptSubscribeBuilder(subscribeOperation);
+        countDownLatch.await();
         subscriptionManager.reconnect();
         ArgumentCaptor<PNStatus> statusArgumentCaptor = ArgumentCaptor.forClass(PNStatus.class);
         await().atMost(1, SECONDS).untilAsserted(() -> verify(listenerManagerMock, times(2)).announce(statusArgumentCaptor.capture()));

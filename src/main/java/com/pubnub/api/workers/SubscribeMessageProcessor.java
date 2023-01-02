@@ -4,10 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.PubNubRuntimeException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.SpaceId;
+import com.pubnub.api.enums.PNMessageType;
 import com.pubnub.api.managers.DuplicationManager;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.models.consumer.files.PNDownloadableFile;
@@ -18,10 +22,15 @@ import com.pubnub.api.models.consumer.objects_api.membership.PNMembership;
 import com.pubnub.api.models.consumer.objects_api.membership.PNMembershipResult;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadata;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadataResult;
-import com.pubnub.api.models.consumer.pubsub.*;
+import com.pubnub.api.models.consumer.pubsub.BasePubSubResult;
+import com.pubnub.api.models.consumer.pubsub.PNEvent;
+import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
+import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
+import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
 import com.pubnub.api.models.consumer.pubsub.objects.ObjectPayload;
+import com.pubnub.api.models.consumer.pubsub.objects.ObjectResult;
 import com.pubnub.api.models.server.PresenceEnvelope;
 import com.pubnub.api.models.server.PublishMetaData;
 import com.pubnub.api.models.server.SubscribeMessage;
@@ -30,34 +39,30 @@ import com.pubnub.api.services.FilesService;
 import com.pubnub.api.vendor.Crypto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_INVALID_OBJECT_TYPE;
+
 @Slf4j
 @AllArgsConstructor
 public class SubscribeMessageProcessor {
-    public static final int TYPE_MESSAGE = 0;
-    private final int typeSignal = 1;
-    private final int typeObject = 2;
-    private final int typeMessageAction = 3;
-    public static final int TYPE_FILES = 4;
+    private static final String PRESENCE_CHANNEL_SUFFIX = "-pnpres";
+    private static final String JSON_KEY_PN_OTHER = "pn_other";
 
     private final PubNub pubnub;
     private final DuplicationManager duplicationManager;
 
-    @SuppressWarnings("deprecation")
     PNEvent processIncomingPayload(SubscribeMessage message) throws PubNubException {
         MapperManager mapper = this.pubnub.getMapper();
 
         String channel = message.getChannel();
-        String subscriptionMatch = message.getSubscriptionMatch();
+        String subscriptionMatch = getSubscriptionMatch(message);
         PublishMetaData publishMetaData = message.getPublishMetaData();
-
-        if (channel != null && channel.equals(subscriptionMatch)) {
-            subscriptionMatch = null;
-        }
 
         if (this.pubnub.getConfiguration().isDedupOnSubscribe()) {
             if (this.duplicationManager.isDuplicate(message)) {
@@ -67,125 +72,189 @@ public class SubscribeMessageProcessor {
             }
         }
 
-        if (message.getChannel().endsWith("-pnpres")) {
-            PresenceEnvelope presencePayload = mapper.convertValue(message.getPayload(), PresenceEnvelope.class);
-
-            String strippedPresenceChannel = null;
-            String strippedPresenceSubscription = null;
-
-            if (channel != null) {
-                strippedPresenceChannel = PubNubUtil.replaceLast(channel, "-pnpres", "");
-            }
-            if (subscriptionMatch != null) {
-                strippedPresenceSubscription = PubNubUtil.replaceLast(subscriptionMatch, "-pnpres", "");
-            }
-
-            JsonElement isHereNowRefresh = message.getPayload().getAsJsonObject().get("here_now_refresh");
-
-            PNPresenceEventResult pnPresenceEventResult = PNPresenceEventResult.builder()
-                    .event(presencePayload.getAction())
-                    // deprecated
-                    .actualChannel((subscriptionMatch != null) ? channel : null)
-                    .subscribedChannel(subscriptionMatch != null ? subscriptionMatch : channel)
-                    // deprecated
-                    .channel(strippedPresenceChannel)
-                    .subscription(strippedPresenceSubscription)
-                    .state(presencePayload.getData())
-                    .timetoken(publishMetaData.getPublishTimetoken())
-                    .occupancy(presencePayload.getOccupancy())
-                    .uuid(presencePayload.getUuid())
-                    .timestamp(presencePayload.getTimestamp())
-                    .join(getDelta(message.getPayload().getAsJsonObject().get("join")))
-                    .leave(getDelta(message.getPayload().getAsJsonObject().get("leave")))
-                    .timeout(getDelta(message.getPayload().getAsJsonObject().get("timeout")))
-                    .hereNowRefresh(isHereNowRefresh != null && isHereNowRefresh.getAsBoolean())
-                    .build();
-
-            return pnPresenceEventResult;
+        if (isPresenceMessage(message)) {
+            return getPnPresenceEventResult(message, mapper, channel, subscriptionMatch, publishMetaData);
         } else {
             JsonElement extractedMessage = processMessage(message);
-
             if (extractedMessage == null) {
                 log.debug("unable to parse payload on #processIncomingMessages");
             }
 
-            BasePubSubResult result = BasePubSubResult.builder()
-                    // deprecated
-                    .actualChannel((subscriptionMatch != null) ? channel : null)
-                    .subscribedChannel(subscriptionMatch != null ? subscriptionMatch : channel)
-                    // deprecated
-                    .channel(channel)
-                    .subscription(subscriptionMatch)
-                    .timetoken(publishMetaData.getPublishTimetoken())
-                    .publisher(message.getIssuingClientId())
-                    .userMetadata(message.getUserMetadata())
-                    .build();
-
-            if (message.getType() == null) {
-                return new PNMessageResult(result, extractedMessage);
-            } else if (message.getType() == TYPE_MESSAGE) {
-                return new PNMessageResult(result, extractedMessage);
-            } else if (message.getType() == typeSignal) {
-                return new PNSignalResult(result, extractedMessage);
-            } else if (message.getType() == typeObject) {
+            BasePubSubResult basePubSubResult = getBasePubSubResult(message, channel, subscriptionMatch, publishMetaData);
+            if (isMessage(message)) {
+                return getPnMessageResult(message, basePubSubResult, extractedMessage);
+            } else if (isSignal(message)) {
+                return new PNSignalResult(basePubSubResult, extractedMessage);
+            } else if (isUserOrSpaceOrMembershipObject(message)) {
                 ObjectPayload objectPayload = mapper.convertValue(extractedMessage, ObjectPayload.class);
-                String type = objectPayload.getType();
                 if (canHandleObjectCallback(objectPayload)) {
-                    switch (type) {
-                        case "channel":
-                            final PNChannelMetadataResult channelMetadataResult = new PNChannelMetadataResult(result,
-                                    objectPayload.getEvent(), mapper.convertValue(objectPayload.getData(),
-                                    PNChannelMetadata.class));
-                            return channelMetadataResult;
-                        case "membership":
-                            final PNMembershipResult membershipResult = new PNMembershipResult(result,
-                                    objectPayload.getEvent(), mapper.convertValue(objectPayload.getData(),
-                                    PNMembership.class));
-                            return membershipResult;
-                        case "uuid":
-                            final PNUUIDMetadataResult uuidMetadataResult = new PNUUIDMetadataResult(result,
-                                    objectPayload.getEvent(),
-                                    mapper.convertValue(objectPayload.getData(), PNUUIDMetadata.class));
-                            return uuidMetadataResult;
-                        default:
-                    }
+                    String type = objectPayload.getType();
+                    return getObjectResult(mapper, basePubSubResult, objectPayload, type);
                 }
-            } else if (message.getType() == typeMessageAction) {
-                ObjectPayload objectPayload = mapper.convertValue(extractedMessage, ObjectPayload.class);
-                JsonObject data = objectPayload.getData().getAsJsonObject();
-                if (!data.has("uuid")) {
-                    data.addProperty("uuid", result.getPublisher());
-                }
-                return PNMessageActionResult.actionBuilder()
-                        .result(result)
-                        .event(objectPayload.getEvent())
-                        .data(mapper.convertValue(data, PNMessageAction.class))
-                        .build();
-            } else if (message.getType() == TYPE_FILES) {
-                FileUploadNotification event = mapper.convertValue(extractedMessage, FileUploadNotification.class);
-                final JsonElement jsonMessage;
-                if (event.getMessage() != null) {
-                    jsonMessage = mapper.toJsonTree(event.getMessage());
-                } else {
-                    jsonMessage = JsonNull.INSTANCE;
-                }
-
-                return PNFileEventResult.builder()
-                        .file(new PNDownloadableFile(event.getFile().getId(),
-                                event.getFile().getName(),
-                                buildFileUrl(message.getChannel(),
-                                        event.getFile().getId(),
-                                        event.getFile().getName())))
-                        .message(event.getMessage())
-                        .channel(message.getChannel())
-                        .publisher(message.getIssuingClientId())
-                        .timetoken(publishMetaData.getPublishTimetoken())
-                        .jsonMessage(jsonMessage)
-                        .build();
+            } else if (isMessageAction(message)) {
+                return getPnMessageActionResult(mapper, extractedMessage, basePubSubResult);
+            } else if (isFile(message)) {
+                return getPnFileEventResult(message, mapper, publishMetaData, extractedMessage);
             }
-
         }
         return null;
+    }
+
+    @Nullable
+    private String getSubscriptionMatch(SubscribeMessage message) {
+        String subscriptionMatch = message.getSubscriptionMatch();
+        String channel = message.getChannel();
+        if (channel != null && channel.equals(subscriptionMatch)) {
+            subscriptionMatch = null;
+        }
+        return subscriptionMatch;
+    }
+
+    private boolean isPresenceMessage(SubscribeMessage message) {
+        return message.getChannel().endsWith(PRESENCE_CHANNEL_SUFFIX);
+    }
+
+    @SuppressWarnings("deprecation")
+    private PNPresenceEventResult getPnPresenceEventResult(SubscribeMessage message, MapperManager mapper, String channel, String subscriptionMatch, PublishMetaData publishMetaData) {
+        PresenceEnvelope presencePayload = mapper.convertValue(message.getPayload(), PresenceEnvelope.class);
+
+        String strippedPresenceChannel = null;
+        String strippedPresenceSubscription = null;
+
+        if (channel != null) {
+            strippedPresenceChannel = PubNubUtil.replaceLast(channel, PRESENCE_CHANNEL_SUFFIX, "");
+        }
+        if (subscriptionMatch != null) {
+            strippedPresenceSubscription = PubNubUtil.replaceLast(subscriptionMatch, PRESENCE_CHANNEL_SUFFIX, "");
+        }
+
+        JsonElement isHereNowRefresh = message.getPayload().getAsJsonObject().get("here_now_refresh");
+
+        return PNPresenceEventResult.builder()
+                .event(presencePayload.getAction())
+                // deprecated
+                .actualChannel((subscriptionMatch != null) ? channel : null)
+                // deprecated
+                .subscribedChannel(subscriptionMatch != null ? subscriptionMatch : channel)
+                .channel(strippedPresenceChannel)
+                .subscription(strippedPresenceSubscription)
+                .state(presencePayload.getData())
+                .timetoken(publishMetaData.getPublishTimetoken())
+                .occupancy(presencePayload.getOccupancy())
+                .uuid(presencePayload.getUuid())
+                .timestamp(presencePayload.getTimestamp())
+                .join(getDelta(message.getPayload().getAsJsonObject().get("join")))
+                .leave(getDelta(message.getPayload().getAsJsonObject().get("leave")))
+                .timeout(getDelta(message.getPayload().getAsJsonObject().get("timeout")))
+                .hereNowRefresh(isHereNowRefresh != null && isHereNowRefresh.getAsBoolean())
+                .build();
+    }
+
+    @SuppressWarnings("deprecation")
+    private BasePubSubResult getBasePubSubResult(SubscribeMessage message, String channel, String subscriptionMatch, PublishMetaData publishMetaData) {
+        return BasePubSubResult.builder()
+                // deprecated
+                .actualChannel((subscriptionMatch != null) ? channel : null)
+                .subscribedChannel(subscriptionMatch != null ? subscriptionMatch : channel)
+                // deprecated
+                .channel(channel)
+                .subscription(subscriptionMatch)
+                .timetoken(publishMetaData.getPublishTimetoken())
+                .publisher(message.getIssuingClientId())
+                .userMetadata(message.getUserMetadata())
+                .build();
+    }
+
+    private boolean isMessage(SubscribeMessage message) {
+        return message.getPnMessageType() == PNMessageType.MESSAGE01.getEValueFromServer() || message.getPnMessageType().equals(PNMessageType.MESSAGE02.getEValueFromServer());
+    }
+
+    @NotNull
+    private PNMessageResult getPnMessageResult(SubscribeMessage message, BasePubSubResult result, JsonElement extractedMessage) {
+        MessageType messageType = new MessageType(PNMessageType.valueByPnMessageType(message.getPnMessageType()), message.getUserMessageType());
+
+        String spaceIdValue = message.getSpaceId();
+        SpaceId spaceId = null;
+        if (spaceIdValue != null) {
+            spaceId = new SpaceId(spaceIdValue);
+        }
+
+        return new PNMessageResult(result, extractedMessage, messageType, spaceId);
+    }
+
+    private boolean isSignal(SubscribeMessage message) {
+        return message.getPnMessageType().equals(PNMessageType.SIGNAL.getEValueFromServer());
+    }
+
+    private boolean isUserOrSpaceOrMembershipObject(SubscribeMessage message) {
+        return message.getPnMessageType().equals(PNMessageType.OBJECT.getEValueFromServer());
+    }
+
+    private boolean isMessageAction(SubscribeMessage message) {
+        return message.getPnMessageType().equals(PNMessageType.MESSAGE_ACTION.getEValueFromServer());
+    }
+
+    private PNMessageActionResult getPnMessageActionResult(MapperManager mapper, JsonElement extractedMessage, BasePubSubResult result) {
+        ObjectPayload objectPayload = mapper.convertValue(extractedMessage, ObjectPayload.class);
+        JsonObject data = objectPayload.getData().getAsJsonObject();
+        if (!data.has("uuid")) {
+            data.addProperty("uuid", result.getPublisher());
+        }
+        return PNMessageActionResult.actionBuilder()
+                .result(result)
+                .event(objectPayload.getEvent())
+                .data(mapper.convertValue(data, PNMessageAction.class))
+                .build();
+    }
+
+    private boolean isFile(SubscribeMessage message) {
+        return message.getPnMessageType().equals(PNMessageType.FILES.getEValueFromServer());
+    }
+
+    private PNFileEventResult getPnFileEventResult(SubscribeMessage message, MapperManager mapper, PublishMetaData publishMetaData, JsonElement extractedMessage) {
+        FileUploadNotification event = mapper.convertValue(extractedMessage, FileUploadNotification.class);
+        final JsonElement jsonMessage;
+        if (event.getMessage() != null) {
+            jsonMessage = mapper.toJsonTree(event.getMessage());
+        } else {
+            jsonMessage = JsonNull.INSTANCE;
+        }
+
+        return PNFileEventResult.builder()
+                .file(new PNDownloadableFile(event.getFile().getId(),
+                        event.getFile().getName(),
+                        buildFileUrl(message.getChannel(),
+                                event.getFile().getId(),
+                                event.getFile().getName())))
+                .message(event.getMessage())
+                .channel(message.getChannel())
+                .publisher(message.getIssuingClientId())
+                .timetoken(publishMetaData.getPublishTimetoken())
+                .jsonMessage(jsonMessage)
+                .build();
+    }
+
+    @NotNull
+    private ObjectResult<?> getObjectResult(MapperManager mapper, BasePubSubResult result, ObjectPayload objectPayload, String type) {
+        switch (type) {
+            case "channel":
+                final PNChannelMetadataResult channelMetadataResult = new PNChannelMetadataResult(result,
+                        objectPayload.getEvent(), mapper.convertValue(objectPayload.getData(),
+                        PNChannelMetadata.class));
+                return channelMetadataResult;
+            case "membership":
+                final PNMembershipResult membershipResult = new PNMembershipResult(result,
+                        objectPayload.getEvent(), mapper.convertValue(objectPayload.getData(),
+                        PNMembership.class));
+                return membershipResult;
+            case "uuid":
+                final PNUUIDMetadataResult uuidMetadataResult = new PNUUIDMetadataResult(result,
+                        objectPayload.getEvent(),
+                        mapper.convertValue(objectPayload.getData(), PNUUIDMetadata.class));
+                return uuidMetadataResult;
+            default:
+                throw PubNubRuntimeException.builder().pubnubError(PNERROBJ_INVALID_OBJECT_TYPE).build();
+        }
     }
 
     private JsonElement processMessage(SubscribeMessage subscribeMessage) throws PubNubException {
@@ -209,8 +278,8 @@ public class SubscribeMessageProcessor {
         String outputText;
         JsonElement outputObject;
 
-        if (mapper.isJsonObject(input) && mapper.hasField(input, "pn_other")) {
-            inputText = mapper.elementToString(input, "pn_other");
+        if (mapper.isJsonObject(input) && mapper.hasField(input, JSON_KEY_PN_OTHER)) {
+            inputText = mapper.elementToString(input, JSON_KEY_PN_OTHER);
         } else {
             inputText = mapper.elementToString(input);
         }
@@ -220,9 +289,9 @@ public class SubscribeMessageProcessor {
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload
-        if (mapper.isJsonObject(input) && mapper.hasField(input, "pn_other")) {
+        if (mapper.isJsonObject(input) && mapper.hasField(input, JSON_KEY_PN_OTHER)) {
             JsonObject objectNode = mapper.getAsObject(input);
-            mapper.putOnObject(objectNode, "pn_other", outputObject);
+            mapper.putOnObject(objectNode, JSON_KEY_PN_OTHER, outputObject);
             outputObject = objectNode;
         }
 
