@@ -50,7 +50,8 @@ public class SubscribeMessage {
     private String spaceId;
 
     public boolean supportsEncryption() {
-        return pnMessageType == PNMessageType.MESSAGE01.getEValueFromServer() || pnMessageType.equals(PNMessageType.MESSAGE02.getEValueFromServer()) || pnMessageType.equals(PNMessageType.FILES.getEValueFromServer());
+        //should be "==" instead of "equals" for PNMessageType.MESSAGE01.getEValueFromServer() because its value is null
+        return pnMessageType == PNMessageType.MESSAGE01.getEValueFromServer() || pnMessageType.equals(PNMessageType.MESSAGE02.getEValueFromServer()) || pnMessageType.equals(PNMessageType.FILE.getEValueFromServer());
     }
 
 }

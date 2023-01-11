@@ -20,8 +20,6 @@ public class PNStatus {
     private PNErrorData errorData;
     private boolean error;
 
-    // boolean automaticallyRetry;
-
     private int statusCode;
     private PNOperationType operation;
 
@@ -46,11 +44,5 @@ public class PNStatus {
     public void retry() {
         executedEndpoint.retry();
     }
-
-    /*
-    public void cancelAutomaticRetry() {
-        // TODO
-    }
-    */
 
 }

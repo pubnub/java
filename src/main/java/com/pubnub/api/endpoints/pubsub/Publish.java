@@ -163,7 +163,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
             params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
         }
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
         return params;
     }

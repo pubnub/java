@@ -3,8 +3,10 @@ package com.pubnub.api.endpoints.pubsub;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.endpoints.TestHarness;
@@ -126,11 +128,13 @@ public class SignalTest extends TestHarness {
 
     @Test
     public void testSignalSuccessReceive() {
+        final String expectedUserMessageTypeValue = "myMessageType";
+        final String expectedSpaceIdValue = "1-to-1_chat";
 
         stubFor(get(urlMatching("/v2/subscribe/mySubscribeKey/coolChannel/0.*"))
                 .willReturn(aResponse().withBody("{\"m\":[{\"c\":\"coolChannel\",\"f\":\"0\",\"i\":\"uuid\"," +
                         "\"d\":\"hello\",\"e\":1,\"p\":{\"t\":1000,\"r\":1},\"k\":\"mySubscribeKey\"," +
-                        "\"b\":\"coolChannel\"}],\"t\":{\"r\":\"56\",\"t\":1000}}")));
+                        "\"b\":\"coolChannel\",\"mt\":\"" + expectedUserMessageTypeValue + "\",\"si\":\"" + expectedSpaceIdValue + "\"}],\"t\":{\"r\":\"56\",\"t\":1000}}")));
 
         AtomicBoolean success = new AtomicBoolean();
 
@@ -155,6 +159,8 @@ public class SignalTest extends TestHarness {
                 assertEquals("coolChannel", signal.getChannel());
                 assertEquals("hello", signal.getMessage().getAsString());
                 assertEquals("uuid", signal.getPublisher());
+                assertEquals(expectedUserMessageTypeValue, signal.getMessageType().getValue());
+                assertEquals(expectedSpaceIdValue, signal.getSpaceId().getValue());
                 success.set(true);
             }
 

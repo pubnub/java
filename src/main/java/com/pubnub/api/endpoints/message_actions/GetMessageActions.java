@@ -47,7 +47,7 @@ public class GetMessageActions extends Endpoint<PNGetMessageActionsResult, PNGet
 
     @Override
     protected List<String> getAffectedChannelGroups() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class GetMessageActions extends Endpoint<PNGetMessageActionsResult, PNGet
             params.put("limit", String.valueOf(limit));
         }
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
         return this.getRetrofit()
                 .getMessageActionService()

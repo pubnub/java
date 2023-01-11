@@ -1,8 +1,11 @@
 package com.pubnub.api.integration;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNOperationType;
@@ -21,6 +24,8 @@ import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResu
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -82,6 +87,8 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
 
         final String expectedChannel = randomChannel();
         final String expectedPayload = RandomGenerator.newValue(5);
+        final MessageType expectedUserMessageType = new MessageType("test");
+        final SpaceId expectedSpaceId = new SpaceId("1-to-1_chat");
 
         final PubNub observerClient = getPubNub();
 
@@ -90,6 +97,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (status.getOperation() == PNOperationType.PNSubscribeOperation) {
@@ -98,6 +106,8 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
                         pubNub.signal()
                                 .message(expectedPayload)
                                 .channel(expectedChannel)
+                                .messageType(expectedUserMessageType)
+                                .spaceId(expectedSpaceId)
                                 .async((result, status1) -> {
                                     assertFalse(status1.isError());
                                     assertEquals(PNOperationType.PNSignalOperation, status1.getOperation());
@@ -123,6 +133,8 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
                 assertEquals(pubNub.getConfiguration().getUserId().getValue(), signal.getPublisher());
                 assertEquals(expectedChannel, signal.getChannel());
                 assertEquals(expectedPayload, new Gson().fromJson(signal.getMessage(), String.class));
+                assertEquals(expectedUserMessageType.getValue(), signal.getMessageType().getValue());
+                assertEquals(expectedSpaceId.getValue(), signal.getSpaceId().getValue());
                 success.set(true);
             }
 
@@ -191,5 +203,83 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
             assertEquals(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_KEY_MISSING.getMessage(), e.getPubnubError()
                     .getMessage());
         }
+    }
+
+    @Test
+    public void should_receive_signal_when_signal_is_sent() throws PubNubException {
+        final MessageType expectedUserMessageType = new MessageType("test");
+        final SpaceId expectedSpaceId = new SpaceId("1-to-1_chat");
+        final JSONObject payload = generatePayloadJSON();
+        final AtomicBoolean success = new AtomicBoolean();
+        String channel = randomChannel();
+
+        pubNub.addListener(new SubscribeCallback() {
+            @Override
+            public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
+
+            }
+
+            @Override
+            public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
+
+            }
+
+            @Override
+            public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult pnPresenceEventResult) {
+
+            }
+
+            @Override
+            public void signal(@NotNull PubNub pubnub, @NotNull PNSignalResult pnSignalResult) {
+                final JsonElement receivedMessage = pnSignalResult.getMessage();
+                assertEquals(expectedUserMessageType.getValue(), pnSignalResult.getMessageType().getValue());
+                assertEquals(expectedSpaceId.getValue(), pnSignalResult.getSpaceId().getValue());
+                try {
+                    final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
+                    assertEquals(payload.toString(), receivedObject.toString());
+                    success.set(true);
+                } catch (JSONException e) {
+                    throw new RuntimeException("Can't convert message to JSON");
+                }
+            }
+
+            @Override
+            public void uuid(@NotNull PubNub pubnub, @NotNull PNUUIDMetadataResult pnUUIDMetadataResult) {
+
+            }
+
+            @Override
+            public void channel(@NotNull PubNub pubnub, @NotNull PNChannelMetadataResult pnChannelMetadataResult) {
+
+            }
+
+            @Override
+            public void membership(@NotNull PubNub pubnub, @NotNull PNMembershipResult pnMembershipResult) {
+
+            }
+
+            @Override
+            public void messageAction(@NotNull PubNub pubnub, @NotNull PNMessageActionResult pnMessageActionResult) {
+
+            }
+
+            @Override
+            public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
+
+            }
+        });
+
+        pubNub.subscribe()
+                .channels(Collections.singletonList(channel))
+                .execute();
+
+        pause(3);
+
+        pubNub.signal()
+                .channel(channel)
+                .message(payload)
+                .messageType(expectedUserMessageType)
+                .spaceId(expectedSpaceId)
+                .sync();
     }
 }
