@@ -3,10 +3,8 @@ package com.pubnub.api.endpoints.pubsub;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.endpoints.TestHarness;
@@ -128,13 +126,15 @@ public class SignalTest extends TestHarness {
 
     @Test
     public void testSignalSuccessReceive() {
+        final String expectedCoolChannel = "coolChannel";
+        final String expectedMessage = "hello";
+        final String issuingClient = "uuid";
         final String expectedUserMessageTypeValue = "myMessageType";
         final String expectedSpaceIdValue = "1-to-1_chat";
+        final String subscribeResponseSignalJson = getSubscribeResponseForSignalWithMessageTypeAndSpaceId(expectedCoolChannel, expectedMessage, issuingClient, expectedUserMessageTypeValue, expectedSpaceIdValue);
 
         stubFor(get(urlMatching("/v2/subscribe/mySubscribeKey/coolChannel/0.*"))
-                .willReturn(aResponse().withBody("{\"m\":[{\"c\":\"coolChannel\",\"f\":\"0\",\"i\":\"uuid\"," +
-                        "\"d\":\"hello\",\"e\":1,\"p\":{\"t\":1000,\"r\":1},\"k\":\"mySubscribeKey\"," +
-                        "\"b\":\"coolChannel\",\"mt\":\"" + expectedUserMessageTypeValue + "\",\"si\":\"" + expectedSpaceIdValue + "\"}],\"t\":{\"r\":\"56\",\"t\":1000}}")));
+                .willReturn(aResponse().withBody(subscribeResponseSignalJson)));
 
         AtomicBoolean success = new AtomicBoolean();
 
@@ -156,9 +156,9 @@ public class SignalTest extends TestHarness {
 
             @Override
             public void signal(@NotNull PubNub pubnub, @NotNull PNSignalResult signal) {
-                assertEquals("coolChannel", signal.getChannel());
-                assertEquals("hello", signal.getMessage().getAsString());
-                assertEquals("uuid", signal.getPublisher());
+                assertEquals(expectedCoolChannel, signal.getChannel());
+                assertEquals(expectedMessage, signal.getMessage().getAsString());
+                assertEquals(issuingClient, signal.getPublisher());
                 assertEquals(expectedUserMessageTypeValue, signal.getMessageType().getValue());
                 assertEquals(expectedSpaceIdValue, signal.getSpaceId().getValue());
                 success.set(true);
@@ -258,5 +258,13 @@ public class SignalTest extends TestHarness {
         assertEquals(1, requests.size());
         LoggedRequest request = requests.get(0);
         assertEquals(RequestMethod.GET, request.getMethod());
+    }
+
+    @NotNull
+    private String getSubscribeResponseForSignalWithMessageTypeAndSpaceId(String channel, String message, String issuingClient, String userMessageTypeValue, String spaceIdValue) {
+        String valueIndicatingThatMessageIsOfTypeSignal = "1";
+        return "{\"m\":[{\"c\":\"" + channel + "\",\"f\":\"0\",\"i\":\"" + issuingClient + "\"," +
+                "\"d\":\"" + message + "\",\"e\":" + valueIndicatingThatMessageIsOfTypeSignal + ",\"p\":{\"t\":1000,\"r\":1},\"k\":\"mySubscribeKey\"," +
+                "\"b\":\"" + channel + "\",\"mt\":\"" + userMessageTypeValue + "\",\"si\":\"" + spaceIdValue + "\"}],\"t\":{\"r\":\"56\",\"t\":1000}}";
     }
 }
