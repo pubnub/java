@@ -98,7 +98,7 @@ public class ListFiles extends Endpoint<ListFilesResult, PNListFilesResult> {
 
         return getRetrofit().getFilesService().listFiles(getPubnub().getConfiguration().getSubscribeKey(),
                 channel,
-                encodeParams(allParams));
+                encodeAuthParamValue(allParams));
     }
 
     @Override

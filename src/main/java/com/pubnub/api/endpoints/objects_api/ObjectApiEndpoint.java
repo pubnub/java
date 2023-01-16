@@ -56,7 +56,7 @@ public abstract class ObjectApiEndpoint<INPUT, OUTPUT> extends Endpoint<INPUT, O
 
     @Override
     protected Call<INPUT> doWork(Map<String, String> baseParams) throws PubNubException {
-        return executeCommand(encodeParams(compositeParameterEnricher.enrichParameters(new HashMap<>(baseParams))));
+        return executeCommand(encodeAuthParamValue(compositeParameterEnricher.enrichParameters(new HashMap<>(baseParams))));
     }
 
     protected abstract Call<INPUT> executeCommand(Map<String, String> effectiveParams) throws PubNubException;

@@ -6,9 +6,14 @@ import com.pubnub.api.enums.PNMessageType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 @Builder
 @Data
 public class SubscribeMessage {
+    private static Set<PNMessageType> pnMessageTypesSupportingEncryption = new HashSet<>(Arrays.asList(PNMessageType.MESSAGE01, PNMessageType.MESSAGE02, PNMessageType.FILE));
 
     @SerializedName("a")
     private String shard;
@@ -49,8 +54,11 @@ public class SubscribeMessage {
     @SerializedName("si")
     private String spaceId;
 
-    public boolean supportsEncryption() {
-        return pnMessageType == PNMessageType.MESSAGE01.getEValueFromServer() || pnMessageType.equals(PNMessageType.MESSAGE02.getEValueFromServer()) || pnMessageType.equals(PNMessageType.FILES.getEValueFromServer());
+    public PNMessageType getPnMessageType() {
+        return PNMessageType.valueByPnMessageType(pnMessageType);
     }
 
+    public boolean supportsEncryption() {
+        return pnMessageTypesSupportingEncryption.contains(getPnMessageType());
+    }
 }

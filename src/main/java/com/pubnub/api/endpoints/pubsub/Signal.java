@@ -1,8 +1,10 @@
 package com.pubnub.api.endpoints.pubsub;
 
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.enums.PNOperationType;
@@ -22,12 +24,20 @@ import java.util.Map;
 
 @Accessors(chain = true, fluent = true)
 public class Signal extends Endpoint<List<Object>, PNPublishResult> {
+    static final String SPACE_ID_QUERY_PARAMETER = "space-id";
+    static final String MESSAGE_TYPE_QUERY_PARAMETER = "type";
 
     @Setter
     private Object message;
 
     @Setter
     private String channel;
+
+    @Setter
+    private MessageType messageType;
+
+    @Setter
+    private SpaceId spaceId;
 
     public Signal(PubNub pubnub,
                   TelemetryManager telemetryManager,
@@ -43,7 +53,7 @@ public class Signal extends Endpoint<List<Object>, PNPublishResult> {
 
     @Override
     protected List<String> getAffectedChannelGroups() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -71,17 +81,13 @@ public class Signal extends Endpoint<List<Object>, PNPublishResult> {
     @Override
     protected Call<List<Object>> doWork(Map<String, String> params) throws PubNubException {
         MapperManager mapper = this.getPubnub().getMapper();
-
         String stringifiedMessage = mapper.toJson(message);
-
-        params.putAll(encodeParams(params));
-
         stringifiedMessage = PubNubUtil.urlEncode(stringifiedMessage);
+        Map<String, String> signalSpecificParams = extendRequestParamMapBySignalSpecificParams(params);
 
         return this.getRetrofit().getSignalService().signal(this.getPubnub().getConfiguration().getPublishKey(),
                 this.getPubnub().getConfiguration().getSubscribeKey(),
-                channel, stringifiedMessage, params);
-
+                channel, stringifiedMessage, signalSpecificParams);
     }
 
     @Override
@@ -102,4 +108,14 @@ public class Signal extends Endpoint<List<Object>, PNPublishResult> {
         return true;
     }
 
+    private Map<String, String> extendRequestParamMapBySignalSpecificParams(Map<String, String> params) {
+        if (messageType != null) {
+            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
+        }
+        if (spaceId != null) {
+            params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());
+        }
+        params.putAll(encodeAuthParamValue(params));
+        return params;
+    }
 }

@@ -14,7 +14,7 @@ public enum PNMessageType {
     SIGNAL(1, "signal"),   //this value is not expected in history call
     OBJECT(2, "object"),   //this value is not expected in history call
     MESSAGE_ACTION(3, "messageAction"),
-    FILES(4, "files");
+    FILE(4, "files");
 
     private static final Map<Integer, PNMessageType> BY_E_VALUE_FROM_SERVER = new HashMap<>();
 

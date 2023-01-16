@@ -44,7 +44,7 @@ public class AddMessageAction extends Endpoint<EntityEnvelope<PNMessageAction>, 
 
     @Override
     protected List<String> getAffectedChannelGroups() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AddMessageAction extends Endpoint<EntityEnvelope<PNMessageAction>, 
     @Override
     protected Call<EntityEnvelope<PNMessageAction>> doWork(Map<String, String> params) {
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
         JsonObject body = new JsonObject();
         body.addProperty("type", messageAction.getType());

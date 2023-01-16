@@ -70,7 +70,7 @@ public class RemoveMessageAction extends Endpoint<Object, PNRemoveMessageActionR
     @Override
     protected Call<Object> doWork(Map<String, String> params) throws PubNubException {
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
         return this.getRetrofit()
                 .getMessageActionService()

@@ -14,6 +14,7 @@ import com.pubnub.api.UserId;
 import com.pubnub.api.managers.DuplicationManager;
 import com.pubnub.api.models.consumer.pubsub.PNEvent;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
+import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.server.SubscribeEnvelope;
 import com.pubnub.api.models.server.SubscribeMessage;
@@ -147,15 +148,16 @@ public class SubscribeMessageProcessorTest {
 
     @Test
     public void pnMessageResult_should_contain_messageType_and_spaceId_when_they_are_provided_in_subscribeMessage() throws PubNubException {
+        //given
         String message = "message content something interesting";
         String messageType = "myMessageType";
         String spaceId = "mySpace";
         String subscribeResponse = getSubscribeResponseWithMessageTypeAndSpaceId(message, messageType, spaceId);
 
-        //given
         Gson gson = new Gson();
         SubscribeMessageProcessor subscribeMessageProcessor = subscribeMessageProcessor(config());
         SubscribeEnvelope subscribeEnvelope = gson.fromJson(subscribeResponse, SubscribeEnvelope.class);
+
         //when
         PNEvent result = subscribeMessageProcessor.processIncomingPayload(subscribeEnvelope.getMessages().get(0));
 
@@ -166,6 +168,59 @@ public class SubscribeMessageProcessorTest {
         assertThat(messageResult.getMessage().getAsString(), is(message));
         assertThat(messageResult.getMessageType().getValue(), equalTo(messageType));
         assertThat(messageResult.getSpaceId().getValue(), equalTo(spaceId));
+    }
+
+
+    @Test
+    public void pnSignalResult_should_contain_messageType_and_spaceId_when_they_are_provided_in_subscribeMessage() throws PubNubException {
+        //given
+        String message = "signal content something interesting";
+        String messageType = "myMessageType";
+        String spaceId = "mySpace";
+        String subscribeResponseJson = getSubscribeResponseForSignalWithMessageTypeAndSpaceId(message, messageType, spaceId);
+
+        Gson gson = new Gson();
+        SubscribeMessageProcessor subscribeMessageProcessor = subscribeMessageProcessor(config());
+        SubscribeEnvelope subscribeEnvelope = gson.fromJson(subscribeResponseJson, SubscribeEnvelope.class);
+
+        //when
+        PNEvent result = subscribeMessageProcessor.processIncomingPayload(subscribeEnvelope.getMessages().get(0));
+
+        //then
+        PNSignalResult signalResult = (PNSignalResult) result;
+
+        assertThat(result, is(instanceOf(PNSignalResult.class)));
+        assertThat(signalResult.getMessage().getAsString(), is(message));
+        assertThat(signalResult.getMessageType().getValue(), equalTo(messageType));
+        assertThat(signalResult.getSpaceId().getValue(), equalTo(spaceId));
+
+
+    }
+
+    private String getSubscribeResponseForSignalWithMessageTypeAndSpaceId(String message, String messageType, String spaceId) {
+        return "{\n" +
+                "  \"t\": {\n" +
+                "    \"t\": \"16734390751423544\",\n" +
+                "    \"r\": 41\n" +
+                "  },\n" +
+                "  \"m\": [\n" +
+                "    {\n" +
+                "      \"a\": \"1\",\n" +
+                "      \"f\": 0,\n" +
+                "      \"e\": 1,\n" +
+                "      \"i\": \"client-a9e92988-4909-421a-a66e-96c778bc9d86\",\n" +
+                "      \"p\": {\n" +
+                "        \"t\": \"16734390751423544\",\n" +
+                "        \"r\": 41\n" +
+                "      },\n" +
+                "      \"k\": \"sub-c-cb8b98b4-cd27-11ec-b360-1a35c262c233\",\n" +
+                "      \"c\": \"ch_mqwvjygftw\",\n" +
+                "     \"d\":  \"" + message + "\",\n" +
+                "      \"mt\": \"" + messageType + "\",\n" +
+                "      \"si\": \"" + spaceId + "\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
     }
 
     private void testDifferentJsonMessages(JsonElement jsonMessage) throws PubNubException {

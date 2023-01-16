@@ -95,7 +95,7 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
                 .isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_KEY_MISSING).build();
         }
-        if (channels.size() == 0 && channelGroups.size() == 0) {
+        if (channels.isEmpty() && channelGroups.isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_AND_GROUP_MISSING).build();
         }
     }
@@ -139,7 +139,7 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
 
         String channelCSV;
 
-        if (channelGroups.size() > 0) {
+        if (!channelGroups.isEmpty()) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }
 
@@ -155,7 +155,7 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
             params.put("tr", region);
         }
 
-        if (channels.size() > 0) {
+        if (!channels.isEmpty()) {
             channelCSV = PubNubUtil.joinString(channels, ",");
         } else {
             channelCSV = ",";
@@ -169,7 +169,7 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
             params.put("state", stringifiedState);
         }
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
         return this.getRetrofit().getSubscribeService()
                 .subscribe(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, params);

@@ -71,7 +71,7 @@ public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> 
         if (this.getPubnub().getConfiguration().getSubscribeKey() == null || this.getPubnub().getConfiguration().getSubscribeKey().isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_KEY_MISSING).build();
         }
-        if (channels.size() == 0 && channelGroups.size() == 0) {
+        if (channels.isEmpty() && channelGroups.isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_AND_GROUP_MISSING).build();
         }
     }
@@ -91,7 +91,7 @@ public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> 
             subscriptionManager.adaptStateBuilder(stateOperation);
         }
 
-        if (channelGroups.size() > 0) {
+        if (!channelGroups.isEmpty()) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }
 
@@ -100,9 +100,9 @@ public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> 
         stringifiedState = PubNubUtil.urlEncode(stringifiedState);
         params.put("state", stringifiedState);
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
-        String channelCSV = channels.size() > 0 ? PubNubUtil.joinString(channels, ",") : ",";
+        String channelCSV = !channels.isEmpty() ? PubNubUtil.joinString(channels, ",") : ",";
 
         return this.getRetrofit().getExtendedPresenceService().setState(
                 this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);

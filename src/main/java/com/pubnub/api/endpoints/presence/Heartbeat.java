@@ -50,7 +50,7 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
         if (this.getPubnub().getConfiguration().getSubscribeKey() == null || this.getPubnub().getConfiguration().getSubscribeKey().isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_KEY_MISSING).build();
         }
-        if (channels.size() == 0 && channelGroups.size() == 0) {
+        if (channels.isEmpty() && channelGroups.isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_AND_GROUP_MISSING).build();
         }
     }
@@ -59,13 +59,13 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
     protected Call<Envelope> doWork(Map<String, String> params) throws PubNubException {
         params.put("heartbeat", String.valueOf(this.getPubnub().getConfiguration().getPresenceTimeout()));
 
-        if (channelGroups.size() > 0) {
+        if (!channelGroups.isEmpty()) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }
 
         String channelsCSV;
 
-        if (channels.size() > 0) {
+        if (!channels.isEmpty()) {
             channelsCSV = PubNubUtil.joinString(channels, ",");
         } else {
             channelsCSV = ",";
@@ -77,7 +77,7 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
             params.put("state", stringifiedState);
         }
 
-        params.putAll(encodeParams(params));
+        params.putAll(encodeAuthParamValue(params));
 
         return this.getRetrofit().getPresenceService().heartbeat(this.getPubnub().getConfiguration().getSubscribeKey(), channelsCSV, params);
     }
