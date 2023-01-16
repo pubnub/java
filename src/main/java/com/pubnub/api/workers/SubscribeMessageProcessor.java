@@ -81,7 +81,7 @@ public class SubscribeMessageProcessor {
             }
 
             BasePubSubResult basePubSubResult = getBasePubSubResult(message, channel, subscriptionMatch, publishMetaData);
-            MessageType messageType = new MessageType(PNMessageType.valueByPnMessageType(message.getPnMessageType()), message.getUserMessageType());
+            MessageType messageType = new MessageType(message.getPnMessageType(), message.getUserMessageType());
             SpaceId spaceId = message.getSpaceId() != null ? new SpaceId(message.getSpaceId()) : null;
             if (isMessage(message)) {
                 return new PNMessageResult(basePubSubResult, extractedMessage, messageType, spaceId);
@@ -168,20 +168,19 @@ public class SubscribeMessageProcessor {
     }
 
     private boolean isMessage(SubscribeMessage message) {
-        //should be "==" instead of "equals" for PNMessageType.MESSAGE01.getEValueFromServer()  because its value is null
-        return message.getPnMessageType() == PNMessageType.MESSAGE01.getEValueFromServer() || message.getPnMessageType().equals(PNMessageType.MESSAGE02.getEValueFromServer());
+        return message.getPnMessageType() == PNMessageType.MESSAGE01 || message.getPnMessageType() == PNMessageType.MESSAGE02;
     }
 
     private boolean isSignal(SubscribeMessage message) {
-        return message.getPnMessageType().equals(PNMessageType.SIGNAL.getEValueFromServer());
+        return message.getPnMessageType() == PNMessageType.SIGNAL;
     }
 
     private boolean isUserOrSpaceOrMembershipObject(SubscribeMessage message) {
-        return message.getPnMessageType().equals(PNMessageType.OBJECT.getEValueFromServer());
+        return message.getPnMessageType() == PNMessageType.OBJECT;
     }
 
     private boolean isMessageAction(SubscribeMessage message) {
-        return message.getPnMessageType().equals(PNMessageType.MESSAGE_ACTION.getEValueFromServer());
+        return message.getPnMessageType() == PNMessageType.MESSAGE_ACTION;
     }
 
     private PNMessageActionResult getPnMessageActionResult(MapperManager mapper, JsonElement extractedMessage, BasePubSubResult result) {
@@ -198,7 +197,7 @@ public class SubscribeMessageProcessor {
     }
 
     private boolean isFile(SubscribeMessage message) {
-        return message.getPnMessageType().equals(PNMessageType.FILE.getEValueFromServer());
+        return message.getPnMessageType() == PNMessageType.FILE;
     }
 
     private PNFileEventResult getPnFileEventResult(SubscribeMessage message, MapperManager mapper, PublishMetaData publishMetaData, JsonElement extractedMessage) {
