@@ -15,17 +15,17 @@ class ThenSteps(
     private val subscribeState: SubscribeState
 ) {
 
-    @Then("I receive the message in my subscribe response")
-    fun I_receive_the_message_in_my_subscribe_response() {
+    @Then("I receive 2 messages in my subscribe response")
+    fun I_receive_2_messages_in_my_subscribe_response() {
         await()
             .atMost(500, TimeUnit.MILLISECONDS)
             .until {
-                subscribeState.messages.isNotEmpty()
+                subscribeState.messages.size == 2
             }
     }
 
-    @Then("subscribe response contains messages with {string} and {string} message types")
-    fun subscribe_response_contains_messages_with_message_types(
+    @Then("response contains messages with {string} and {string} message types")
+    fun response_contains_messages_with_message_types(
         messageTypeOfFirstMessage: String,
         messageTypeOfSecondMessage: String
     ) {
@@ -37,15 +37,15 @@ class ThenSteps(
         )
     }
 
-    @Then("subscribe response contains messages without space ids")
-    fun subscribe_response_contains_messages_without_space_ids() {
+    @Then("response contains messages without space ids")
+    fun response_contains_messages_without_space_ids() {
         assertTrue(
             subscribeState.messages.stream()
                 .allMatch { (it is PNMessageResult || it is PNSignalResult) && it.spaceId == null })
     }
 
-    @Then("subscribe response contains messages with space ids")
-    fun subscribe_response_contains_messages_with_space_ids() {
+    @Then("response contains messages with space ids")
+    fun response_contains_messages_with_space_ids() {
         subscribeState.messages.stream().allMatch { it is PNMessageResult && it.spaceId != null }
     }
 }
