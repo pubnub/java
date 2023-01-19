@@ -5,5 +5,5 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 
 class SubscribeState {
-    val messages: CopyOnWriteArrayList<MessageResult> = CopyOnWriteArrayList()
+    val messages: MutableList<MessageResult> = CopyOnWriteArrayList()
 }

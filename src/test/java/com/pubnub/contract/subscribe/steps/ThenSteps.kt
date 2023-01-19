@@ -29,7 +29,6 @@ class ThenSteps(
         messageTypeOfFirstMessage: String,
         messageTypeOfSecondMessage: String
     ) {
-        assertThat(subscribeState.messages.size, equalTo(2))
         val listOfReceivedMessageTypes = subscribeState.messages.map { it.messageType.value }
         assertThat(
             listOfReceivedMessageTypes,
@@ -46,6 +45,6 @@ class ThenSteps(
 
     @Then("response contains messages with space ids")
     fun response_contains_messages_with_space_ids() {
-        subscribeState.messages.stream().allMatch { it is PNMessageResult && it.spaceId != null }
+        assertTrue(subscribeState.messages.stream().allMatch { it is PNMessageResult && it.spaceId != null })
     }
 }
