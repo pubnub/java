@@ -1,12 +1,11 @@
 package com.pubnub.contract.subscribe.steps
 
-import com.pubnub.api.models.consumer.pubsub.PNMessageResult
-import com.pubnub.api.models.consumer.pubsub.PNSignalResult
 import com.pubnub.contract.subscribe.state.SubscribeState
 import io.cucumber.java.en.Then
 import org.awaitility.Awaitility.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,13 +37,11 @@ class ThenSteps(
 
     @Then("response contains messages without space ids")
     fun response_contains_messages_without_space_ids() {
-        assertTrue(
-            subscribeState.messages.stream()
-                .allMatch { (it is PNMessageResult || it is PNSignalResult) && it.spaceId == null })
+        assertEquals(listOf<String>(), subscribeState.messages.mapNotNull { it.spaceId })
     }
 
     @Then("response contains messages with space ids")
     fun response_contains_messages_with_space_ids() {
-        assertTrue(subscribeState.messages.stream().allMatch { it is PNMessageResult && it.spaceId != null })
+        assertTrue(subscribeState.messages.all { it.spaceId != null })
     }
 }
