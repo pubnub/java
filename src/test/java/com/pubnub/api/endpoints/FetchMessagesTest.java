@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -51,7 +51,7 @@ class FetchMessagesTest {
     }
 
     @Test
-    void when_includeMessageType_equal_true_is_specify_explicitly_in_api_call_then_request_should_contain_proper_request_param() throws PubNubException {
+    void when_includeMessageType_equal_true_is_specified_explicitly_in_api_call_then_request_should_contain_includeMessageType_request_param_set_to_true() throws PubNubException {
         Map<String, String> baseParams = getBaseParams();
         ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
         objectUnderTest.channels(Arrays.asList("channel"));
@@ -67,11 +67,11 @@ class FetchMessagesTest {
         Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
         assertTrue(Boolean.parseBoolean(extendedRequestParams.get("include_message_type")));
         assertTrue(Boolean.parseBoolean(extendedRequestParams.get("include_type")));
-        assertFalse(Boolean.parseBoolean(extendedRequestParams.get("include_space_id")));
+        assertEquals("false", extendedRequestParams.get("include_space_id"));
     }
 
     @Test
-    void when_includeMessageType_equal_false_is_specify_explicitly_in_api_call_then_request_should_contain_proper_request_param() throws PubNubException {
+    void when_includeMessageType_equal_false_is_specified_explicitly_in_api_call_then_request_should_contain_includeMessageType_request_param_set_to_false() throws PubNubException {
         Map<String, String> baseParams = getBaseParams();
         ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
         objectUnderTest.channels(Arrays.asList("channel"));
@@ -85,13 +85,29 @@ class FetchMessagesTest {
         verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
 
         Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
-        assertFalse(Boolean.parseBoolean(extendedRequestParams.get("include_message_type")));
-        assertFalse(Boolean.parseBoolean(extendedRequestParams.get("include_type")));
+        assertEquals("false", extendedRequestParams.get("include_message_type"));
+        assertEquals("false", extendedRequestParams.get("include_type"));
         assertTrue(Boolean.parseBoolean(extendedRequestParams.get("include_space_id")));
     }
 
     @Test
-    void when_includeSpaceId_is_not_provided_then_messages_request_should_not_contain_includeSpaceId_request_param() throws PubNubException {
+    void when_includeMessageType_is_not_provided_then_messages_request_should_contain_includeMessageType_request_param_set_to_true() throws PubNubException {
+        Map<String, String> baseParams = getBaseParams();
+        ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
+        objectUnderTest.channels(Arrays.asList("channel"));
+        objectUnderTest.includeMessageActions(false);
+        objectUnderTest.includeMeta(true);
+
+        objectUnderTest.doWork(baseParams);
+
+        verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
+
+        Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
+        assertEquals("true", extendedRequestParams.get("include_message_type"));
+    }
+
+    @Test
+    void when_includeSpaceId_is_not_provided_then_messages_request_should_contain_includeSpaceId_request_param_set_to_false() throws PubNubException {
         Map<String, String> baseParams = getBaseParams();
         ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
         objectUnderTest.channels(Arrays.asList("channel"));
@@ -104,7 +120,7 @@ class FetchMessagesTest {
         verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
 
         Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
-        assertFalse(Boolean.parseBoolean(extendedRequestParams.get("include_space_id")));
+        assertEquals("false", extendedRequestParams.get("include_space_id"));
     }
 
     private Map<String, String> getBaseParams() {
