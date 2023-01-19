@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -30,7 +31,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UUIDMetadataIT extends ObjectsApiBaseIT {
     private static final Logger LOG = LoggerFactory.getLogger(UUIDMetadataIT.class);
@@ -43,7 +43,7 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
     private final List<PNSetUUIDMetadataResult> createdUUIDMetadataList = new ArrayList<>();
     private final String randomName = randomName();
     private final String randomEmail = randomEmail();
-    private final String randomProfileUrl =  randomProfileUrl();
+    private final String randomProfileUrl = randomProfileUrl();
     private final String randomExternalId = randomExternalId();
     private final String statusValue = "active";
     private final String typeValue = "gold";
@@ -82,7 +82,7 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
     @Test
     public void getUUIDHappyPath() throws PubNubException {
         //given
-        final PNSetUUIDMetadataResult setUUIDMetadataResult =  pubNubUnderTest.setUUIDMetadata()
+        final PNSetUUIDMetadataResult setUUIDMetadataResult = pubNubUnderTest.setUUIDMetadata()
                 .uuid(randomTestUUID)
                 .name(randomName)
                 .email(randomEmail)
@@ -118,7 +118,7 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
     @Test
     public void getAllUUIDHappyPath() throws PubNubException {
         //given
-        for (String testUUID: randomTestUUIDs) {
+        for (String testUUID : randomTestUUIDs) {
             final PNSetUUIDMetadataResult setUUIDMetadataResult = pubNubUnderTest.setUUIDMetadata()
                     .uuid(testUUID)
                     .name(randomName)
@@ -153,7 +153,7 @@ public class UUIDMetadataIT extends ObjectsApiBaseIT {
     @Test
     public void removeUUIDHappyPath() throws PubNubException {
         //given
-        final PNSetUUIDMetadataResult setUUIDMetadataResult =  pubNubUnderTest.setUUIDMetadata()
+        final PNSetUUIDMetadataResult setUUIDMetadataResult = pubNubUnderTest.setUUIDMetadata()
                 .uuid(randomTestUUID)
                 .name(randomName)
                 .email(randomEmail)

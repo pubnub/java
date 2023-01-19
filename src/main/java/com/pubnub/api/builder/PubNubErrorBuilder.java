@@ -377,7 +377,7 @@ public final class PubNubErrorBuilder {
     public static final int PNERR_PNMESSAGETYPE_NULL_OR_EMPTY = 173;
 
     /**
-     * UserMessageType can't be null nor empty
+     * Unknown pnMessageType "e" field from server
      */
     public static final int PNERR_UNKNOWN_MESSAGE_TYPE = 174;
 
@@ -385,6 +385,11 @@ public final class PubNubErrorBuilder {
      * Object type should be "channel", "membership" or "uuid"
      */
     public static final int PNERR_INVALID_OBJECT_TYPE = 175;
+
+    /**
+     * To get message includeMessageType should not be set to false
+     */
+    public static final int PNERR_TO_GET_MESSAGE_TYPE_INCLUDEMESSAGETYPE_SHOULD_NOT_BE_SET_TO_FALSE = 175;
 
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
@@ -768,6 +773,11 @@ public final class PubNubErrorBuilder {
     public static final PubNubError PNERROBJ_INVALID_OBJECT_TYPE = PubNubError.builder()
             .errorCode(PNERR_INVALID_OBJECT_TYPE)
             .message("Unknown PNMessageType.")
+            .build();
+
+    public static final PubNubError PNERROBJ_TO_GET_MESSAGE_TYPE_INCLUDEMESSAGETYPE_SHOULD_NOT_BE_SET_TO_FALSE = PubNubError.builder()
+            .errorCode(PNERR_TO_GET_MESSAGE_TYPE_INCLUDEMESSAGETYPE_SHOULD_NOT_BE_SET_TO_FALSE)
+            .message("To get messageType includeMessageType should be set to true.")
             .build();
 
     private PubNubErrorBuilder() {

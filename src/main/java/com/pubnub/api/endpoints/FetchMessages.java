@@ -23,6 +23,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,16 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     private static final int MULTIPLE_CHANNEL_MAX_MESSAGES = 25;
     private static final int DEFAULT_MESSAGES_WITH_ACTIONS = 25;
     private static final int MAX_MESSAGES_WITH_ACTIONS = 25;
+    private static final String INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM = "include_type";
+    private static final String INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM = "include_message_type";
+    private static final String INCLUDE_SPACE_ID_QUERY_PARAM = "include_space_id";
+    private static final String MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO = "maximumPerChannel param defaulting to ";
+    private static final String PN_OTHER = "pn_other";
+    private static final String INCLUDE_META_QUERY_PARAM = "include_meta";
+    private static final String INCLUDE_UUID_QUERY_PARAM = "include_uuid";
+    private static final String START_QUERY_PARAM = "start";
+    private static final String END_QUERY_PARAM = "end";
+    public static final String MAX_QUERY_PARAM = "max";
 
     @Setter
     private List<String> channels;
@@ -56,6 +67,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     private boolean includeMessageType = true;
     @Setter
     private boolean includeUUID = true;
+    @Setter
+    private boolean includeSpaceId = false;
 
     public FetchMessages(PubNub pubnub,
                          TelemetryManager telemetryManager,
@@ -72,7 +85,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
 
     @Override
     protected List<String> getAffectedChannelGroups() {
-        return null;
+        return Collections.emptyList();
     }
 
 
@@ -83,7 +96,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_KEY_MISSING).build();
         }
 
-        if (channels == null || channels.size() == 0) {
+        if (channels == null || channels.isEmpty()) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_MISSING).build();
         }
 
@@ -96,58 +109,29 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         }
 
         if (!includeMessageActions) {
-            if (channels.size() == 1) {
-                if (maximumPerChannel == null || maximumPerChannel < 1) {
-                    maximumPerChannel = SINGLE_CHANNEL_DEFAULT_MESSAGES;
-                    log.info("maximumPerChannel param defaulting to " + maximumPerChannel);
-                } else if (maximumPerChannel > SINGLE_CHANNEL_MAX_MESSAGES) {
-                    maximumPerChannel = SINGLE_CHANNEL_MAX_MESSAGES;
-                    log.info("maximumPerChannel param defaulting to " + maximumPerChannel);
-                }
-            } else {
-                if (maximumPerChannel == null || maximumPerChannel < 1) {
-                    maximumPerChannel = MULTIPLE_CHANNEL_DEFAULT_MESSAGES;
-                    log.info("maximumPerChannel param defaulting to " + maximumPerChannel);
-                } else if (maximumPerChannel > MULTIPLE_CHANNEL_MAX_MESSAGES) {
-                    maximumPerChannel = MULTIPLE_CHANNEL_MAX_MESSAGES;
-                    log.info("maximumPerChannel param defaulting to " + maximumPerChannel);
-                }
-            }
+            setMaxNumberOfMessagesPerChannel();
         } else {
             if (maximumPerChannel == null || maximumPerChannel < 1 || maximumPerChannel > MAX_MESSAGES_WITH_ACTIONS) {
                 maximumPerChannel = DEFAULT_MESSAGES_WITH_ACTIONS;
-                log.info("maximumPerChannel param defaulting to " + maximumPerChannel);
+                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
             }
         }
     }
 
     @Override
     protected Call<FetchMessagesEnvelope> doWork(Map<String, String> params) throws PubNubException {
-        params.put("max", String.valueOf(maximumPerChannel));
-
-        if (start != null) {
-            params.put("start", Long.toString(start).toLowerCase());
-        }
-        if (end != null) {
-            params.put("end", Long.toString(end).toLowerCase());
-        }
-
-        if (includeMeta) {
-            params.put("include_meta", String.valueOf(includeMeta));
-        }
-        params.put("include_uuid", Boolean.toString(includeUUID));
-        params.put("include_message_type", Boolean.toString(includeMessageType));
+        Map<String, String> extendedRequestParams = extendRequestParams(params);
 
         if (!includeMessageActions) {
             return this.getRetrofit().getHistoryService().fetchMessages(
                     this.getPubnub().getConfiguration().getSubscribeKey(), PubNubUtil.joinString(channels, ","),
-                    params);
+                    extendedRequestParams);
         } else {
             if (channels.size() > 1) {
                 throw PubNubException.builder().pubnubError(PNERROBJ_HISTORY_MESSAGE_ACTIONS_MULTIPLE_CHANNELS).build();
             }
             return this.getRetrofit().getHistoryService().fetchMessagesWithActions(
-                    this.getPubnub().getConfiguration().getSubscribeKey(), channels.get(0), params);
+                    this.getPubnub().getConfiguration().getSubscribeKey(), channels.get(0), extendedRequestParams);
         }
     }
 
@@ -164,7 +148,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
 
             for (PNFetchMessageItem item : entry.getValue()) {
                 PNFetchMessageItem.PNFetchMessageItemBuilder messageItemBuilder = item.toBuilder();
-
+                messageItemBuilder.includeMessageType(includeMessageType);
                 messageItemBuilder.message(processMessage(item.getMessage()));
                 if (includeMessageActions) {
                     if (item.getActions() != null) {
@@ -216,8 +200,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         String outputText;
         JsonElement outputObject;
 
-        if (mapper.isJsonObject(message) && mapper.hasField(message, "pn_other")) {
-            inputText = mapper.elementToString(message, "pn_other");
+        if (mapper.isJsonObject(message) && mapper.hasField(message, PN_OTHER)) {
+            inputText = mapper.elementToString(message, PN_OTHER);
         } else {
             inputText = mapper.elementToString(message);
         }
@@ -226,12 +210,52 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload
-        if (mapper.isJsonObject(message) && mapper.hasField(message, "pn_other")) {
+        if (mapper.isJsonObject(message) && mapper.hasField(message, PN_OTHER)) {
             JsonObject objectNode = mapper.getAsObject(message);
-            mapper.putOnObject(objectNode, "pn_other", outputObject);
+            mapper.putOnObject(objectNode, PN_OTHER, outputObject);
             outputObject = objectNode;
         }
 
         return outputObject;
+    }
+
+    private void setMaxNumberOfMessagesPerChannel() {
+        if (channels.size() == 1) {
+            if (maximumPerChannel == null || maximumPerChannel < 1) {
+                maximumPerChannel = SINGLE_CHANNEL_DEFAULT_MESSAGES;
+                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+            } else if (maximumPerChannel > SINGLE_CHANNEL_MAX_MESSAGES) {
+                maximumPerChannel = SINGLE_CHANNEL_MAX_MESSAGES;
+                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+            }
+        } else {
+            if (maximumPerChannel == null || maximumPerChannel < 1) {
+                maximumPerChannel = MULTIPLE_CHANNEL_DEFAULT_MESSAGES;
+                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+            } else if (maximumPerChannel > MULTIPLE_CHANNEL_MAX_MESSAGES) {
+                maximumPerChannel = MULTIPLE_CHANNEL_MAX_MESSAGES;
+                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+            }
+        }
+    }
+
+    private Map<String, String> extendRequestParams(Map<String, String> params) {
+        params.put(MAX_QUERY_PARAM, String.valueOf(maximumPerChannel));
+        params.put(INCLUDE_UUID_QUERY_PARAM, Boolean.toString(includeUUID));
+        if (start != null) {
+            params.put(START_QUERY_PARAM, Long.toString(start).toLowerCase());
+        }
+        if (end != null) {
+            params.put(END_QUERY_PARAM, Long.toString(end).toLowerCase());
+        }
+        String yes = Boolean.toString(true);
+        if (includeMeta) {
+            params.put(INCLUDE_META_QUERY_PARAM, yes);
+        }
+        params.put(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM, String.valueOf(includeMessageType));
+        params.put(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM, String.valueOf(includeMessageType));
+        params.put(INCLUDE_SPACE_ID_QUERY_PARAM, String.valueOf(includeSpaceId));
+
+        return params;
     }
 }

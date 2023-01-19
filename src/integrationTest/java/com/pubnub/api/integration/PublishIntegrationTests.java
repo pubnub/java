@@ -12,6 +12,7 @@ import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.history.PNFetchMessageItem;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadataResult;
@@ -40,6 +41,7 @@ import static com.pubnub.api.integration.util.Utils.randomChannel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class PublishIntegrationTests extends BaseIntegrationTest {
 
@@ -84,6 +86,24 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .sync();
 
         assertNotNull(pnPublishResult.getTimetoken());
+        pause(2);
+        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
+                .channels(Collections.singletonList(expectedChannel))
+                .maximumPerChannel(25)
+                .includeMeta(true)
+                .includeMessageType(true)
+                .includeSpaceId(true)
+                .sync();
+
+
+        for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannel)) {
+            assertNotNull(messageItem.getMessage());
+            assertNotNull(messageItem.getTimetoken());
+            assertNull(messageItem.getMeta());
+            assertNull(messageItem.getActions());
+            assertNotNull(messageItem.getMessageType());
+            assertNotNull(messageItem.getSpaceId());
+        }
     }
 
     @Test

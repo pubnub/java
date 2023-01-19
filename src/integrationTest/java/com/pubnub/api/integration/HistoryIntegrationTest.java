@@ -1,7 +1,9 @@
 package com.pubnub.api.integration;
 
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.integration.util.RandomGenerator;
 import com.pubnub.api.models.consumer.PNPublishResult;
@@ -30,6 +32,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class HistoryIntegrationTest extends BaseIntegrationTest {
+
+    private static final String MESSAGE_ACTION_TYPE_REACTION = "reaction";
 
     @Test
     public void testHistorySingleChannel() throws PubNubException {
@@ -125,6 +129,8 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
 
         final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
                 .channels(Collections.singletonList(expectedChannelName))
+                .includeMessageType(true)
+                .includeSpaceId(true)
                 .maximumPerChannel(25)
                 .sync();
 
@@ -165,6 +171,39 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    public void testFetchSingleChannel_SpaceId_MessageType() throws PubNubException {
+        final String expectedChannelName = random();
+        final String message = "message";
+        final String expectedSpaceIdValue = "mySpace";
+        final String expectedMessageTypeValue = "myMessageType";
+
+        PNPublishResult pnPublishResult = pubNub.publish()
+                .message(message)
+                .channel(expectedChannelName)
+                .messageType(new MessageType(expectedMessageTypeValue))
+                .spaceId(new SpaceId(expectedSpaceIdValue))
+                .sync();
+
+        assertNotNull(pnPublishResult.getTimetoken());
+
+        pause(3);
+
+        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
+                .channels(Collections.singletonList(expectedChannelName))
+                .maximumPerChannel(25)
+                .sync();
+
+        assertNotNull(fetchMessagesResult);
+        for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
+            assertNotNull(messageItem.getMessage());
+            assertNotNull(messageItem.getTimetoken());
+            assertEquals(expectedSpaceIdValue, messageItem.getSpaceId().getValue());
+            assertEquals(expectedSpaceIdValue, messageItem.getMessageType().getValue());
+        }
+
+    }
+
+    @Test
     public void testFetchSingleChannel_Actions() throws PubNubException {
         final String expectedChannelName = random();
 
@@ -173,7 +212,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         pubNub.addMessageAction()
                 .channel(expectedChannelName)
                 .messageAction(new PNMessageAction()
-                        .setType("reaction")
+                        .setType(MESSAGE_ACTION_TYPE_REACTION)
                         .setValue(RandomGenerator.emoji())
                         .setMessageTimetoken(results.get(0).getTimetoken()))
                 .sync();
@@ -207,7 +246,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         pubNub.addMessageAction()
                 .channel(expectedChannelName)
                 .messageAction(new PNMessageAction()
-                        .setType("reaction")
+                        .setType(MESSAGE_ACTION_TYPE_REACTION)
                         .setValue(RandomGenerator.emoji())
                         .setMessageTimetoken(results.get(0).getTimetoken()))
                 .sync();
@@ -394,7 +433,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
                 final PNAddMessageActionResult reaction = pubNub.addMessageAction()
                         .channel(expectedChannelName)
                         .messageAction(new PNMessageAction()
-                                .setType("reaction")
+                                .setType(MESSAGE_ACTION_TYPE_REACTION)
                                 .setValue(RandomGenerator.emoji())
                                 .setMessageTimetoken(mixed.get(i).getTimetoken()))
                         .sync();
