@@ -13,19 +13,24 @@ import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import com.pubnub.api.models.consumer.message_actions.PNAddMessageActionResult;
 import com.pubnub.api.models.consumer.message_actions.PNMessageAction;
+import org.awaitility.Awaitility;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_HISTORY_MESSAGE_ACTIONS_MULTIPLE_CHANNELS;
 import static com.pubnub.api.integration.util.Utils.publishMixed;
 import static com.pubnub.api.integration.util.Utils.queryParam;
 import static com.pubnub.api.integration.util.Utils.random;
 import static com.pubnub.api.integration.util.Utils.randomChannel;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -127,23 +132,24 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
 
         publishMixed(pubNub, 10, expectedChannelName);
 
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannelName))
-                .includeMessageType(true)
-                .includeSpaceId(true)
-                .maximumPerChannel(25)
-                .sync();
+        final PNFetchMessagesResult fetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannelName))
+                    .includeMessageType(true)
+                    .includeSpaceId(true)
+                    .maximumPerChannel(25)
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        pause(3);
-
-        assert fetchMessagesResult != null;
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
             assertNotNull(messageItem.getMessage());
             assertNotNull(messageItem.getTimetoken());
             assertNull(messageItem.getMeta());
             assertNull(messageItem.getActions());
         }
-
     }
 
     @Test
@@ -152,22 +158,23 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
 
         publishMixed(pubNub, 10, expectedChannelName);
 
-        pause(3);
+        final PNFetchMessagesResult fetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannelName))
+                    .maximumPerChannel(25)
+                    .includeMeta(true)
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannelName))
-                .maximumPerChannel(25)
-                .includeMeta(true)
-                .sync();
-
-        assert fetchMessagesResult != null;
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
             assertNotNull(messageItem.getMessage());
             assertNotNull(messageItem.getTimetoken());
             assertNotNull(messageItem.getMeta());
             assertNull(messageItem.getActions());
         }
-
     }
 
     @Test
@@ -175,32 +182,33 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         final String expectedChannelName = random();
         final String message = "message";
         final String expectedSpaceIdValue = "mySpace";
-        final String expectedMessageTypeValue = "myMessageType";
+        final MessageType expectedMessageType = new MessageType("myMessageType");
 
         PNPublishResult pnPublishResult = pubNub.publish()
                 .message(message)
                 .channel(expectedChannelName)
-                .messageType(new MessageType(expectedMessageTypeValue))
+                .messageType(expectedMessageType)
                 .spaceId(new SpaceId(expectedSpaceIdValue))
                 .sync();
 
         assertNotNull(pnPublishResult.getTimetoken());
 
-        pause(3);
+        PNFetchMessagesResult pnFetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannelName))
+                    .maximumPerChannel(25)
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannelName))
-                .maximumPerChannel(25)
-                .sync();
-
-        assertNotNull(fetchMessagesResult);
-        for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
+        for (PNFetchMessageItem messageItem : pnFetchMessagesResult.getChannels().get(expectedChannelName)) {
             assertNotNull(messageItem.getMessage());
             assertNotNull(messageItem.getTimetoken());
             assertEquals(expectedSpaceIdValue, messageItem.getSpaceId().getValue());
-            assertEquals(expectedSpaceIdValue, messageItem.getMessageType().getValue());
+            assertEquals(expectedMessageType, messageItem.getMessageType());
         }
-
     }
 
     @Test
@@ -251,16 +259,19 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
                         .setMessageTimetoken(results.get(0).getTimetoken()))
                 .sync();
 
-        pause(3);
 
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannelName))
-                .maximumPerChannel(25)
-                .includeMessageActions(true)
-                .includeMeta(true)
-                .sync();
+        final PNFetchMessagesResult fetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannelName))
+                    .maximumPerChannel(25)
+                    .includeMessageActions(true)
+                    .includeMeta(true)
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        assert fetchMessagesResult != null;
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
             assertNotNull(messageItem.getMessage());
             assertNotNull(messageItem.getTimetoken());
@@ -307,13 +318,15 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
 
         assertEquals(10, publishMixed(pubNub, 10, expectedChannelName).size());
 
-        pause(3);
+        final PNFetchMessagesResult fetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannelName))
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannelName))
-                .sync();
-
-        assert fetchMessagesResult != null;
         assertEquals(10, fetchMessagesResult.getChannels().get(expectedChannelName).size());
 
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
@@ -325,19 +338,21 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testFetchSingleChannel_OverflowLimit() throws PubNubException {
+    public void testFetchSingleChannel_OverflowLimit() {
         final String expectedChannelName = random();
 
         assertEquals(10, publishMixed(pubNub, 10, expectedChannelName).size());
 
-        pause(3);
+        final PNFetchMessagesResult fetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannelName))
+                    .maximumPerChannel(100)
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannelName))
-                .maximumPerChannel(100)
-                .sync();
-
-        assert fetchMessagesResult != null;
         assertEquals(10, fetchMessagesResult.getChannels().get(expectedChannelName).size());
 
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
@@ -608,16 +623,17 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
                 .shouldStore(true)
                 .sync();
 
-        pause(3);
-
         // /v2/history
-        final PNHistoryResult v2HistoryResult = pubNub.history()
-                .channel(channel)
-                .includeMeta(true)
-                .sync();
-        assert v2HistoryResult != null;
-        assertEquals(1, v2HistoryResult.getMessages().size());
-        assertNotNull(v2HistoryResult.getMessages().get(0).getMeta());
+        pauseUntilAsserted(() -> {
+            PNHistoryResult result = pubNub.history()
+                    .channel(channel)
+                    .includeMeta(true)
+                    .sync();
+            assert result != null;
+            assertEquals(1, result.getMessages().size());
+            assertNotNull(result.getMessages().get(0).getMeta());
+            return result;
+        });
 
         // /v3/history
         final PNFetchMessagesResult v3HistoryResult = pubNub.fetchMessages()
@@ -639,5 +655,22 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         assertNotNull(v3HistoryWithActionsResult.getChannels().get(channel).get(0).getMeta());
 
         // three responses from three different APIs will return a non-null meta field
+    }
+
+    interface PnSupplier<T> {
+        T get() throws PubNubException;
+    }
+
+    private <T> T pauseUntilAsserted(PnSupplier<T> function) {
+        final AtomicReference<T> atomicReference = new AtomicReference<>();
+        Awaitility.await()
+                .pollInterval(Duration.ofSeconds(1))
+                .pollDelay(Duration.ofSeconds(1))
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(() -> {
+                    atomicReference.set(function.get());
+                });
+
+        return atomicReference.get();
     }
 }

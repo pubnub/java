@@ -77,12 +77,14 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     public void testPublishMessageWithMessageTypeAndSpaceId() throws PubNubException {
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
+        SpaceId expectedSpaceId = new SpaceId("chatIndeed");
+        MessageType expectedMessageType = new MessageType("userChosenMessageType");
 
         PNPublishResult pnPublishResult = pubNub.publish()
                 .message(messagePayload)
                 .channel(expectedChannel)
-                .messageType(new MessageType("userChosenMessageType"))
-                .spaceId(new SpaceId("chatIndeed"))
+                .messageType(expectedMessageType)
+                .spaceId(expectedSpaceId)
                 .sync();
 
         assertNotNull(pnPublishResult.getTimetoken());
@@ -95,14 +97,9 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .includeSpaceId(true)
                 .sync();
 
-
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannel)) {
-            assertNotNull(messageItem.getMessage());
-            assertNotNull(messageItem.getTimetoken());
-            assertNull(messageItem.getMeta());
-            assertNull(messageItem.getActions());
-            assertNotNull(messageItem.getMessageType());
-            assertNotNull(messageItem.getSpaceId());
+            assertEquals(expectedSpaceId, messageItem.getSpaceId());
+            assertEquals(expectedMessageType, messageItem.getMessageType());
         }
     }
 

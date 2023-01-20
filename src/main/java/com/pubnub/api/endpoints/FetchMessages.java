@@ -107,15 +107,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         if (includeMessageActions == null) {
             includeMessageActions = false;
         }
-
-        if (!includeMessageActions) {
-            setMaxNumberOfMessagesPerChannel();
-        } else {
-            if (maximumPerChannel == null || maximumPerChannel < 1 || maximumPerChannel > MAX_MESSAGES_WITH_ACTIONS) {
-                maximumPerChannel = DEFAULT_MESSAGES_WITH_ACTIONS;
-                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
-            }
-        }
+        setMaxNumberOfMessagesPerChannel();
     }
 
     @Override
@@ -220,20 +212,27 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     }
 
     private void setMaxNumberOfMessagesPerChannel() {
-        if (channels.size() == 1) {
-            if (maximumPerChannel == null || maximumPerChannel < 1) {
-                maximumPerChannel = SINGLE_CHANNEL_DEFAULT_MESSAGES;
-                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
-            } else if (maximumPerChannel > SINGLE_CHANNEL_MAX_MESSAGES) {
-                maximumPerChannel = SINGLE_CHANNEL_MAX_MESSAGES;
-                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+        if (!includeMessageActions) {
+            if (channels.size() == 1) {
+                if (maximumPerChannel == null || maximumPerChannel < 1) {
+                    maximumPerChannel = SINGLE_CHANNEL_DEFAULT_MESSAGES;
+                    log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+                } else if (maximumPerChannel > SINGLE_CHANNEL_MAX_MESSAGES) {
+                    maximumPerChannel = SINGLE_CHANNEL_MAX_MESSAGES;
+                    log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+                }
+            } else {
+                if (maximumPerChannel == null || maximumPerChannel < 1) {
+                    maximumPerChannel = MULTIPLE_CHANNEL_DEFAULT_MESSAGES;
+                    log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+                } else if (maximumPerChannel > MULTIPLE_CHANNEL_MAX_MESSAGES) {
+                    maximumPerChannel = MULTIPLE_CHANNEL_MAX_MESSAGES;
+                    log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
+                }
             }
         } else {
-            if (maximumPerChannel == null || maximumPerChannel < 1) {
-                maximumPerChannel = MULTIPLE_CHANNEL_DEFAULT_MESSAGES;
-                log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
-            } else if (maximumPerChannel > MULTIPLE_CHANNEL_MAX_MESSAGES) {
-                maximumPerChannel = MULTIPLE_CHANNEL_MAX_MESSAGES;
+            if (maximumPerChannel == null || maximumPerChannel < 1 || maximumPerChannel > MAX_MESSAGES_WITH_ACTIONS) {
+                maximumPerChannel = DEFAULT_MESSAGES_WITH_ACTIONS;
                 log.info(MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO + maximumPerChannel);
             }
         }
@@ -248,9 +247,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         if (end != null) {
             params.put(END_QUERY_PARAM, Long.toString(end).toLowerCase());
         }
-        String yes = Boolean.toString(true);
         if (includeMeta) {
-            params.put(INCLUDE_META_QUERY_PARAM, yes);
+            params.put(INCLUDE_META_QUERY_PARAM, Boolean.toString(true));
         }
         params.put(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM, String.valueOf(includeMessageType));
         params.put(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM, String.valueOf(includeMessageType));

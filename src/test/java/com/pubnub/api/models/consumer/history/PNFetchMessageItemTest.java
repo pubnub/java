@@ -15,26 +15,25 @@ class PNFetchMessageItemTest {
 
 
     @Test
-    void when_includeMessageType_is_false_then_getMessageType_should_throw_exception() {
+    void when_includeMessageType_is_false_then_getMessageType_should_return_null() {
         boolean includeMessageType = false;
-        Object spaceId = null;
-        Object pnMessageType = null;
-        Object userMessageType = null;
+        String spaceId = null;
+        Integer pnMessageType = null;
+        String userMessageType = null;
 
-        objectUnderTest = getPNFetchMessageItem(includeMessageType, (String) spaceId, (Integer) pnMessageType, (String) userMessageType);
+        objectUnderTest = getPNFetchMessageItem(includeMessageType, spaceId, pnMessageType, userMessageType);
 
-        PubNubRuntimeException pubNubRuntimeException = assertThrows(PubNubRuntimeException.class, () -> objectUnderTest.getMessageType());
-        assertEquals("To get messageType includeMessageType should be set to true.", pubNubRuntimeException.getPubnubError().getMessage());
+        assertNull(objectUnderTest.getMessageType());
     }
 
     @Test
     void when_includeMessageType_is_true_then_getMessageType_should_return_notNull() {
         boolean includeMessageType = true;
-        Object spaceId = null;
-        Object pnMessageType = null;
-        Object userMessageType = null;
+        String spaceId = null;
+        Integer pnMessageType = null;
+        String userMessageType = null;
 
-        objectUnderTest = getPNFetchMessageItem(includeMessageType, (String) spaceId, (Integer) pnMessageType, (String) userMessageType);
+        objectUnderTest = getPNFetchMessageItem(includeMessageType, spaceId, pnMessageType, userMessageType);
 
         assertNotNull(objectUnderTest.getMessageType());
     }
@@ -42,25 +41,23 @@ class PNFetchMessageItemTest {
     @Test
     void when_spaceIdValue_is_null_should_return_null() {
         boolean includeMessageType = false;
-        Object spaceId = null;
-        Object pnMessageType = null;
-        Object userMessageType = null;
+        String spaceId = null;
+        Integer pnMessageType = null;
+        String userMessageType = null;
 
-        objectUnderTest = getPNFetchMessageItem(includeMessageType, (String) spaceId, (Integer) pnMessageType, (String) userMessageType);
+        objectUnderTest = getPNFetchMessageItem(includeMessageType, spaceId, pnMessageType, userMessageType);
 
-        PubNubRuntimeException pubNubRuntimeException = assertThrows(PubNubRuntimeException.class, () -> objectUnderTest.getMessageType());
-        assertEquals("To get messageType includeMessageType should be set to true.", pubNubRuntimeException.getPubnubError().getMessage());
         assertNull(objectUnderTest.getSpaceId());
     }
 
     @Test
     void when_spaceIdValue_is_notNull_should_return_notNull() {
         boolean includeMessageType = false;
-        Object spaceId = "mySpace";
-        Object pnMessageType = null;
-        Object userMessageType = null;
+        String spaceId = "mySpace";
+        Integer pnMessageType = null;
+        String userMessageType = null;
 
-        objectUnderTest = getPNFetchMessageItem(includeMessageType, (String) spaceId, (Integer) pnMessageType, (String) userMessageType);
+        objectUnderTest = getPNFetchMessageItem(includeMessageType, spaceId, pnMessageType, userMessageType);
 
         assertNotNull(objectUnderTest.getSpaceId());
     }

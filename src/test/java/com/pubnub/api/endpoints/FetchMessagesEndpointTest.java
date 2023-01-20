@@ -135,7 +135,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
     }
 
     @Test
-    public void should_throw_exception_when_getting_messageType_but_includeMessageType_is_set_to_false() throws PubNubException {
+    public void should_return_null_when_getting_messageType_but_includeMessageType_is_set_to_false() throws PubNubException {
         final String expectedChannelName = "myChannel";
         String fetchMessagesUrl = "/v3/history/sub-key/mySubscribeKey/channel/" + expectedChannelName;
 
@@ -150,11 +150,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
                 .sync();
 
         PNFetchMessageItem pnFetchMessageItem = fetchMessagesResult.getChannels().get(expectedChannelName).get(0);
-        PubNubRuntimeException pubNubRuntimeException = Assertions.assertThrows(PubNubRuntimeException.class, () -> {
-            pnFetchMessageItem.getMessageType();
-        });
-
-        assertEquals("To get messageType includeMessageType should be set to true.", pubNubRuntimeException.getPubnubError().getMessage());
+        assertNull(pnFetchMessageItem.getMessageType());
     }
 
     @Test

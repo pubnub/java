@@ -3,124 +3,120 @@ package com.pubnub.api.endpoints;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.managers.RetrofitManager;
-import com.pubnub.api.managers.TelemetryManager;
-import com.pubnub.api.managers.token_manager.TokenManager;
-import com.pubnub.api.services.HistoryService;
+import com.pubnub.api.UserId;
+import com.pubnub.api.models.server.FetchMessagesEnvelope;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import retrofit2.Call;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class FetchMessagesTest {
     private FetchMessages objectUnderTest;
-
-    @Mock
     private PubNub pubnub;
-    @Mock
-    private TelemetryManager telemetryManage;
-    @Mock
-    private RetrofitManager retrofit;
-    @Mock
-    private TokenManager tokenManager;
-    @Mock
-    private HistoryService historyService;
-    @Mock
-    private PNConfiguration pnConfiguration;
+
+    private static final String INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM = "include_type";
+    private static final String INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM = "include_message_type";
+    private static final String INCLUDE_SPACE_ID_QUERY_PARAM = "include_space_id";
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        objectUnderTest = new FetchMessages(pubnub, telemetryManage, retrofit, tokenManager);
+    void setUp() throws PubNubException {
+        PNConfiguration pnConfiguration = new PNConfiguration(new UserId("pn-" + UUID.randomUUID()));
+        pnConfiguration.setSubscribeKey("demo");
+        pnConfiguration.setPublishKey("demo");
 
-        when(retrofit.getHistoryService()).thenReturn(historyService);
-        when(pubnub.getConfiguration()).thenReturn(pnConfiguration);
-        when(pnConfiguration.getSubscribeKey()).thenReturn("mySybKey");
+        pubnub = new PubNub(pnConfiguration);
     }
 
     @Test
     void when_includeMessageType_equal_true_is_specified_explicitly_in_api_call_then_request_should_contain_includeMessageType_request_param_set_to_true() throws PubNubException {
+        //Given
         Map<String, String> baseParams = getBaseParams();
-        ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
-        objectUnderTest.channels(Arrays.asList("channel"));
-        objectUnderTest.includeMessageActions(false);
-        objectUnderTest.includeMeta(true);
-        objectUnderTest.includeMessageType(true);
-        objectUnderTest.includeSpaceId(false);
+        objectUnderTest = pubnub.fetchMessages()
+                .channels(Arrays.asList("channel"))
+                .includeMessageActions(false)
+                .includeMeta(true)
+                .includeMessageType(true)
+                .includeSpaceId(false);
 
-        objectUnderTest.doWork(baseParams);
+        //When
+        Call<FetchMessagesEnvelope> call = objectUnderTest.doWork(baseParams);
 
-        verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
-
-        Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
-        assertTrue(Boolean.parseBoolean(extendedRequestParams.get("include_message_type")));
-        assertTrue(Boolean.parseBoolean(extendedRequestParams.get("include_type")));
-        assertEquals("false", extendedRequestParams.get("include_space_id"));
+        //Then
+        String include_message_type = call.request().url().queryParameter(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM);
+        String include_type = call.request().url().queryParameter(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM);
+        String include_space_id = call.request().url().queryParameter(INCLUDE_SPACE_ID_QUERY_PARAM);
+        assertTrue(Boolean.parseBoolean(include_message_type));
+        assertTrue(Boolean.parseBoolean(include_type));
+        assertFalse(Boolean.parseBoolean(include_space_id));
     }
 
     @Test
     void when_includeMessageType_equal_false_is_specified_explicitly_in_api_call_then_request_should_contain_includeMessageType_request_param_set_to_false() throws PubNubException {
+        //Given
         Map<String, String> baseParams = getBaseParams();
-        ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
-        objectUnderTest.channels(Arrays.asList("channel"));
-        objectUnderTest.includeMessageActions(false);
-        objectUnderTest.includeMeta(true);
-        objectUnderTest.includeMessageType(false);
-        objectUnderTest.includeSpaceId(true);
+        FetchMessages objectUnderTest = pubnub.fetchMessages()
+                .channels(Arrays.asList("channel"))
+                .includeMessageActions(false)
+                .includeMeta(true)
+                .includeMessageType(false)
+                .includeSpaceId(true);
 
-        objectUnderTest.doWork(baseParams);
+        //When
+        Call<FetchMessagesEnvelope> call = objectUnderTest.doWork(baseParams);
 
-        verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
-
-        Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
-        assertEquals("false", extendedRequestParams.get("include_message_type"));
-        assertEquals("false", extendedRequestParams.get("include_type"));
-        assertTrue(Boolean.parseBoolean(extendedRequestParams.get("include_space_id")));
+        //Then
+        String include_message_type = call.request().url().queryParameter(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM);
+        String include_type = call.request().url().queryParameter(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM);
+        String include_space_id = call.request().url().queryParameter(INCLUDE_SPACE_ID_QUERY_PARAM);
+        assertFalse(Boolean.parseBoolean(include_message_type));
+        assertFalse(Boolean.parseBoolean(include_type));
+        assertTrue(Boolean.parseBoolean(include_space_id));
     }
 
     @Test
     void when_includeMessageType_is_not_provided_then_messages_request_should_contain_includeMessageType_request_param_set_to_true() throws PubNubException {
+        //Given
         Map<String, String> baseParams = getBaseParams();
-        ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
-        objectUnderTest.channels(Arrays.asList("channel"));
-        objectUnderTest.includeMessageActions(false);
-        objectUnderTest.includeMeta(true);
+        FetchMessages objectUnderTest = pubnub.fetchMessages()
+                .channels(Arrays.asList("channel"))
+                .includeMessageActions(false)
+                .includeMeta(true)
+                .includeSpaceId(true);
 
-        objectUnderTest.doWork(baseParams);
+        //When
+        Call<FetchMessagesEnvelope> call = objectUnderTest.doWork(baseParams);
 
-        verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
-
-        Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
-        assertEquals("true", extendedRequestParams.get("include_message_type"));
+        //Then
+        String include_message_type = call.request().url().queryParameter(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM);
+        String include_type = call.request().url().queryParameter(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM);
+        String include_space_id = call.request().url().queryParameter(INCLUDE_SPACE_ID_QUERY_PARAM);
+        assertTrue(Boolean.parseBoolean(include_message_type));
+        assertTrue(Boolean.parseBoolean(include_type));
+        assertTrue(Boolean.parseBoolean(include_space_id));
     }
 
     @Test
     void when_includeSpaceId_is_not_provided_then_messages_request_should_contain_includeSpaceId_request_param_set_to_false() throws PubNubException {
+        //Given
         Map<String, String> baseParams = getBaseParams();
-        ArgumentCaptor<Map<String, String>> extendedParamsCaptor = ArgumentCaptor.forClass(Map.class);
-        objectUnderTest.channels(Arrays.asList("channel"));
-        objectUnderTest.includeMessageActions(false);
-        objectUnderTest.includeMeta(true);
-        objectUnderTest.includeMessageType(false);
+        FetchMessages objectUnderTest = pubnub.fetchMessages()
+                .channels(Arrays.asList("channel"))
+                .includeMessageActions(false)
+                .includeMeta(true);
 
-        objectUnderTest.doWork(baseParams);
+        //When
+        Call<FetchMessagesEnvelope> call = objectUnderTest.doWork(baseParams);
 
-        verify(historyService, times(1)).fetchMessages(anyString(), anyString(), extendedParamsCaptor.capture());
-
-        Map<String, String> extendedRequestParams = extendedParamsCaptor.getValue();
-        assertEquals("false", extendedRequestParams.get("include_space_id"));
+        //Then
+        String include_space_id = call.request().url().queryParameter(INCLUDE_SPACE_ID_QUERY_PARAM);
+        assertFalse(Boolean.parseBoolean(include_space_id));
     }
 
     private Map<String, String> getBaseParams() {
