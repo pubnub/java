@@ -5,8 +5,8 @@ import com.pubnub.api.models.consumer.history.PNFetchMessageItem
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult
 import com.pubnub.contract.history.state.FetchMessagesState
 import io.cucumber.java.en.Then
-import org.hamcrest.CoreMatchers.hasItems
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
 
 class ThenSteps(
@@ -22,9 +22,11 @@ class ThenSteps(
             fetchMessagesState.pnFetchMessagesResult?.getAllFetchMessageItemsFromAllChannels()
                 ?.map { it.messageType.value }
 
+        val uniqueMessageTypeValuesInAllMessagesInAllChannels: HashSet<String> = HashSet(messageTypeValuesInAllMessagesInAllChannels)
+
         assertThat(
-            messageTypeValuesInAllMessagesInAllChannels,
-            hasItems(messageTypeOfFirstMessage, messageTypeOfSecondMessage)
+            uniqueMessageTypeValuesInAllMessagesInAllChannels,
+            containsInAnyOrder(messageTypeOfFirstMessage, messageTypeOfSecondMessage)
         )
     }
 
@@ -36,9 +38,10 @@ class ThenSteps(
     }
 
     @Then("history response contains messages with message types")
-    fun history_response_contains_messages_with_message_types(){//
-        val messagesWithMessageTypeEqualNull: List<MessageType>? = fetchMessagesState.pnFetchMessagesResult?.getAllFetchMessageItemsFromAllChannels()
-            ?.map { it.messageType }?.filter { it -> it == null}
+    fun history_response_contains_messages_with_message_types() {
+        val messagesWithMessageTypeEqualNull: List<MessageType>? =
+            fetchMessagesState.pnFetchMessagesResult?.getAllFetchMessageItemsFromAllChannels()
+                ?.map { it.messageType }?.filter { it -> it == null }
         assertThat(messagesWithMessageTypeEqualNull, empty())
     }
 
@@ -50,11 +53,13 @@ class ThenSteps(
     }
 
     @Then("history response contains messages with space ids")
-    fun history_response_contains_messages_with_space_ids(){
-        val messagesWithSpaceIdEqualNull = fetchMessagesState.pnFetchMessagesResult?.getAllFetchMessageItemsFromAllChannels()
-            ?.map { it.spaceId }?.filter { it -> it == null }
+    fun history_response_contains_messages_with_space_ids() {
+        val messagesWithSpaceIdEqualNull =
+            fetchMessagesState.pnFetchMessagesResult?.getAllFetchMessageItemsFromAllChannels()
+                ?.map { it.spaceId }?.filter { it -> it == null }
         assertThat(messagesWithSpaceIdEqualNull, empty())
     }
+
     private fun PNFetchMessagesResult.getAllFetchMessageItemsFromAllChannels(): List<PNFetchMessageItem> {
         return channels.values.flatten()
     }
