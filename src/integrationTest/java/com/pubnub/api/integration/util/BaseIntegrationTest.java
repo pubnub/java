@@ -32,6 +32,7 @@ import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 
@@ -381,4 +383,20 @@ public abstract class BaseIntegrationTest {
         return null;
     }
 
+   public interface PnSupplier<T> {
+        T get() throws PubNubException;
+    }
+
+    protected <T> T pauseUntilAsserted(PnSupplier<T> function) {
+        final AtomicReference<T> atomicReference = new AtomicReference<>();
+        Awaitility.await()
+                .pollInterval(Duration.ofSeconds(1))
+                .pollDelay(Duration.ofSeconds(1))
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(() -> {
+                    atomicReference.set(function.get());
+                });
+
+        return atomicReference.get();
+    }
 }

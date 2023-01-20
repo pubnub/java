@@ -13,16 +13,13 @@ import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import com.pubnub.api.models.consumer.message_actions.PNAddMessageActionResult;
 import com.pubnub.api.models.consumer.message_actions.PNMessageAction;
-import org.awaitility.Awaitility;
 import org.junit.Test;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_HISTORY_MESSAGE_ACTIONS_MULTIPLE_CHANNELS;
 import static com.pubnub.api.integration.util.Utils.publishMixed;
@@ -181,14 +178,14 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     public void testFetchSingleChannel_SpaceId_MessageType() throws PubNubException {
         final String expectedChannelName = random();
         final String message = "message";
-        final String expectedSpaceIdValue = "mySpace";
+        final SpaceId expectedSpaceId = new SpaceId("mySpace");
         final MessageType expectedMessageType = new MessageType("myMessageType");
 
         PNPublishResult pnPublishResult = pubNub.publish()
                 .message(message)
                 .channel(expectedChannelName)
                 .messageType(expectedMessageType)
-                .spaceId(new SpaceId(expectedSpaceIdValue))
+                .spaceId(expectedSpaceId)
                 .sync();
 
         assertNotNull(pnPublishResult.getTimetoken());
@@ -206,7 +203,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         for (PNFetchMessageItem messageItem : pnFetchMessagesResult.getChannels().get(expectedChannelName)) {
             assertNotNull(messageItem.getMessage());
             assertNotNull(messageItem.getTimetoken());
-            assertEquals(expectedSpaceIdValue, messageItem.getSpaceId().getValue());
+            assertEquals(expectedSpaceId, messageItem.getSpaceId());
             assertEquals(expectedMessageType, messageItem.getMessageType());
         }
     }
@@ -655,22 +652,5 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         assertNotNull(v3HistoryWithActionsResult.getChannels().get(channel).get(0).getMeta());
 
         // three responses from three different APIs will return a non-null meta field
-    }
-
-    interface PnSupplier<T> {
-        T get() throws PubNubException;
-    }
-
-    private <T> T pauseUntilAsserted(PnSupplier<T> function) {
-        final AtomicReference<T> atomicReference = new AtomicReference<>();
-        Awaitility.await()
-                .pollInterval(Duration.ofSeconds(1))
-                .pollDelay(Duration.ofSeconds(1))
-                .atMost(Duration.ofSeconds(5))
-                .untilAsserted(() -> {
-                    atomicReference.set(function.get());
-                });
-
-        return atomicReference.get();
     }
 }

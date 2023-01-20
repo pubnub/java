@@ -38,10 +38,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.pubnub.api.integration.util.Utils.random;
 import static com.pubnub.api.integration.util.Utils.randomChannel;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class PublishIntegrationTests extends BaseIntegrationTest {
 
@@ -88,14 +89,19 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .sync();
 
         assertNotNull(pnPublishResult.getTimetoken());
-        pause(2);
-        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(expectedChannel))
-                .maximumPerChannel(25)
-                .includeMeta(true)
-                .includeMessageType(true)
-                .includeSpaceId(true)
-                .sync();
+
+        final PNFetchMessagesResult fetchMessagesResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(expectedChannel))
+                    .maximumPerChannel(25)
+                    .includeMeta(true)
+                    .includeMessageType(true)
+                    .includeSpaceId(true)
+                    .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannel)) {
             assertEquals(expectedSpaceId, messageItem.getSpaceId());
@@ -256,14 +262,17 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .usePOST(true)
                 .sync();
 
-        pause(3);
+        final PNHistoryResult historyResult = pauseUntilAsserted(() -> {
+            PNHistoryResult result = pubNub.history()
+                    .channel(channel)
+                    .count(1)
+                    .sync();
 
-        final PNHistoryResult historyResult = pubNub.history()
-                .channel(channel)
-                .count(1)
-                .sync();
+            assertNotNull(result);
+            assertThat(result.getMessages().size(), greaterThan(0));
+            return result;
+        });
 
-        assert historyResult != null;
         final JsonElement receivedMessage = historyResult.getMessages().get(0).getEntry();
 
         final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
@@ -283,12 +292,16 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .usePOST(true)
                 .sync();
 
-        pause(3);
+        final PNHistoryResult historyResult = pauseUntilAsserted(() -> {
+            PNHistoryResult result = pubNub.history()
+                    .channel(channel)
+                    .count(1)
+                    .sync();
 
-        final PNHistoryResult historyResult = pubNub.history()
-                .channel(channel)
-                .count(1)
-                .sync();
+            assertNotNull(result);
+            assertThat(result.getMessages().size(), greaterThan(0));
+            return result;
+        });
         assert historyResult != null;
         final JsonElement receivedMessage = historyResult.getMessages().get(0).getEntry();
 
@@ -468,14 +481,17 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .channel(channel)
                 .sync();
 
-        pause(3);
+        final PNHistoryResult historyResult = pauseUntilAsserted(() -> {
+            PNHistoryResult result = pubNub.history()
+                    .channel(channel)
+                    .count(1)
+                    .sync();
 
-        final PNHistoryResult historyResult = pubNub.history()
-                .channel(channel)
-                .count(1)
-                .sync();
+            assertNotNull(result);
+            assertThat(result.getMessages().size(), greaterThan(0));
+            return result;
+        });
 
-        assert historyResult != null;
         final JsonElement receivedMessage = historyResult.getMessages().get(0).getEntry();
 
         final JSONArray receivedArray = new JSONArray(receivedMessage.toString());
@@ -498,13 +514,17 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .usePOST(true)
                 .sync();
 
-        pause(3);
+        final PNHistoryResult historyResult = pauseUntilAsserted(() -> {
+            PNHistoryResult result = pubNub.history()
+                    .channel(channel)
+                    .count(1)
+                    .sync();
 
-        final PNHistoryResult historyResult = pubNub.history()
-                .channel(channel)
-                .count(1)
-                .sync();
-        assert historyResult != null;
+            assertNotNull(result);
+            assertThat(result.getMessages().size(), greaterThan(0));
+            return result;
+        });
+
         final JsonElement receivedMessage = historyResult.getMessages().get(0).getEntry();
 
         final JSONArray receivedArray = new JSONArray(receivedMessage.toString());
@@ -760,14 +780,17 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
                 .usePOST(true)
                 .sync();
 
-        pause(3);
+        final PNFetchMessagesResult historyResult = pauseUntilAsserted(() -> {
+            PNFetchMessagesResult result = pubNub.fetchMessages()
+                    .channels(Collections.singletonList(channel))
+                    .maximumPerChannel(1)
+                    .sync();
 
-        final PNFetchMessagesResult historyResult = pubNub.fetchMessages()
-                .channels(Collections.singletonList(channel))
-                .maximumPerChannel(1)
-                .sync();
+            assertNotNull(result);
+            assertThat(result.getChannels().size(), greaterThan(0));
+            return result;
+        });
 
-        assert historyResult != null;
         final JsonElement receivedMessage = historyResult.getChannels().get(channel).get(0).getMessage();
 
         final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
