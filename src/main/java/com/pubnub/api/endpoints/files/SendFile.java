@@ -1,7 +1,9 @@
 package com.pubnub.api.endpoints.files;
 
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.endpoints.BuilderSteps.ChannelStep;
@@ -55,6 +57,10 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
     private Boolean shouldStore;
     @Setter
     private String cipherKey;
+    @Setter
+    private MessageType messageType;
+    @Setter
+    private SpaceId spaceId;
 
     SendFile(Builder.SendFileRequiredParams requiredParams,
              GenerateUploadUrl.Factory generateUploadUrlFactory,
@@ -141,7 +147,9 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
                 .message(message)
                 .meta(meta)
                 .ttl(ttl)
-                .shouldStore(shouldStore);
+                .shouldStore(shouldStore)
+                .messageType(messageType)
+                .spaceId(spaceId);
     }
 
     private <T> RemoteAction<T> autoRetry(RemoteAction<T> remoteAction, int maxNumberOfRetries) {

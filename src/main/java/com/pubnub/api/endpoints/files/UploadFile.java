@@ -115,7 +115,7 @@ class UploadFile implements RemoteAction<Void> {
 
         try {
             return MediaType.get(contentType);
-        }  catch (Throwable t) {
+        } catch (Throwable t) {
             log.warn("Content-Type: " + contentType + " was not recognized by MediaType.get", t);
             return APPLICATION_OCTET_STREAM;
         }
@@ -164,7 +164,7 @@ class UploadFile implements RemoteAction<Void> {
                         PNStatusCategory pnStatusCategory = PNStatusCategory.PNUnknownCategory;
 
                         if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-                            || response.code() == HttpURLConnection.HTTP_FORBIDDEN) {
+                                || response.code() == HttpURLConnection.HTTP_FORBIDDEN) {
                             pnStatusCategory = PNStatusCategory.PNAccessDeniedCategory;
                         }
 

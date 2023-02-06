@@ -1,8 +1,9 @@
 package com.pubnub.api.integration;
 
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
@@ -20,8 +21,6 @@ import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -33,13 +32,71 @@ import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static com.pubnub.api.integration.util.Utils.random;
 import static com.pubnub.api.integration.util.Utils.randomChannel;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FilesIntegrationTests extends BaseIntegrationTest {
 
     @Test
     public void uploadListDownloadDeleteWithCipher() throws PubNubException, InterruptedException, IOException {
         doItAllFilesTest(true);
+    }
+
+    @Test
+    public void canPublishFileMessage() throws InterruptedException, PubNubException {
+        CountDownLatch connectedLatch = new CountDownLatch(1);
+        CountDownLatch fileEventReceived = new CountDownLatch(1);
+        String channel = randomChannel();
+        String message = "This is message";
+        String meta = "This is meta";
+        String fileName = "fileName" + channel + ".txt";
+        String fileId = "fileId_" + random();
+        MessageType expectedMessageType = new MessageType("myMessageType");
+        SpaceId expectedSpaceId = new SpaceId("mySpace");
+
+        pubNub.addListener(new LimitedListener() {
+            @Override
+            public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
+                if (pnStatus.getCategory() == PNStatusCategory.PNConnectedCategory) {
+                    connectedLatch.countDown();
+                }
+            }
+
+            @Override
+            public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
+                if (pnFileEventResult.getFile().getName().equals(fileName)) {
+                    assertEquals(expectedMessageType, pnFileEventResult.getMessageType());
+                    assertEquals(expectedSpaceId, pnFileEventResult.getSpaceId());
+                    fileEventReceived.countDown();
+                }
+            }
+        });
+
+        pubNub.subscribe()
+                .channels(Collections.singletonList(channel))
+                .execute();
+
+        assertTrue(connectedLatch.await(10, TimeUnit.SECONDS));
+
+        pubNub.publishFileMessage()
+                .channel(channel)
+                .fileName(fileName)
+                .fileId(fileId)
+                .message(message)
+                .meta(meta)
+                .messageType(expectedMessageType)
+                .spaceId(expectedSpaceId)
+                .sync();
+
+        assertTrue(fileEventReceived.await(5, TimeUnit.SECONDS));
+
+        pubNub.deleteFile()
+                .channel(channel)
+                .fileName(fileName)
+                .fileId(fileId)
+                .sync();
     }
 
     @Test
@@ -58,6 +115,8 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
         String message = "This is message";
         String meta = "This is meta";
         String fileName = "fileName" + channel + ".txt";
+        MessageType expectedMessageType = new MessageType("myMessageType");
+        SpaceId expectedSpaceId = new SpaceId("mySpace");
         CountDownLatch connectedLatch = new CountDownLatch(1);
         CountDownLatch fileEventReceived = new CountDownLatch(1);
 
@@ -72,6 +131,8 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
             @Override
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
                 if (pnFileEventResult.getFile().getName().equals(fileName)) {
+                    assertEquals(expectedMessageType, pnFileEventResult.getMessageType());
+                    assertEquals(expectedSpaceId, pnFileEventResult.getSpaceId());
                     fileEventReceived.countDown();
                 }
             }
@@ -82,7 +143,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
                 .execute();
 
         PNFileUploadResult sendResult;
-        connectedLatch.await(10, TimeUnit.SECONDS);
+        assertTrue(connectedLatch.await(10, TimeUnit.SECONDS));
         try (InputStream is = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
             sendResult = pubNub.sendFile()
                     .channel(channel)
@@ -90,11 +151,13 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
                     .inputStream(is)
                     .message(message)
                     .meta(meta)
+                    .messageType(expectedMessageType)
+                    .spaceId(expectedSpaceId)
                     .sync();
         }
 
 
-        fileEventReceived.await(10, TimeUnit.SECONDS);
+        assertTrue(fileEventReceived.await(10, TimeUnit.SECONDS));
         PNListFilesResult listedFiles = pubNub.listFiles()
                 .channel(channel)
                 .sync();
@@ -106,7 +169,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
                 break;
             }
         }
-        Assert.assertTrue(fileFoundOnList);
+        assertTrue(fileFoundOnList);
 
         PNDownloadFileResult downloadResult = pubNub
                 .downloadFile()
@@ -116,7 +179,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
                 .sync();
 
         try (InputStream is = downloadResult.getByteStream()) {
-            Assert.assertEquals(content, readToString(is));
+            assertEquals(content, readToString(is));
         }
 
 

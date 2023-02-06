@@ -1,13 +1,13 @@
 package com.pubnub.api;
 
-import lombok.Getter;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_SPACEID_NULL_OR_EMPTY;
 
+@Data
 public class SpaceId {
 
-    @Getter
     @NotNull
     private final String value;
 

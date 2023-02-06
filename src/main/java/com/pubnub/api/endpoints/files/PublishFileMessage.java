@@ -1,15 +1,17 @@
 package com.pubnub.api.endpoints.files;
 
+import com.pubnub.api.MessageType;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.SpaceId;
 import com.pubnub.api.builder.PubNubErrorBuilder;
-import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.endpoints.BuilderSteps.ChannelStep;
+import com.pubnub.api.endpoints.Endpoint;
+import com.pubnub.api.endpoints.files.requiredparambuilder.ChannelFileNameFileIdBuilder;
 import com.pubnub.api.endpoints.files.requiredparambuilder.FilesBuilderSteps.FileIdStep;
 import com.pubnub.api.endpoints.files.requiredparambuilder.FilesBuilderSteps.FileNameStep;
-import com.pubnub.api.endpoints.files.requiredparambuilder.ChannelFileNameFileIdBuilder;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.managers.RetrofitManager;
@@ -31,6 +33,9 @@ import java.util.Map;
 
 @Accessors(chain = true, fluent = true)
 public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMessageResult> {
+    static final String SPACE_ID_QUERY_PARAMETER = "space-id";
+    static final String MESSAGE_TYPE_QUERY_PARAMETER = "type";
+
 
     @Setter
     private Object message;
@@ -40,6 +45,11 @@ public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMess
     private Integer ttl;
     @Setter
     private Boolean shouldStore;
+    @Setter
+    private MessageType messageType;
+    @Setter
+    private SpaceId spaceId;
+
     private final String channel;
     private final PNBaseFile pnFile;
     private final FilesService filesService;
@@ -112,6 +122,12 @@ public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMess
 
         if (ttl != null) {
             params.put("ttl", String.valueOf(ttl));
+        }
+        if (spaceId != null) {
+            params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());
+        }
+        if (messageType != null) {
+            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
         }
 
         return filesService.notifyAboutFileUpload(configuration.getPublishKey(),

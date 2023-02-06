@@ -147,12 +147,41 @@ public class SubscribeMessageProcessorTest {
     }
 
     @Test
+    public void pnFileResult_should_contain_messageType_and_spaceId_when_they_are_provided_in_subscribeMessage() throws PubNubException {
+        //given
+        String message = "message content something interesting";
+        String messageType = "myMessageType";
+        String spaceId = "mySpace";
+        String fileId = "fileId";
+        String fileName = "fileName.txt";
+        String subscribeResponse = getSubscribeResponseAsFileMessageWithMessageTypeAndSpaceId(message, messageType, spaceId, fileId, fileName);
+
+        Gson gson = new Gson();
+        SubscribeMessageProcessor subscribeMessageProcessor = subscribeMessageProcessor(config());
+        SubscribeEnvelope subscribeEnvelope = gson.fromJson(subscribeResponse, SubscribeEnvelope.class);
+
+        //when
+        PNEvent pnEvent = subscribeMessageProcessor.processIncomingPayload(subscribeEnvelope.getMessages().get(0));
+
+        //then
+        PNFileEventResult fileEventResult = (PNFileEventResult) pnEvent;
+
+        assertThat(pnEvent, is(instanceOf(PNFileEventResult.class)));
+        assertThat(fileEventResult.getMessage(), is(message));
+        assertThat(fileEventResult.getMessageType().getValue(), equalTo(messageType));
+        assertThat(fileEventResult.getSpaceId().getValue(), equalTo(spaceId));
+        assertThat(fileEventResult.getFile().getId(), equalTo(fileId));
+        assertThat(fileEventResult.getFile().getName(), equalTo(fileName));
+
+    }
+
+    @Test
     public void pnMessageResult_should_contain_messageType_and_spaceId_when_they_are_provided_in_subscribeMessage() throws PubNubException {
         //given
         String message = "message content something interesting";
         String messageType = "myMessageType";
         String spaceId = "mySpace";
-        String subscribeResponse = getSubscribeResponseWithMessageTypeAndSpaceId(message, messageType, spaceId);
+        String subscribeResponse = getSubscribeResponseAsMessageWithMessageTypeAndSpaceId(message, messageType, spaceId);
 
         Gson gson = new Gson();
         SubscribeMessageProcessor subscribeMessageProcessor = subscribeMessageProcessor(config());
@@ -286,8 +315,8 @@ public class SubscribeMessageProcessorTest {
         return queryParameters;
     }
 
-    private String getSubscribeResponseWithMessageTypeAndSpaceId(String message, String messageType, String spaceId) {
-        String subscribeResponse = "{\n" +
+    private String getSubscribeResponseAsMessageWithMessageTypeAndSpaceId(String message, String messageType, String spaceId) {
+        String subscribeMessageResponse = "{\n" +
                 "    \"t\": {\n" +
                 "        \"t\": \"16710463904083117\",\n" +
                 "        \"r\": 21\n" +
@@ -309,7 +338,41 @@ public class SubscribeMessageProcessorTest {
                 "    ]\n" +
                 "}";
 
-        return subscribeResponse;
+        return subscribeMessageResponse;
+    }
+
+    private String getSubscribeResponseAsFileMessageWithMessageTypeAndSpaceId(String message, String messageType, String spaceId, String fileId, String fileName){
+        String subscribeFileMessageResponse = "{\n" +
+                "  \"t\": {\n" +
+                "    \"t\": \"16756997608306988\",\n" +
+                "    \"r\": 43\n" +
+                "  },\n" +
+                "  \"m\": [\n" +
+                "    {\n" +
+                "      \"a\": \"1\",\n" +
+                "      \"f\": 0,\n" +
+                "      \"e\": 4,\n" +
+                "      \"i\": \"client-4daebdcd-0605-4c3c-b379-330e76023d98\",\n" +
+                "      \"p\": {\n" +
+                "        \"t\": \"16756997608306988\",\n" +
+                "        \"r\": 43\n" +
+                "      },\n" +
+                "      \"k\": \"sub-c-cb8b98b4-cd27-11ec-b360-1a35c262c233\",\n" +
+                "      \"c\": \"ch_tcjomeugcn\",\n" +
+                "      \"u\": \"This is meta\",\n" +
+                "      \"d\": {\n" +
+                "        \"message\": \"" + message + "\",\n" +
+                "        \"file\": {\n" +
+                "          \"id\": \"" + fileId + "\",\n" +
+                "          \"name\": \"" + fileName + "\"\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"mt\": \"" + messageType + "\",\n" +
+                "      \"si\": \"" + spaceId + "\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        return subscribeFileMessageResponse;
     }
 
 }

@@ -81,8 +81,8 @@ public class SubscribeMessageProcessor {
             }
 
             BasePubSubResult basePubSubResult = getBasePubSubResult(message, channel, subscriptionMatch, publishMetaData);
-            MessageType messageType = new MessageType(message.getPnMessageType(), message.getUserMessageType());
-            SpaceId spaceId = message.getSpaceId() != null ? new SpaceId(message.getSpaceId()) : null;
+            MessageType messageType = getMessageTypeFromMessage(message);
+            SpaceId spaceId = getSpaceIdFromMessage(message);
             if (isMessage(message)) {
                 return new PNMessageResult(basePubSubResult, extractedMessage, messageType, spaceId);
             } else if (isSignal(message)) {
@@ -100,6 +100,16 @@ public class SubscribeMessageProcessor {
             }
         }
         return null;
+    }
+
+    @Nullable
+    private SpaceId getSpaceIdFromMessage(SubscribeMessage message) {
+        return message.getSpaceId() != null ? new SpaceId(message.getSpaceId()) : null;
+    }
+
+    @NotNull
+    private MessageType getMessageTypeFromMessage(SubscribeMessage message) {
+        return new MessageType(message.getPnMessageType(), message.getUserMessageType());
     }
 
     @Nullable
@@ -208,6 +218,8 @@ public class SubscribeMessageProcessor {
         } else {
             jsonMessage = JsonNull.INSTANCE;
         }
+        MessageType messageType = getMessageTypeFromMessage(message);
+        SpaceId spaceId = getSpaceIdFromMessage(message);
 
         return PNFileEventResult.builder()
                 .file(new PNDownloadableFile(event.getFile().getId(),
@@ -220,6 +232,8 @@ public class SubscribeMessageProcessor {
                 .publisher(message.getIssuingClientId())
                 .timetoken(publishMetaData.getPublishTimetoken())
                 .jsonMessage(jsonMessage)
+                .messageType(messageType)
+                .spaceId(spaceId)
                 .build();
     }
 
