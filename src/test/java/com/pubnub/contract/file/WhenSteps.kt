@@ -16,9 +16,6 @@ class WhenSteps(
         val spaceId = SpaceId(spaceIdValue)
         val messageType = MessageType(messageTypeValue)
 
-        //Mock server doesn't simulate retry yet.
-        world.pubnub.configuration.fileMessagePublishRetryLimit = 1
-
         try {
             val pnFileUploadResult = world.pubnub.sendFile()
                 .channel("myChannel")
