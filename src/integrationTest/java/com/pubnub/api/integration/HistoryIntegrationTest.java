@@ -194,6 +194,8 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
             PNFetchMessagesResult result = pubNub.fetchMessages()
                     .channels(Collections.singletonList(expectedChannelName))
                     .maximumPerChannel(25)
+                    .includeMessageType(true)
+                    .includeSpaceId(true)
                     .sync();
             assertNotNull(result);
             assertThat(result.getChannels().size(), greaterThan(0));

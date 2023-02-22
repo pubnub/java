@@ -9,12 +9,12 @@ import static com.pubnub.api.builder.PubNubErrorBuilder.PNERROBJ_UNKNOWN_MESSAGE
 
 public enum PNMessageType {
 
-    MESSAGE01(null, "message"),
-    MESSAGE02(0, "message"),
-    SIGNAL(1, "signal"),   //this value is not expected in history call
-    OBJECT(2, "object"),   //this value is not expected in history call
-    MESSAGE_ACTION(3, "messageAction"),
-    FILE(4, "file");
+    MESSAGE01(null, "pn_message"),
+    MESSAGE02(0, "pn_message"),
+    SIGNAL(1, "pn_signal"),   //this value is not expected in history call
+    OBJECT(2, "pn_object"),   //this value is not expected in history call
+    MESSAGE_ACTION(3, "pn_messageAction"),
+    FILE(4, "pn_file");
 
     private static final Map<Integer, PNMessageType> BY_E_VALUE_FROM_SERVER = new HashMap<>();
 
