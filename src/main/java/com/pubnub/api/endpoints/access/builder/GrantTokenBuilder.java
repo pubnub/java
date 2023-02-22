@@ -22,6 +22,7 @@ public class GrantTokenBuilder extends AbstractGrantTokenBuilder<GrantTokenBuild
      * @param ttl
      * @return instance of this builder
      */
+    @Deprecated
     public GrantTokenBuilder ttl(Integer ttl) {
         grantToken.ttl(ttl);
         return this;
@@ -32,30 +33,18 @@ public class GrantTokenBuilder extends AbstractGrantTokenBuilder<GrantTokenBuild
         return this;
     }
 
-    /**
-     * @deprecated Use {@link #spacesPermissions(List)} instead.
-     */
     public GrantTokenObjectsBuilder channels(List<ChannelGrant> channels) {
         return new GrantTokenObjectsBuilder(grantToken).channels(channels);
     }
 
-    /**
-     * @deprecated
-     */
     public GrantTokenObjectsBuilder channelGroups(List<ChannelGroupGrant> channelGroups) {
         return new GrantTokenObjectsBuilder(grantToken).channelGroups(channelGroups);
     }
 
-    /**
-     * @deprecated Use {@link #usersPermissions(List)} instead.
-     */
     public GrantTokenObjectsBuilder uuids(List<UUIDGrant> uuids) {
         return new GrantTokenObjectsBuilder(grantToken).uuids(uuids);
     }
 
-    /**
-     * @deprecated Use {@link #authorizedUserId(UserId)} instead.
-     */
     public GrantTokenObjectsBuilder authorizedUUID(String authorizedUUID) {
         return new GrantTokenObjectsBuilder(grantToken).authorizedUUID(authorizedUUID);
     }
