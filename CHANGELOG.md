@@ -1,3 +1,9 @@
+## v6.3.2
+February 23 2023
+
+#### Fixed
+- Remove deprecation for Grant Token methods.
+
 ## v6.3.1
 December 15 2022
 
