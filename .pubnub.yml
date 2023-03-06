@@ -1,9 +1,9 @@
 name: java
-version: 6.3.2
+version: 6.3.3
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-6.3.2-all.jar
+  - build/libs/pubnub-gson-6.3.3-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: GitHub
-              package-name: pubnub-gson-6.3.2
-              location: https://github.com/pubnub/java/releases/download/v6.3.2/pubnub-gson-6.3.2-all.jar
+              package-name: pubnub-gson-6.3.3
+              location: https://github.com/pubnub/java/releases/download/v6.3.3/pubnub-gson-6.3.3-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-6.3.2
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.2/pubnub-gson-6.3.2.jar
+              package-name: pubnub-gson-6.3.3
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.3/pubnub-gson-6.3.3.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,11 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2023-03-06
+    version: v6.3.3
+    changes:
+      - type: bug
+        text: "Upgraded jackson-databind lib to remove security vulnerabilities."
   - date: 2023-02-23
     version: v6.3.2
     changes:

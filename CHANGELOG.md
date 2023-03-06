@@ -1,3 +1,9 @@
+## v6.3.3
+March 06 2023
+
+#### Fixed
+- Upgraded jackson-databind lib to remove security vulnerabilities.
+
 ## v6.3.2
 February 23 2023
 
