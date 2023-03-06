@@ -1,3 +1,9 @@
+## v6.3.4
+March 06 2023
+
+#### Fixed
+- Upgraded json lib.
+
 ## v6.3.3
 March 06 2023
 
