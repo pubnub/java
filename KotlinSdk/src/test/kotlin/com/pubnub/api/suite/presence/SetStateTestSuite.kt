@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.presence
+package com.pubnub.apikt.suite.presence
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.google.gson.JsonObject
-import com.pubnub.api.endpoints.presence.SetState
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.presence.PNSetStateResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.endpoints.presence.SetState
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.presence.PNSetStateResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.*
 
 class SetStateTestSuite : EndpointTestSuite<SetState, PNSetStateResult>() {

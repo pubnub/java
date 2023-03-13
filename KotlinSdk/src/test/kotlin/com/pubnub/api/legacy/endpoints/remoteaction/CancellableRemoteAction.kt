@@ -1,7 +1,7 @@
-package com.pubnub.api.legacy.endpoints.remoteaction
+package com.pubnub.apikt.legacy.endpoints.remoteaction
 
-import com.pubnub.api.endpoints.remoteaction.ExtendedRemoteAction
-import com.pubnub.api.models.consumer.PNStatus
+import com.pubnub.apikt.endpoints.remoteaction.ExtendedRemoteAction
+import com.pubnub.apikt.models.consumer.PNStatus
 import java.util.concurrent.Executors
 
 internal interface CancellableRemoteAction<T> : ExtendedRemoteAction<T> {

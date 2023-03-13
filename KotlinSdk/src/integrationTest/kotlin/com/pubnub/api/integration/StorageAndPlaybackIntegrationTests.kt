@@ -1,9 +1,9 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.CommonUtils.randomChannel
-import com.pubnub.api.CommonUtils.randomValue
-import com.pubnub.api.asyncRetry
-import com.pubnub.api.await
+import com.pubnub.apikt.CommonUtils.randomChannel
+import com.pubnub.apikt.CommonUtils.randomValue
+import com.pubnub.apikt.asyncRetry
+import com.pubnub.apikt.await
 import org.junit.Assert.*
 import org.junit.Test
 

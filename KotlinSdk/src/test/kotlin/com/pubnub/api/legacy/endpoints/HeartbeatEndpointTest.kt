@@ -1,11 +1,11 @@
-package com.pubnub.api.legacy.endpoints
+package com.pubnub.apikt.legacy.endpoints
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.CommonUtils.assertPnException
-import com.pubnub.api.CommonUtils.failTest
-import com.pubnub.api.PubNubError
-import com.pubnub.api.endpoints.presence.Heartbeat
-import com.pubnub.api.legacy.BaseTest
+import com.pubnub.apikt.CommonUtils.assertPnException
+import com.pubnub.apikt.CommonUtils.failTest
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.endpoints.presence.Heartbeat
+import com.pubnub.apikt.legacy.BaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

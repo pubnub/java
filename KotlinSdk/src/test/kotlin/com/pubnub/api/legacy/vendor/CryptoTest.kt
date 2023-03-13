@@ -1,8 +1,8 @@
-package com.pubnub.api.legacy.vendor
+package com.pubnub.apikt.legacy.vendor
 
-import com.pubnub.api.PubNubException
-import com.pubnub.api.vendor.FileEncryptionUtil.decrypt
-import com.pubnub.api.vendor.FileEncryptionUtil.encryptToBytes
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.vendor.FileEncryptionUtil.decrypt
+import com.pubnub.apikt.vendor.FileEncryptionUtil.encryptToBytes
 import org.apache.commons.io.IOUtils
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers

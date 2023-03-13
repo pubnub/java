@@ -1,11 +1,11 @@
-package com.pubnub.api.suite
+package com.pubnub.apikt.suite
 
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
-import com.pubnub.api.endpoints.Time
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.PNTimeResult
+import com.pubnub.apikt.endpoints.Time
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.PNTimeResult
 import org.junit.Assert.*
 
 class TimeTestSuite : EndpointTestSuite<Time, PNTimeResult>() {

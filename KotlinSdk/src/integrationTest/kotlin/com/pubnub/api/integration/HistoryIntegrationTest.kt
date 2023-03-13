@@ -1,16 +1,16 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.CommonUtils.assertPnException
-import com.pubnub.api.CommonUtils.emoji
-import com.pubnub.api.CommonUtils.publishMixed
-import com.pubnub.api.CommonUtils.randomChannel
-import com.pubnub.api.CommonUtils.randomValue
-import com.pubnub.api.CommonUtils.retry
-import com.pubnub.api.PubNubError
-import com.pubnub.api.await
-import com.pubnub.api.models.consumer.PNBoundedPage
-import com.pubnub.api.models.consumer.message_actions.PNMessageAction
-import com.pubnub.api.param
+import com.pubnub.apikt.CommonUtils.assertPnException
+import com.pubnub.apikt.CommonUtils.emoji
+import com.pubnub.apikt.CommonUtils.publishMixed
+import com.pubnub.apikt.CommonUtils.randomChannel
+import com.pubnub.apikt.CommonUtils.randomValue
+import com.pubnub.apikt.CommonUtils.retry
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.await
+import com.pubnub.apikt.models.consumer.PNBoundedPage
+import com.pubnub.apikt.models.consumer.message_actions.PNMessageAction
+import com.pubnub.apikt.param
 import org.junit.Assert.*
 import org.junit.Test
 

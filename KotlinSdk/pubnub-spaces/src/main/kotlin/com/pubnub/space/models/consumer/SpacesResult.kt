@@ -1,8 +1,8 @@
 package com.pubnub.space.models.consumer
 
-import com.pubnub.api.models.consumer.objects.PNPage
-import com.pubnub.api.models.consumer.objects.channel.PNChannelMetadataArrayResult
-import com.pubnub.api.models.consumer.objects.channel.PNChannelMetadataResult
+import com.pubnub.apikt.models.consumer.objects.PNPage
+import com.pubnub.apikt.models.consumer.objects.channel.PNChannelMetadataArrayResult
+import com.pubnub.apikt.models.consumer.objects.channel.PNChannelMetadataResult
 
 data class SpacesResult(
     val data: Collection<Space>,

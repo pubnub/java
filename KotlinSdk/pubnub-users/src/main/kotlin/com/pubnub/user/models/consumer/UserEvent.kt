@@ -1,9 +1,9 @@
 package com.pubnub.user.models.consumer
 
-import com.pubnub.api.UserId
-import com.pubnub.api.models.consumer.pubsub.objects.PNDeleteUUIDMetadataEventMessage
-import com.pubnub.api.models.consumer.pubsub.objects.PNObjectEventResult
-import com.pubnub.api.models.consumer.pubsub.objects.PNSetUUIDMetadataEventMessage
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.models.consumer.pubsub.objects.PNDeleteUUIDMetadataEventMessage
+import com.pubnub.apikt.models.consumer.pubsub.objects.PNObjectEventResult
+import com.pubnub.apikt.models.consumer.pubsub.objects.PNSetUUIDMetadataEventMessage
 
 sealed class UserEvent {
     abstract val spaceId: String

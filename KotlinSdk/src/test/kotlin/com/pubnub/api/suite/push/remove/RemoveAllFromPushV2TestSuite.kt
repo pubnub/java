@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.push.remove
+package com.pubnub.apikt.suite.push.remove
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.push.RemoveAllPushChannelsForDevice
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNPushType
-import com.pubnub.api.models.consumer.push.PNPushRemoveAllChannelsResult
-import com.pubnub.api.suite.AUTH
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.push.RemoveAllPushChannelsForDevice
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNPushType
+import com.pubnub.apikt.models.consumer.push.PNPushRemoveAllChannelsResult
+import com.pubnub.apikt.suite.AUTH
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.SUB
 
 class RemoveAllFromPushV2TestSuite :
     EndpointTestSuite<RemoveAllPushChannelsForDevice, PNPushRemoveAllChannelsResult>() {

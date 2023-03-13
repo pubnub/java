@@ -1,6 +1,6 @@
-package com.pubnub.api.integration.pam
+package com.pubnub.apikt.integration.pam
 
-import com.pubnub.api.PubNub
+import com.pubnub.apikt.PubNub
 
 class PamServerIntegrationTest : AccessManagerIntegrationTest() {
 

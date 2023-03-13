@@ -1,4 +1,4 @@
-package com.pubnub.api.legacy.endpoints.files
+package com.pubnub.apikt.legacy.endpoints.files
 
 import org.junit.jupiter.api.BeforeEach
 import java.util.*

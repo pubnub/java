@@ -1,16 +1,16 @@
-package com.pubnub.api.suite.pubsub
+package com.pubnub.apikt.suite.pubsub
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.google.gson.Gson
-import com.pubnub.api.endpoints.pubsub.Publish
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNPublishResult
-import com.pubnub.api.suite.AUTH
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.PUB
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.pubsub.Publish
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNPublishResult
+import com.pubnub.apikt.suite.AUTH
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.PUB
+import com.pubnub.apikt.suite.SUB
 import org.junit.Assert.assertEquals
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

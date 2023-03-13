@@ -1,13 +1,13 @@
-package com.pubnub.api.legacy
+package com.pubnub.apikt.legacy
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import com.pubnub.api.CommonUtils.DEFAULT_LISTEN_DURATION
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.UserId
-import com.pubnub.api.enums.PNLogVerbosity
+import com.pubnub.apikt.CommonUtils.DEFAULT_LISTEN_DURATION
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.enums.PNLogVerbosity
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.junit.After
 import org.junit.Assert.assertTrue

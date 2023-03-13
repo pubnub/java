@@ -1,4 +1,4 @@
-package com.pubnub.api
+package com.pubnub.apikt
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers

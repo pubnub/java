@@ -1,7 +1,7 @@
-package com.pubnub.api.legacy
+package com.pubnub.apikt.legacy
 
-import com.pubnub.api.PubNubException
-import com.pubnub.api.enums.PNReconnectionPolicy
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.enums.PNReconnectionPolicy
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

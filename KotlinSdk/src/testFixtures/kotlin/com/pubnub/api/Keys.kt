@@ -1,4 +1,4 @@
-package com.pubnub.api
+package com.pubnub.apikt
 
 import org.aeonbits.owner.Config
 import org.aeonbits.owner.ConfigFactory

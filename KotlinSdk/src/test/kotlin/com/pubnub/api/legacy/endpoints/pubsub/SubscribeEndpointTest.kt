@@ -1,12 +1,12 @@
-package com.pubnub.api.legacy.endpoints.pubsub
+package com.pubnub.apikt.legacy.endpoints.pubsub
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.CommonUtils.assertPnException
-import com.pubnub.api.PubNubError
-import com.pubnub.api.PubNubException
-import com.pubnub.api.endpoints.pubsub.Subscribe
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.models.server.SubscribeMessage
+import com.pubnub.apikt.CommonUtils.assertPnException
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.endpoints.pubsub.Subscribe
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.models.server.SubscribeMessage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

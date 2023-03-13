@@ -1,7 +1,7 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.enums.PNPushEnvironment
-import com.pubnub.api.enums.PNPushType
+import com.pubnub.apikt.enums.PNPushEnvironment
+import com.pubnub.apikt.enums.PNPushType
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.*

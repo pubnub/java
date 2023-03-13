@@ -1,10 +1,10 @@
 package com.pubnub.extension
 
 import com.google.gson.JsonElement
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PNConfiguration.Companion.isValid
-import com.pubnub.api.managers.MapperManager
-import com.pubnub.api.vendor.Crypto
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PNConfiguration.Companion.isValid
+import com.pubnub.apikt.managers.MapperManager
+import com.pubnub.apikt.vendor.Crypto
 
 internal fun JsonElement.processHistoryMessage(configuration: PNConfiguration, mapper: MapperManager): JsonElement {
     if (!configuration.cipherKey.isValid())

@@ -1,13 +1,13 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.*
-import com.pubnub.api.CommonUtils.generatePayload
-import com.pubnub.api.CommonUtils.randomChannel
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult
+import com.pubnub.apikt.*
+import com.pubnub.apikt.CommonUtils.generatePayload
+import com.pubnub.apikt.CommonUtils.randomChannel
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.pubsub.PNPresenceEventResult
 import org.awaitility.Awaitility
 import org.awaitility.Durations
 import org.hamcrest.core.IsEqual

@@ -1,7 +1,7 @@
 package com.pubnub.space.models.consumer
 
-import com.pubnub.api.SpaceId
-import com.pubnub.api.models.consumer.objects.channel.PNChannelMetadata
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.models.consumer.objects.channel.PNChannelMetadata
 
 data class Space(
     val id: SpaceId,

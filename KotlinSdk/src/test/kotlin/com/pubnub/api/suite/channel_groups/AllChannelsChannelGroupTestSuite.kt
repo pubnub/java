@@ -1,14 +1,14 @@
-package com.pubnub.api.suite.channel_groups
+package com.pubnub.apikt.suite.channel_groups
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
-import com.pubnub.api.PubNubError
-import com.pubnub.api.endpoints.channel_groups.AllChannelsChannelGroup
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.channel_group.PNChannelGroupsAllChannelsResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.endpoints.channel_groups.AllChannelsChannelGroup
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.channel_group.PNChannelGroupsAllChannelsResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.*
 
 class AllChannelsChannelGroupTestSuite :

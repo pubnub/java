@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.history.v2
+package com.pubnub.apikt.suite.history.v2
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.PubNubError
-import com.pubnub.api.endpoints.History
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.history.PNHistoryResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.endpoints.History
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.history.PNHistoryResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.*
 
 class HistoryTestSuite : EndpointTestSuite<History, PNHistoryResult>() {

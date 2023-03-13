@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.grant
+package com.pubnub.apikt.suite.grant
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.access.Grant
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.access_manager.PNAccessManagerGrantResult
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.SEC
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.access.Grant
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.access_manager.PNAccessManagerGrantResult
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.SEC
+import com.pubnub.apikt.suite.SUB
 import org.junit.Assert.assertEquals
 
 class GrantTestSuite : EndpointTestSuite<Grant, PNAccessManagerGrantResult>() {

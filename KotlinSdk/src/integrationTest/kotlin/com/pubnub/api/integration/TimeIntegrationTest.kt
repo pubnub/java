@@ -1,6 +1,6 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.listen
+import com.pubnub.apikt.listen
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Test

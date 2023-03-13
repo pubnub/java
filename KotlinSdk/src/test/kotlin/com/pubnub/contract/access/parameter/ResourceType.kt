@@ -1,6 +1,6 @@
 package com.pubnub.contract.access.parameter
 
-import com.pubnub.api.models.consumer.access_manager.v3.PNToken
+import com.pubnub.apikt.models.consumer.access_manager.v3.PNToken
 import io.cucumber.java.ParameterType
 
 enum class ResourceType {

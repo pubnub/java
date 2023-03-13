@@ -1,14 +1,14 @@
-package com.pubnub.api.suite.channel_groups
+package com.pubnub.apikt.suite.channel_groups
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
-import com.pubnub.api.endpoints.channel_groups.DeleteChannelGroup
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.channel_group.PNChannelGroupsDeleteGroupResult
-import com.pubnub.api.suite.AUTH
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.channel_groups.DeleteChannelGroup
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.channel_group.PNChannelGroupsDeleteGroupResult
+import com.pubnub.apikt.suite.AUTH
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.SUB
 
 class DeleteChannelGroupTestSuite : EndpointTestSuite<DeleteChannelGroup, PNChannelGroupsDeleteGroupResult>() {
 

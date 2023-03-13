@@ -1,9 +1,9 @@
-package com.pubnub.api.legacy.endpoints.history
+package com.pubnub.apikt.legacy.endpoints.history
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.PubNubError
-import com.pubnub.api.PubNubException
-import com.pubnub.api.legacy.BaseTest
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.legacy.BaseTest
 import org.junit.Assert.*
 import org.junit.Test
 

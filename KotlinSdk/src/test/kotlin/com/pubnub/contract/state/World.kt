@@ -1,10 +1,10 @@
 package com.pubnub.contract.state
 
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.PubNubException
-import com.pubnub.api.UserId
-import com.pubnub.api.enums.PNLogVerbosity
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.enums.PNLogVerbosity
 import com.pubnub.contract.ContractTestConfig
 
 class World {

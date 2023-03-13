@@ -1,16 +1,16 @@
-package com.pubnub.api.legacy.endpoints.message_actions
+package com.pubnub.apikt.legacy.endpoints.message_actions
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.CommonUtils.failTest
-import com.pubnub.api.PubNub
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.listen
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.pubsub.PNMessageResult
-import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult
-import com.pubnub.api.models.consumer.pubsub.PNSignalResult
-import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult
+import com.pubnub.apikt.CommonUtils.failTest
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.listen
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.pubsub.PNMessageResult
+import com.pubnub.apikt.models.consumer.pubsub.PNPresenceEventResult
+import com.pubnub.apikt.models.consumer.pubsub.PNSignalResult
+import com.pubnub.apikt.models.consumer.pubsub.message_actions.PNMessageActionResult
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean

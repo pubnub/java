@@ -1,13 +1,13 @@
 package com.pubnub.user
 
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.PubNubException
-import com.pubnub.api.UserId
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.objects.ResultSortKey
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.objects.ResultSortKey
 import com.pubnub.user.models.consumer.User
 import com.pubnub.user.models.consumer.UserKey
 import com.pubnub.user.models.consumer.UserModified

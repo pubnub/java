@@ -1,13 +1,13 @@
-package com.pubnub.api.legacy.endpoints
+package com.pubnub.apikt.legacy.endpoints
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.pubnub.api.*
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.legacy.BaseTest
+import com.pubnub.apikt.*
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.legacy.BaseTest
 import okhttp3.Request
 import okio.Timeout
 import org.junit.Assert.*

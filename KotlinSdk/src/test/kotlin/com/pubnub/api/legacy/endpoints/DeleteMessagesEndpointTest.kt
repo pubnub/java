@@ -1,9 +1,9 @@
-package com.pubnub.api.legacy.endpoints
+package com.pubnub.apikt.legacy.endpoints
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.CommonUtils.failTest
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.legacy.BaseTest
+import com.pubnub.apikt.CommonUtils.failTest
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.legacy.BaseTest
 import org.awaitility.Awaitility
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

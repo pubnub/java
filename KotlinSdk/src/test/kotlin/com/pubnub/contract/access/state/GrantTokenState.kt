@@ -1,8 +1,8 @@
 package com.pubnub.contract.access.state
 
-import com.pubnub.api.models.consumer.access_manager.v3.PNGrant
-import com.pubnub.api.models.consumer.access_manager.v3.PNGrantTokenResult
-import com.pubnub.api.models.consumer.access_manager.v3.PNToken
+import com.pubnub.apikt.models.consumer.access_manager.v3.PNGrant
+import com.pubnub.apikt.models.consumer.access_manager.v3.PNGrantTokenResult
+import com.pubnub.apikt.models.consumer.access_manager.v3.PNToken
 
 class GrantTokenState {
     var parsedToken: PNToken? = null

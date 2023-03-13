@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.push.add
+package com.pubnub.apikt.suite.push.add
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.push.AddChannelsToPush
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNPushType
-import com.pubnub.api.models.consumer.push.PNPushAddChannelResult
-import com.pubnub.api.suite.AUTH
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.push.AddChannelsToPush
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNPushType
+import com.pubnub.apikt.models.consumer.push.PNPushAddChannelResult
+import com.pubnub.apikt.suite.AUTH
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.SUB
 
 class AddChannelsToPushV2TestSuite : EndpointTestSuite<AddChannelsToPush, PNPushAddChannelResult>() {
 

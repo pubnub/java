@@ -1,15 +1,15 @@
-package com.pubnub.api.legacy.endpoints.push
+package com.pubnub.apikt.legacy.endpoints.push
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.pubnub.api.CommonUtils.assertPnException
-import com.pubnub.api.CommonUtils.failTest
-import com.pubnub.api.PubNubError
-import com.pubnub.api.PubNubException
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNPushType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.listen
+import com.pubnub.apikt.CommonUtils.assertPnException
+import com.pubnub.apikt.CommonUtils.failTest
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNPushType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.listen
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean

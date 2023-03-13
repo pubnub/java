@@ -1,15 +1,15 @@
-package com.pubnub.api.integration.pam
+package com.pubnub.apikt.integration.pam
 
-import com.pubnub.api.PubNub
-import com.pubnub.api.SpaceId
-import com.pubnub.api.UserId
-import com.pubnub.api.enums.PNLogVerbosity
-import com.pubnub.api.integration.BaseIntegrationTest
-import com.pubnub.api.models.consumer.access_manager.sum.SpacePermissions
-import com.pubnub.api.models.consumer.access_manager.sum.UserPermissions
-import com.pubnub.api.models.consumer.access_manager.v3.ChannelGrant
-import com.pubnub.api.models.consumer.access_manager.v3.ChannelGroupGrant
-import com.pubnub.api.models.consumer.access_manager.v3.PNToken.PNResourcePermissions
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.enums.PNLogVerbosity
+import com.pubnub.apikt.integration.BaseIntegrationTest
+import com.pubnub.apikt.models.consumer.access_manager.sum.SpacePermissions
+import com.pubnub.apikt.models.consumer.access_manager.sum.UserPermissions
+import com.pubnub.apikt.models.consumer.access_manager.v3.ChannelGrant
+import com.pubnub.apikt.models.consumer.access_manager.v3.ChannelGroupGrant
+import com.pubnub.apikt.models.consumer.access_manager.v3.PNToken.PNResourcePermissions
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

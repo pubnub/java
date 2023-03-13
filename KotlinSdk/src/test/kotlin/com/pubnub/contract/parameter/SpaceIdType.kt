@@ -1,6 +1,6 @@
 package com.pubnub.contract.parameter
 
-import com.pubnub.api.SpaceId
+import com.pubnub.apikt.SpaceId
 import io.cucumber.java.ParameterType
 
 @ParameterType("'(.*)'")

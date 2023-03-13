@@ -1,8 +1,8 @@
-package com.pubnub.api
+package com.pubnub.apikt
 
 import com.github.tomakehurst.wiremock.verification.LoggedRequest
-import com.pubnub.api.vendor.Base64
-import com.pubnub.api.vendor.Crypto
+import com.pubnub.apikt.vendor.Base64
+import com.pubnub.apikt.vendor.Crypto
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okio.Buffer

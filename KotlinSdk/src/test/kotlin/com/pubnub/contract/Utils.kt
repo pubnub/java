@@ -1,10 +1,10 @@
 package com.pubnub.contract
 
 import com.google.gson.Gson
-import com.pubnub.api.models.consumer.objects.channel.PNChannelMetadata
-import com.pubnub.api.models.consumer.objects.member.PNMember
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembership
-import com.pubnub.api.models.consumer.objects.uuid.PNUUIDMetadata
+import com.pubnub.apikt.models.consumer.objects.channel.PNChannelMetadata
+import com.pubnub.apikt.models.consumer.objects.member.PNMember
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembership
+import com.pubnub.apikt.models.consumer.objects.uuid.PNUUIDMetadata
 import java.io.File
 
 val gson = Gson()

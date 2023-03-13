@@ -1,11 +1,11 @@
-package com.pubnub.api.legacy.endpoints.push
+package com.pubnub.apikt.legacy.endpoints.push
 
-import com.pubnub.api.enums.PNPushEnvironment
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.models.consumer.push.payload.PushPayloadHelper
-import com.pubnub.api.models.consumer.push.payload.PushPayloadHelper.*
-import com.pubnub.api.models.consumer.push.payload.PushPayloadHelper.APNSPayload.APNS2Configuration
-import com.pubnub.api.models.consumer.push.payload.PushPayloadHelper.APNSPayload.APS
+import com.pubnub.apikt.enums.PNPushEnvironment
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.models.consumer.push.payload.PushPayloadHelper
+import com.pubnub.apikt.models.consumer.push.payload.PushPayloadHelper.*
+import com.pubnub.apikt.models.consumer.push.payload.PushPayloadHelper.APNSPayload.APNS2Configuration
+import com.pubnub.apikt.models.consumer.push.payload.PushPayloadHelper.APNSPayload.APS
 import org.junit.Assert.*
 import org.junit.Test
 

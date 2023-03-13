@@ -1,12 +1,12 @@
-package com.pubnub.api.suite.pubsub
+package com.pubnub.apikt.suite.pubsub
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.pubsub.Subscribe
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.server.SubscribeEnvelope
-import com.pubnub.api.suite.AUTH
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.pubsub.Subscribe
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.server.SubscribeEnvelope
+import com.pubnub.apikt.suite.AUTH
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.SUB
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 

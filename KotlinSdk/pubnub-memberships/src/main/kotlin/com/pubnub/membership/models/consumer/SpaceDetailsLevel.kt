@@ -1,6 +1,6 @@
 package com.pubnub.membership.models.consumer
 
-import com.pubnub.api.models.consumer.objects.membership.PNChannelDetailsLevel
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelDetailsLevel
 
 enum class SpaceDetailsLevel {
     SPACE,

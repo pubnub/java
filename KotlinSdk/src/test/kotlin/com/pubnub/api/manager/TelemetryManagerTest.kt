@@ -1,7 +1,7 @@
-package com.pubnub.api.manager
+package com.pubnub.apikt.manager
 
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.managers.TelemetryManager
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.managers.TelemetryManager
 import io.mockk.MockKAnnotations
 import io.mockk.spyk
 import io.mockk.unmockkAll

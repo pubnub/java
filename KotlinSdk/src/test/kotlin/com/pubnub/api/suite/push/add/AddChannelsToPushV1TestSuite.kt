@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.push.add
+package com.pubnub.apikt.suite.push.add
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.PubNubError
-import com.pubnub.api.endpoints.push.AddChannelsToPush
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNPushType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.push.PNPushAddChannelResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.endpoints.push.AddChannelsToPush
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNPushType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.push.PNPushAddChannelResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 

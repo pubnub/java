@@ -1,8 +1,8 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.CommonUtils.randomValue
-import com.pubnub.api.CommonUtils.retry
-import com.pubnub.api.await
+import com.pubnub.apikt.CommonUtils.randomValue
+import com.pubnub.apikt.CommonUtils.retry
+import com.pubnub.apikt.await
 import org.junit.Assert.*
 import org.junit.Test
 

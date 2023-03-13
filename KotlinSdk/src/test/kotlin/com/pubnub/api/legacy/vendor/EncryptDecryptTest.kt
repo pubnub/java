@@ -1,7 +1,7 @@
-package com.pubnub.api.legacy.vendor
+package com.pubnub.apikt.legacy.vendor
 
-import com.pubnub.api.PubNubException
-import com.pubnub.api.vendor.Crypto
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.vendor.Crypto
 import org.junit.Assert
 import org.junit.Test
 import java.io.IOException

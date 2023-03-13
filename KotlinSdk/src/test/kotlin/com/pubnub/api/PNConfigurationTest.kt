@@ -1,4 +1,4 @@
-package com.pubnub.api
+package com.pubnub.apikt
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

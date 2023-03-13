@@ -1,11 +1,11 @@
-package com.pubnub.api
+package com.pubnub.apikt
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.pubnub.api.models.consumer.PNPublishResult
-import com.pubnub.api.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.PNPublishResult
+import com.pubnub.apikt.models.consumer.PNStatus
 import okhttp3.logging.HttpLoggingInterceptor
 import org.awaitility.Awaitility
 import org.awaitility.Durations

@@ -1,12 +1,12 @@
-package com.pubnub.api.suite.channel_groups
+package com.pubnub.apikt.suite.channel_groups
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.channel_groups.RemoveChannelChannelGroup
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.channel_group.PNChannelGroupsRemoveChannelResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.endpoints.channel_groups.RemoveChannelChannelGroup
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.channel_group.PNChannelGroupsRemoveChannelResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 

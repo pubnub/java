@@ -1,6 +1,6 @@
 package com.pubnub.contract.channelmetadata.state
 
-import com.pubnub.api.models.consumer.objects.channel.PNChannelMetadata
+import com.pubnub.apikt.models.consumer.objects.channel.PNChannelMetadata
 
 class ChannelMetadataState {
     var channelMetadatas: Collection<PNChannelMetadata>? = null

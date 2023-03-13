@@ -1,11 +1,11 @@
 package com.pubnub.extension
 
-import com.pubnub.api.models.consumer.objects.PNPage
-import com.pubnub.api.models.consumer.objects.member.PNMember
-import com.pubnub.api.models.consumer.objects.member.PNMemberArrayResult
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembership
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembershipArrayResult
-import com.pubnub.api.models.server.objects_api.EntityArrayEnvelope
+import com.pubnub.apikt.models.consumer.objects.PNPage
+import com.pubnub.apikt.models.consumer.objects.member.PNMember
+import com.pubnub.apikt.models.consumer.objects.member.PNMemberArrayResult
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembership
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembershipArrayResult
+import com.pubnub.apikt.models.server.objects_api.EntityArrayEnvelope
 import retrofit2.Response
 
 internal fun Response<EntityArrayEnvelope<PNMember>>.toPNMemberArrayResult(): PNMemberArrayResult? =

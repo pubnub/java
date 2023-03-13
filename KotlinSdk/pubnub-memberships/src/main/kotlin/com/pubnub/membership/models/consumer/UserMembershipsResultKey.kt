@@ -1,7 +1,7 @@
 package com.pubnub.membership.models.consumer
 
-import com.pubnub.api.models.consumer.objects.PNMembershipKey
-import com.pubnub.api.models.consumer.objects.SortableKey
+import com.pubnub.apikt.models.consumer.objects.PNMembershipKey
+import com.pubnub.apikt.models.consumer.objects.SortableKey
 
 enum class UserMembershipsResultKey : SortableKey {
     SPACE_ID, SPACE_NAME, SPACE_UPDATED, UPDATED;

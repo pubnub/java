@@ -1,12 +1,12 @@
-package com.pubnub.api.workers
+package com.pubnub.apikt.workers
 
 import com.google.gson.*
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.UserId
-import com.pubnub.api.managers.DuplicationManager
-import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult
-import com.pubnub.api.models.server.SubscribeMessage
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.managers.DuplicationManager
+import com.pubnub.apikt.models.consumer.pubsub.files.PNFileEventResult
+import com.pubnub.apikt.models.server.SubscribeMessage
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.isA
 import org.junit.Test

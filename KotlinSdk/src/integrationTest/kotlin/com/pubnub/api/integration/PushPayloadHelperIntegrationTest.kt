@@ -1,10 +1,10 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.pubnub.api.PubNub
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.models.consumer.PNStatus
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.models.consumer.PNStatus
 import org.junit.Test
 import java.util.*
 

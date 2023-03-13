@@ -1,9 +1,9 @@
-package com.pubnub.api.legacy.endpoints.remoteaction
+package com.pubnub.apikt.legacy.endpoints.remoteaction
 
-import com.pubnub.api.PubNubException
-import com.pubnub.api.endpoints.remoteaction.RetryingRemoteAction
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.PNStatus
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.endpoints.remoteaction.RetryingRemoteAction
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.PNStatus
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Assert

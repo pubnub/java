@@ -1,9 +1,9 @@
-package com.pubnub.api.legacy.endpoints.files
+package com.pubnub.apikt.legacy.endpoints.files
 
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.PubNubException
-import com.pubnub.api.UserId
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.UserId
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers

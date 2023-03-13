@@ -1,12 +1,12 @@
 package com.pubnub.membership
 
-import com.pubnub.api.PubNub
-import com.pubnub.api.SpaceId
-import com.pubnub.api.UserId
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.objects.ResultSortKey
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.objects.ResultSortKey
 import com.pubnub.membership.models.consumer.Membership
 import com.pubnub.membership.models.consumer.MembershipModified
 import com.pubnub.membership.models.consumer.MembershipsResult

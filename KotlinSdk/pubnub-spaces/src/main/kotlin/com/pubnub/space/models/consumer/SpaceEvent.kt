@@ -1,9 +1,9 @@
 package com.pubnub.space.models.consumer
 
-import com.pubnub.api.SpaceId
-import com.pubnub.api.models.consumer.pubsub.objects.PNDeleteChannelMetadataEventMessage
-import com.pubnub.api.models.consumer.pubsub.objects.PNObjectEventResult
-import com.pubnub.api.models.consumer.pubsub.objects.PNSetChannelMetadataEventMessage
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.models.consumer.pubsub.objects.PNDeleteChannelMetadataEventMessage
+import com.pubnub.apikt.models.consumer.pubsub.objects.PNObjectEventResult
+import com.pubnub.apikt.models.consumer.pubsub.objects.PNSetChannelMetadataEventMessage
 
 sealed class SpaceEvent {
     abstract val spaceId: SpaceId

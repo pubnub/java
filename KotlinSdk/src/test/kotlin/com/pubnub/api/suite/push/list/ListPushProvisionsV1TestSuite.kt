@@ -1,12 +1,12 @@
-package com.pubnub.api.suite.push.list
+package com.pubnub.apikt.suite.push.list
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.push.ListPushProvisions
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNPushType
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.push.PNPushListProvisionsResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.endpoints.push.ListPushProvisions
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNPushType
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.push.PNPushListProvisionsResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 

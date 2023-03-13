@@ -1,6 +1,6 @@
 package com.pubnub.contract.access.step
 
-import com.pubnub.api.models.consumer.access_manager.v3.PNToken
+import com.pubnub.apikt.models.consumer.access_manager.v3.PNToken
 import com.pubnub.contract.access.parameter.PermissionType
 import com.pubnub.contract.access.parameter.ResourceType
 import com.pubnub.contract.access.parameter.patternPermissionsMap

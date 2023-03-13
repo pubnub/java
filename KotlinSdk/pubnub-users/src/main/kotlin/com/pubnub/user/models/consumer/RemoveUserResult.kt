@@ -1,6 +1,6 @@
 package com.pubnub.user.models.consumer
 
-import com.pubnub.api.models.consumer.objects.PNRemoveMetadataResult
+import com.pubnub.apikt.models.consumer.objects.PNRemoveMetadataResult
 
 data class RemoveUserResult(
     val status: Int

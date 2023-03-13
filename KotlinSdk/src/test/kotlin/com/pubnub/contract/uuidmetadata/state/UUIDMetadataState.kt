@@ -1,6 +1,6 @@
 package com.pubnub.contract.uuidmetadata.state
 
-import com.pubnub.api.models.consumer.objects.uuid.PNUUIDMetadata
+import com.pubnub.apikt.models.consumer.objects.uuid.PNUUIDMetadata
 
 class UUIDMetadataState {
     var uuidMetadatas: Collection<PNUUIDMetadata>? = null

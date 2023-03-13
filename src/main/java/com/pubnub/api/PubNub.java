@@ -272,8 +272,6 @@ public class PubNub {
         return new Publish(this, publishSequenceManager, this.telemetryManager, this.retrofitManager, this.tokenManager);
     }
 
-    public P
-
     @NotNull
     public Signal signal() {
         return new Signal(this, this.telemetryManager, this.retrofitManager, this.tokenManager);

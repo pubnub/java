@@ -1,9 +1,9 @@
 package com.pubnub.membership.models.consumer
 
-import com.pubnub.api.SpaceId
-import com.pubnub.api.UserId
-import com.pubnub.api.models.consumer.objects.member.PNMember
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembership
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.models.consumer.objects.member.PNMember
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembership
 import com.pubnub.space.models.consumer.Space
 import com.pubnub.space.models.consumer.toSpace
 import com.pubnub.user.models.consumer.User

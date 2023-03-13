@@ -1,15 +1,15 @@
 package com.pubnub.space
 
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.PubNubException
-import com.pubnub.api.SpaceId
-import com.pubnub.api.UserId
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.enums.PNLogVerbosity
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.objects.ResultSortKey
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.enums.PNLogVerbosity
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.objects.ResultSortKey
 import com.pubnub.space.models.consumer.Space
 import com.pubnub.space.models.consumer.SpaceKey
 import com.pubnub.space.models.consumer.SpaceModified

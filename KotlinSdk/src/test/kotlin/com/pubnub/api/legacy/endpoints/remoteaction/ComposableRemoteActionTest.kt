@@ -1,11 +1,11 @@
-package com.pubnub.api.legacy.endpoints.remoteaction
+package com.pubnub.apikt.legacy.endpoints.remoteaction
 
-import com.pubnub.api.PubNubException
-import com.pubnub.api.endpoints.remoteaction.ComposableRemoteAction.Companion.firstDo
-import com.pubnub.api.endpoints.remoteaction.RemoteAction
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.endpoints.remoteaction.ComposableRemoteAction.Companion.firstDo
+import com.pubnub.apikt.endpoints.remoteaction.RemoteAction
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.Assert

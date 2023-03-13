@@ -1,7 +1,7 @@
 package com.pubnub.membership.models.consumer
 
-import com.pubnub.api.models.consumer.objects.member.PNMemberArrayResult
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembershipArrayResult
+import com.pubnub.apikt.models.consumer.objects.member.PNMemberArrayResult
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembershipArrayResult
 
 data class MembershipsStatusResult(
     val status: Int

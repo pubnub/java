@@ -1,10 +1,10 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.CommonUtils.getSpecialCharsMap
-import com.pubnub.api.CommonUtils.randomChannel
-import com.pubnub.api.SignatureUtils
-import com.pubnub.api.encodedParam
-import com.pubnub.api.listen
+import com.pubnub.apikt.CommonUtils.getSpecialCharsMap
+import com.pubnub.apikt.CommonUtils.randomChannel
+import com.pubnub.apikt.SignatureUtils
+import com.pubnub.apikt.encodedParam
+import com.pubnub.apikt.listen
 import org.awaitility.Awaitility
 import org.awaitility.Durations
 import org.junit.Assert.assertEquals

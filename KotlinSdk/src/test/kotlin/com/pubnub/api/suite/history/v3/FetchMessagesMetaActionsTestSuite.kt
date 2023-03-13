@@ -1,15 +1,15 @@
-package com.pubnub.api.suite.history.v3
+package com.pubnub.apikt.suite.history.v3
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.google.gson.JsonObject
-import com.pubnub.api.PubNubError
-import com.pubnub.api.endpoints.FetchMessages
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.history.PNFetchMessagesResult
-import com.pubnub.api.suite.*
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.endpoints.FetchMessages
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.history.PNFetchMessagesResult
+import com.pubnub.apikt.suite.*
 import org.junit.Assert.*
 
 class FetchMessagesMetaActionsTestSuite : EndpointTestSuite<FetchMessages, PNFetchMessagesResult>() {

@@ -1,7 +1,7 @@
 package com.pubnub.contract.membership.step
 
-import com.pubnub.api.models.consumer.objects.membership.PNChannelDetailsLevel
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembership
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelDetailsLevel
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembership
 import com.pubnub.contract.state.World
 import com.pubnub.contract.uuidmetadata.state.MembershipState
 import io.cucumber.java.en.When

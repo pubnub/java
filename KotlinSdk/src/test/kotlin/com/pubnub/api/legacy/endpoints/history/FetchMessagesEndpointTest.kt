@@ -1,9 +1,9 @@
-package com.pubnub.api.legacy.endpoints.history
+package com.pubnub.apikt.legacy.endpoints.history
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.FetchMessages
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.models.consumer.PNBoundedPage
+import com.pubnub.apikt.endpoints.FetchMessages
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.models.consumer.PNBoundedPage
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.Assert.assertEquals

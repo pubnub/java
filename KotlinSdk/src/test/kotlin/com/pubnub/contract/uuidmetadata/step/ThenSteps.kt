@@ -1,6 +1,6 @@
 package com.pubnub.contract.uuidmetadata.step
 
-import com.pubnub.api.models.consumer.objects.uuid.PNUUIDMetadata
+import com.pubnub.apikt.models.consumer.objects.uuid.PNUUIDMetadata
 import com.pubnub.contract.loadPersonaUUIDMetadata
 import com.pubnub.contract.uuidmetadata.state.UUIDMetadataState
 import io.cucumber.java.en.Then

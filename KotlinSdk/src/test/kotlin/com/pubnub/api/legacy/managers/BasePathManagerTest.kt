@@ -1,7 +1,7 @@
-package com.pubnub.api.legacy.managers
+package com.pubnub.apikt.legacy.managers
 
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.managers.BasePathManager
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.managers.BasePathManager
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -1,8 +1,8 @@
 package com.pubnub.user.models.consumer
 
-import com.pubnub.api.models.consumer.objects.PNPage
-import com.pubnub.api.models.consumer.objects.uuid.PNUUIDMetadataArrayResult
-import com.pubnub.api.models.consumer.objects.uuid.PNUUIDMetadataResult
+import com.pubnub.apikt.models.consumer.objects.PNPage
+import com.pubnub.apikt.models.consumer.objects.uuid.PNUUIDMetadataArrayResult
+import com.pubnub.apikt.models.consumer.objects.uuid.PNUUIDMetadataResult
 
 data class UsersResult(
     val data: Collection<User>,

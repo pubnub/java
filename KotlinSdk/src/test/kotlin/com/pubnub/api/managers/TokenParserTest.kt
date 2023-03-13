@@ -1,4 +1,4 @@
-package com.pubnub.api.managers
+package com.pubnub.apikt.managers
 
 import org.junit.Assert
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.pubnub.api.legacy.endpoints.access
+package com.pubnub.apikt.legacy.endpoints.access
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.findAll
@@ -8,14 +8,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
-import com.pubnub.api.CommonUtils.assertPnException
-import com.pubnub.api.CommonUtils.failTest
-import com.pubnub.api.PubNubError
-import com.pubnub.api.PubNubException
-import com.pubnub.api.SignatureUtils.decomposeAndVerifySignature
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.models.consumer.access_manager.PNAccessManagerKeyData
+import com.pubnub.apikt.CommonUtils.assertPnException
+import com.pubnub.apikt.CommonUtils.failTest
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.SignatureUtils.decomposeAndVerifySignature
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.models.consumer.access_manager.PNAccessManagerKeyData
 import org.awaitility.Awaitility
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

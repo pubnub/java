@@ -1,11 +1,11 @@
-package com.pubnub.api.legacy.endpoints.presence
+package com.pubnub.apikt.legacy.endpoints.presence
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.CommonUtils.assertPnException
-import com.pubnub.api.CommonUtils.failTest
-import com.pubnub.api.PubNubError
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.legacy.BaseTest
+import com.pubnub.apikt.CommonUtils.assertPnException
+import com.pubnub.apikt.CommonUtils.failTest
+import com.pubnub.apikt.PubNubError
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.legacy.BaseTest
 import org.awaitility.Awaitility
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers

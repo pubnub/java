@@ -1,15 +1,15 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.*
-import com.pubnub.api.callbacks.SubscribeCallback
-import com.pubnub.api.enums.PNLogVerbosity
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.models.consumer.PNStatus
-import com.pubnub.api.models.consumer.pubsub.PNMessageResult
-import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult
-import com.pubnub.api.models.consumer.pubsub.PNSignalResult
-import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult
+import com.pubnub.apikt.*
+import com.pubnub.apikt.callbacks.SubscribeCallback
+import com.pubnub.apikt.enums.PNLogVerbosity
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.models.consumer.PNStatus
+import com.pubnub.apikt.models.consumer.pubsub.PNMessageResult
+import com.pubnub.apikt.models.consumer.pubsub.PNPresenceEventResult
+import com.pubnub.apikt.models.consumer.pubsub.PNSignalResult
+import com.pubnub.apikt.models.consumer.pubsub.message_actions.PNMessageActionResult
 import org.awaitility.Awaitility
 import org.awaitility.Durations
 import org.junit.After

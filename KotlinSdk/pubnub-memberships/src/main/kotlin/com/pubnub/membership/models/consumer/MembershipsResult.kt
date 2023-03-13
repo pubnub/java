@@ -1,10 +1,10 @@
 package com.pubnub.membership.models.consumer
 
-import com.pubnub.api.SpaceId
-import com.pubnub.api.UserId
-import com.pubnub.api.models.consumer.objects.PNPage
-import com.pubnub.api.models.consumer.objects.member.PNMemberArrayResult
-import com.pubnub.api.models.consumer.objects.membership.PNChannelMembershipArrayResult
+import com.pubnub.apikt.SpaceId
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.models.consumer.objects.PNPage
+import com.pubnub.apikt.models.consumer.objects.member.PNMemberArrayResult
+import com.pubnub.apikt.models.consumer.objects.membership.PNChannelMembershipArrayResult
 
 data class MembershipsResult(
     val data: Collection<Membership>,

@@ -1,6 +1,6 @@
 package com.pubnub.space.models.consumer
 
-import com.pubnub.api.models.consumer.objects.PNRemoveMetadataResult
+import com.pubnub.apikt.models.consumer.objects.PNRemoveMetadataResult
 
 data class RemoveSpaceResult(
     val status: Int

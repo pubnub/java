@@ -1,6 +1,6 @@
 package com.pubnub.contract.member.state
 
-import com.pubnub.api.models.consumer.objects.member.PNMember
+import com.pubnub.apikt.models.consumer.objects.member.PNMember
 import com.pubnub.contract.channelmetadata.state.ChannelMetadataState
 
 class MemberState(

@@ -1,10 +1,10 @@
-package com.pubnub.api.legacy.endpoints.files
+package com.pubnub.apikt.legacy.endpoints.files
 
-import com.pubnub.api.PubNubException
-import com.pubnub.api.endpoints.files.UploadFile
-import com.pubnub.api.models.server.files.FormField
-import com.pubnub.api.services.S3Service
-import com.pubnub.api.vendor.FileEncryptionUtil
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.endpoints.files.UploadFile
+import com.pubnub.apikt.models.server.files.FormField
+import com.pubnub.apikt.services.S3Service
+import com.pubnub.apikt.vendor.FileEncryptionUtil
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

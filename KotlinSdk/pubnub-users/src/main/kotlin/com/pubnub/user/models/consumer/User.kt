@@ -1,7 +1,7 @@
 package com.pubnub.user.models.consumer
 
-import com.pubnub.api.UserId
-import com.pubnub.api.models.consumer.objects.uuid.PNUUIDMetadata
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.models.consumer.objects.uuid.PNUUIDMetadata
 
 data class User(
     val id: UserId,

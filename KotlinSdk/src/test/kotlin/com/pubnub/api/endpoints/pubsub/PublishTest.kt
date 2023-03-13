@@ -1,10 +1,10 @@
-package com.pubnub.api.endpoints.pubsub
+package com.pubnub.apikt.endpoints.pubsub
 
-import com.pubnub.api.PNConfiguration
-import com.pubnub.api.PubNub
-import com.pubnub.api.UserId
-import com.pubnub.api.managers.RetrofitManager
-import com.pubnub.api.services.PublishService
+import com.pubnub.apikt.PNConfiguration
+import com.pubnub.apikt.PubNub
+import com.pubnub.apikt.UserId
+import com.pubnub.apikt.managers.RetrofitManager
+import com.pubnub.apikt.services.PublishService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot

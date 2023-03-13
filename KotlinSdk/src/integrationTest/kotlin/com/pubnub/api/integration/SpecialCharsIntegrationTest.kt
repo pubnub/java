@@ -1,8 +1,8 @@
-package com.pubnub.api.integration
+package com.pubnub.apikt.integration
 
-import com.pubnub.api.CommonUtils
-import com.pubnub.api.SignatureUtils
-import com.pubnub.api.listen
+import com.pubnub.apikt.CommonUtils
+import com.pubnub.apikt.SignatureUtils
+import com.pubnub.apikt.listen
 import org.awaitility.Awaitility
 import org.awaitility.Durations
 import org.junit.Assert.assertEquals

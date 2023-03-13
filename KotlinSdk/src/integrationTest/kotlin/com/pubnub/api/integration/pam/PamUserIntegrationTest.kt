@@ -1,4 +1,4 @@
-package com.pubnub.api.integration.pam
+package com.pubnub.apikt.integration.pam
 
 class PamUserIntegrationTest : AccessManagerIntegrationTest() {
 

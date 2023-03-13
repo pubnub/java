@@ -1,9 +1,9 @@
-package com.pubnub.api.legacy.endpoints.channel_groups
+package com.pubnub.apikt.legacy.endpoints.channel_groups
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.enums.PNStatusCategory
-import com.pubnub.api.legacy.BaseTest
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.enums.PNStatusCategory
+import com.pubnub.apikt.legacy.BaseTest
 import org.awaitility.Awaitility
 import org.hamcrest.core.IsEqual
 import org.junit.Assert.*

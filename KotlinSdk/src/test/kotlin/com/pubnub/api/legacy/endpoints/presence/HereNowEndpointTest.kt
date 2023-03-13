@@ -1,11 +1,11 @@
-package com.pubnub.api.legacy.endpoints.presence
+package com.pubnub.apikt.legacy.endpoints.presence
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.PubNubError.SUBSCRIBE_KEY_MISSING
-import com.pubnub.api.PubNubException
-import com.pubnub.api.enums.PNOperationType.PNHereNowOperation
-import com.pubnub.api.legacy.BaseTest
-import com.pubnub.api.models.consumer.presence.PNHereNowResult
+import com.pubnub.apikt.PubNubError.SUBSCRIBE_KEY_MISSING
+import com.pubnub.apikt.PubNubException
+import com.pubnub.apikt.enums.PNOperationType.PNHereNowOperation
+import com.pubnub.apikt.legacy.BaseTest
+import com.pubnub.apikt.models.consumer.presence.PNHereNowResult
 import org.awaitility.Awaitility
 import org.hamcrest.core.IsEqual
 import org.junit.Assert.*

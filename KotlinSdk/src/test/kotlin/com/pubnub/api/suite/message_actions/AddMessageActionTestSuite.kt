@@ -1,13 +1,13 @@
-package com.pubnub.api.suite.message_actions
+package com.pubnub.apikt.suite.message_actions
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.pubnub.api.endpoints.message_actions.AddMessageAction
-import com.pubnub.api.enums.PNOperationType
-import com.pubnub.api.models.consumer.message_actions.PNAddMessageActionResult
-import com.pubnub.api.models.consumer.message_actions.PNMessageAction
-import com.pubnub.api.suite.AUTH
-import com.pubnub.api.suite.EndpointTestSuite
-import com.pubnub.api.suite.SUB
+import com.pubnub.apikt.endpoints.message_actions.AddMessageAction
+import com.pubnub.apikt.enums.PNOperationType
+import com.pubnub.apikt.models.consumer.message_actions.PNAddMessageActionResult
+import com.pubnub.apikt.models.consumer.message_actions.PNMessageAction
+import com.pubnub.apikt.suite.AUTH
+import com.pubnub.apikt.suite.EndpointTestSuite
+import com.pubnub.apikt.suite.SUB
 import org.junit.Assert.assertEquals
 
 class AddMessageActionTestSuite : EndpointTestSuite<AddMessageAction, PNAddMessageActionResult>() {
