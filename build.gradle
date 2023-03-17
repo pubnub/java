@@ -46,6 +46,8 @@ configurations {
 }
 
 dependencies {
+    api project(":KotlinSdk")
+
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.6.2'
     api group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.10.0'
 

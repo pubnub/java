@@ -16,7 +16,7 @@ import retrofit2.Response
 /**
  * @see [PubNub.publish]
  */
-class Publish internal constructor(
+class Publish internal  @JvmOverloads constructor(
     pubnub: PubNub,
     val message: Any,
     val channel: String,

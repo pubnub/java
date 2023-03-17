@@ -21,7 +21,7 @@ import javax.net.ssl.X509ExtendedTrustManager
  * Configuration instance contains additional set of properties which
  * allow performing precise PubNub client configuration.
  */
-open class PNConfiguration(
+open class PNConfiguration @JvmOverloads constructor(
     userId: UserId,
     val enableSubscribeBeta: Boolean = false
 ) {
