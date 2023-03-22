@@ -46,6 +46,8 @@ configurations {
 }
 
 dependencies {
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2'
+
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.6.2'
     api group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.10.0'
 

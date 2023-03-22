@@ -54,9 +54,9 @@ public class TelemetryManager {
         return operationLatencies;
     }
 
-    public synchronized void storeLatency(long latency, PNOperationType type) {
-        if (type != PNOperationType.PNSubscribeOperation && latency > 0) {
-            String endpointName = TelemetryManager.endpointNameForOperation(type);
+    public synchronized void storeLatency(long latency, String operationType) {//change PNOperationType to String so that TelemetryManagerExternal.storeLatency doesn't relay on PNOperationType because Kotlin has
+        if (operationType != PNOperationType.PNSubscribeOperation.toString() && latency > 0) {
+            String endpointName = TelemetryManager.endpointNameForOperation(PNOperationType.valueOf(operationType));
             if (endpointName != null) {
                 double storeDate = (new Date()).getTime() / (double) TIMESTAMP_DIVIDER;
 

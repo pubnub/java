@@ -2,29 +2,31 @@ package com.pubnub.api.endpoints.pubsub;
 
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.PubNubUtil;
-import com.pubnub.api.builder.PubNubErrorBuilder;
-import com.pubnub.api.endpoints.Endpoint;
-import com.pubnub.api.enums.PNOperationType;
-import com.pubnub.api.managers.MapperManager;
-import com.pubnub.api.managers.PublishSequenceManager;
-import com.pubnub.api.managers.RetrofitManager;
-import com.pubnub.api.managers.TelemetryManager;
-import com.pubnub.api.managers.token_manager.TokenManager;
+import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.endpoints.publishKT.ConfigurationNeededForEndpoint;
+import com.pubnub.api.endpoints.publishKT.ConfigurationNeededForPublish;
+import com.pubnub.api.endpoints.publishKT.JsonMapperManagerForEndpoint;
+import com.pubnub.api.endpoints.publishKT.PNInstanceIdProvider;
+import com.pubnub.api.endpoints.publishKT.PublishServiceExternal;
+import com.pubnub.api.endpoints.publishKT.SequenceManagerExternal;
+import com.pubnub.api.endpoints.publishKT.TelemetryManagerExternal;
+import com.pubnub.api.endpoints.publishKT.ToJsonMapper;
+import com.pubnub.api.endpoints.publishKT.TokenRetriever;
+import com.pubnub.api.endpoints.remoteaction.RemoteAction;
+import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.models.consumer.PNPublishResult;
-import com.pubnub.api.vendor.Crypto;
+import com.pubnub.api.models.consumer.PNStatus;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import retrofit2.Call;
-import retrofit2.Response;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true, fluent = true)
-public class Publish extends Endpoint<List<Object>, PNPublishResult> {
-
+public class Publish implements RemoteAction<PNPublishResult> {
+    @Getter(AccessLevel.PROTECTED)
+    private PubNub pubnub;
     @Setter
     private Object message;
     @Setter
@@ -40,124 +42,83 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
     @Setter
     private Integer ttl;
 
-    private PublishSequenceManager publishSequenceManager;
+    private PublishServiceExternal publishServiceExternal;
+    private ConfigurationNeededForPublish configurationNeededForPublish;
+    private ToJsonMapper toJsonMapper;
+    private SequenceManagerExternal sequenceManagerExternal;
+    private TelemetryManagerExternal telemetryManagerExternal;
+    private ConfigurationNeededForEndpoint configurationNeededForEndpoint;
+    private PNInstanceIdProvider pnInstanceIdProvider;
+    private TokenRetriever tokenRetriever;
+    private JsonMapperManagerForEndpoint jsonMapperManagerForEndpoint;
 
     public Publish(PubNub pubnub,
-                   PublishSequenceManager providedPublishSequenceManager,
-                   TelemetryManager telemetryManager,
-                   RetrofitManager retrofit,
-                   TokenManager tokenManager) {
-        super(pubnub, telemetryManager, retrofit, tokenManager);
+                   PublishServiceExternal publishServiceExternal,
+                   ConfigurationNeededForPublish configurationNeededForPublish,
+                   ToJsonMapper toJsonMapper,
+                   SequenceManagerExternal sequenceManagerExternal,
+                   TelemetryManagerExternal telemetryManagerExternal,
+                   ConfigurationNeededForEndpoint configurationNeededForEndpoint,
+                   PNInstanceIdProvider pnInstanceIdProvider,
+                   TokenRetriever tokenRetriever,
+                   JsonMapperManagerForEndpoint jsonMapperManagerForEndpoint) {
 
-        this.publishSequenceManager = providedPublishSequenceManager;
         this.replicate = true;
+        this.pubnub = pubnub;
+        this.publishServiceExternal = publishServiceExternal;
+        this.configurationNeededForPublish = configurationNeededForPublish;
+        this.toJsonMapper = toJsonMapper;
+        this.sequenceManagerExternal = sequenceManagerExternal;
+        this.telemetryManagerExternal = telemetryManagerExternal;
+        this.configurationNeededForEndpoint = configurationNeededForEndpoint;
+        this.pnInstanceIdProvider = pnInstanceIdProvider;
+        this.tokenRetriever = tokenRetriever;
+        this.jsonMapperManagerForEndpoint = jsonMapperManagerForEndpoint;
+    }
+
+
+    @Override
+    public @Nullable PNPublishResult sync() throws PubNubException {
+        //dodatkowo queryParam z Endpointa jest wypiasny w dokumentacji, ale nie da się go użyć w Publishu bo nie jest częścią buildera(nie zwraca publish)
+        Boolean usePostKT = usePOST != null ? usePOST : false;
+
+        com.pubnub.api.endpoints.publishKT.Publish publishKT = new com.pubnub.api.endpoints.publishKT.Publish(
+                message, channel, meta, shouldStore, usePostKT, replicate, ttl, publishServiceExternal, configurationNeededForPublish,
+                toJsonMapper, sequenceManagerExternal, telemetryManagerExternal, configurationNeededForEndpoint,
+                pnInstanceIdProvider, tokenRetriever, jsonMapperManagerForEndpoint);
+
+
+        com.pubnub.api.endpoints.publishKT.PNPublishResult pnPublishResultKT = publishKT.sync();
+
+        return PNPublishResult.builder().timetoken(pnPublishResultKT.getTimetoken()).build(); //zwrot z Kotlina
     }
 
     @Override
-    protected List<String> getAffectedChannels() {
-        return Collections.singletonList(channel);
+    public void async(@NotNull PNCallback<PNPublishResult> callback) {
+
+        Boolean usePostKT = usePOST != null ? usePOST : false;
+
+        com.pubnub.api.endpoints.publishKT.Publish publishKT = new com.pubnub.api.endpoints.publishKT.Publish(
+                message, channel, meta, shouldStore, usePostKT, replicate, ttl, publishServiceExternal, configurationNeededForPublish,
+                toJsonMapper, sequenceManagerExternal, telemetryManagerExternal, configurationNeededForEndpoint,
+                pnInstanceIdProvider, tokenRetriever, jsonMapperManagerForEndpoint);
+
+        publishKT.async((pnPublishResultKT, statusKT) -> {
+            PNPublishResult pnPublishResult = PNPublishResult.builder().timetoken(pnPublishResultKT.getTimetoken()).build();
+            //ToDO here we should convert statusKT to pnStatus in java
+            PNStatus pnStatus = PNStatus.builder().category(PNStatusCategory.PNAcknowledgmentCategory).build();
+            callback.onResponse(pnPublishResult, pnStatus);
+            return null;
+        });
     }
 
     @Override
-    protected List<String> getAffectedChannelGroups() {
-        return null;
+    public void retry() {
+        //Todo
     }
 
     @Override
-    protected void validateParams() throws PubNubException {
-        if (message == null) {
-            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_MESSAGE_MISSING).build();
-        }
-        if (channel == null || channel.isEmpty()) {
-            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_MISSING).build();
-        }
-        if (this.getPubnub().getConfiguration().getSubscribeKey() == null || this.getPubnub().getConfiguration().getSubscribeKey().isEmpty()) {
-            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_KEY_MISSING).build();
-        }
-        if (this.getPubnub().getConfiguration().getPublishKey() == null || this.getPubnub().getConfiguration().getPublishKey().isEmpty()) {
-            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PUBLISH_KEY_MISSING).build();
-        }
+    public void silentCancel() {
+        //Todo
     }
-
-    @Override
-    protected Call<List<Object>> doWork(Map<String, String> params) throws PubNubException {
-        MapperManager mapper = this.getPubnub().getMapper();
-
-        String stringifiedMessage = mapper.toJson(message);
-
-        if (meta != null) {
-            String stringifiedMeta = mapper.toJson(meta);
-            stringifiedMeta = PubNubUtil.urlEncode(stringifiedMeta);
-            params.put("meta", stringifiedMeta);
-        }
-
-        if (shouldStore != null) {
-            if (shouldStore) {
-                params.put("store", "1");
-            } else {
-                params.put("store", "0");
-            }
-        }
-
-        if (ttl != null) {
-            params.put("ttl", String.valueOf(ttl));
-        }
-
-        params.put("seqn", String.valueOf(publishSequenceManager.getNextSequence()));
-
-        if (!replicate) {
-            params.put("norep", "true");
-        }
-
-        if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-            Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey(), this.getPubnub().getConfiguration().isUseRandomInitializationVector());
-            stringifiedMessage = crypto.encrypt(stringifiedMessage).replace("\n", "");
-        }
-
-        params.putAll(encodeParams(params));
-
-        if (usePOST != null && usePOST) {
-            Object payloadToSend;
-
-            if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-                payloadToSend = stringifiedMessage;
-            } else {
-                payloadToSend = message;
-            }
-
-            return this.getRetrofit().getPublishService().publishWithPost(this.getPubnub().getConfiguration().getPublishKey(),
-                    this.getPubnub().getConfiguration().getSubscribeKey(),
-                    channel, payloadToSend, params);
-        } else {
-
-            if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-                stringifiedMessage = "\"".concat(stringifiedMessage).concat("\"");
-            }
-
-            stringifiedMessage = PubNubUtil.urlEncode(stringifiedMessage);
-
-            return this.getRetrofit().getPublishService().publish(this.getPubnub().getConfiguration().getPublishKey(),
-                    this.getPubnub().getConfiguration().getSubscribeKey(),
-                    channel, stringifiedMessage, params);
-        }
-    }
-
-    @Override
-    protected PNPublishResult createResponse(Response<List<Object>> input) throws PubNubException {
-        PNPublishResult.PNPublishResultBuilder pnPublishResult = PNPublishResult.builder();
-        pnPublishResult.timetoken(Long.valueOf(input.body().get(2).toString()));
-
-        return pnPublishResult.build();
-    }
-
-    @Override
-    protected PNOperationType getOperationType() {
-        return PNOperationType.PNPublishOperation;
-    }
-
-    @Override
-    protected boolean isAuthRequired() {
-        return true;
-    }
-
 }

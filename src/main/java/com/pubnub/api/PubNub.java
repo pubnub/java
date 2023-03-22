@@ -48,6 +48,24 @@ import com.pubnub.api.endpoints.presence.GetState;
 import com.pubnub.api.endpoints.presence.HereNow;
 import com.pubnub.api.endpoints.presence.SetState;
 import com.pubnub.api.endpoints.presence.WhereNow;
+import com.pubnub.api.endpoints.publishKT.ConfigurationNeededForEndpoint;
+import com.pubnub.api.endpoints.publishKT.ConfigurationNeededForPublish;
+import com.pubnub.api.endpoints.publishKT.JsonMapperManagerForEndpoint;
+import com.pubnub.api.endpoints.publishKT.PNInstanceIdProvider;
+import com.pubnub.api.endpoints.publishKT.PublishServiceExternal;
+import com.pubnub.api.endpoints.publishKT.SequenceManagerExternal;
+import com.pubnub.api.endpoints.publishKT.TelemetryManagerExternal;
+import com.pubnub.api.endpoints.publishKT.ToJsonMapper;
+import com.pubnub.api.endpoints.publishKT.TokenRetriever;
+import com.pubnub.api.endpoints.publishKT.java.ConfigurationNeededForEndpointImpl;
+import com.pubnub.api.endpoints.publishKT.java.ConfigurationNeededForPublishImpl;
+import com.pubnub.api.endpoints.publishKT.java.JsonMapperManagerForEndpointImpl;
+import com.pubnub.api.endpoints.publishKT.java.PNInstanceIdProviderImpl;
+import com.pubnub.api.endpoints.publishKT.java.PublishServiceExternalImpl;
+import com.pubnub.api.endpoints.publishKT.java.SequenceManagerExternalImpl;
+import com.pubnub.api.endpoints.publishKT.java.TelemetryManagerExternalImpl;
+import com.pubnub.api.endpoints.publishKT.java.ToJsonMapperImpl;
+import com.pubnub.api.endpoints.publishKT.java.TokenRetrieverImpl;
 import com.pubnub.api.endpoints.pubsub.Publish;
 import com.pubnub.api.endpoints.pubsub.Signal;
 import com.pubnub.api.endpoints.push.AddChannelsToPush;
@@ -111,6 +129,16 @@ public class PubNub {
 
     private final TokenManager tokenManager;
 
+    private final PublishServiceExternal publishServiceExternal;
+    private final ConfigurationNeededForPublish configurationNeededForPublish;
+    private final ToJsonMapper toJsonMapper;
+    private final SequenceManagerExternal sequenceManagerExternal;
+    private final TelemetryManagerExternal telemetryManagerExternal;
+    private final ConfigurationNeededForEndpoint configurationNeededForEndpoint;
+    private final PNInstanceIdProvider pnInstanceIdProvider;
+    private final TokenRetriever tokenRetriever;
+    private final JsonMapperManagerForEndpoint jsonMapperManagerForEndpoint;
+
     public PubNub(@NotNull PNConfiguration initialConfig) {
         this.configuration = initialConfig;
         this.mapper = new MapperManager();
@@ -135,6 +163,16 @@ public class PubNub {
         this.publishSequenceManager = new PublishSequenceManager(MAX_SEQUENCE);
         this.tokenParser = new TokenParser();
         instanceId = UUID.randomUUID().toString();
+
+        this.publishServiceExternal = new PublishServiceExternalImpl(this.retrofitManager.getPublishService());
+        this.configurationNeededForPublish = new ConfigurationNeededForPublishImpl(this.configuration);
+        this.toJsonMapper = new ToJsonMapperImpl(this.mapper);
+        this.sequenceManagerExternal = new SequenceManagerExternalImpl(this.publishSequenceManager);
+        this.telemetryManagerExternal = new TelemetryManagerExternalImpl(this.telemetryManager);
+        this.configurationNeededForEndpoint = new ConfigurationNeededForEndpointImpl(this.configuration, this.getVersion());
+        this.pnInstanceIdProvider = new PNInstanceIdProviderImpl(this.instanceId);
+        this.tokenRetriever = new TokenRetrieverImpl(this.tokenManager);
+        this.jsonMapperManagerForEndpoint = new JsonMapperManagerForEndpointImpl(this.mapper);
     }
 
     /**
@@ -269,7 +307,10 @@ public class PubNub {
 
     @NotNull
     public Publish publish() {
-        return new Publish(this, publishSequenceManager, this.telemetryManager, this.retrofitManager, this.tokenManager);
+        return new Publish(this,
+                publishServiceExternal, configurationNeededForPublish, toJsonMapper, sequenceManagerExternal,
+                telemetryManagerExternal, configurationNeededForEndpoint, pnInstanceIdProvider,
+                tokenRetriever, jsonMapperManagerForEndpoint);
     }
 
     @NotNull

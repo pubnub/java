@@ -358,7 +358,7 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
     private void storeRequestLatency(Response response, PNOperationType type) {
         if (this.telemetryManager != null) {
             long latency = response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis();
-            this.telemetryManager.storeLatency(latency, type);
+            this.telemetryManager.storeLatency(latency, type.toString());
         }
     }
 
