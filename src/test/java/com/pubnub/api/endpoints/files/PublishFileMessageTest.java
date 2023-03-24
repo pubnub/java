@@ -1,6 +1,5 @@
 package com.pubnub.api.endpoints.files;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
@@ -39,18 +38,18 @@ class PublishFileMessageTest {
     void when_spaceId_and_message_type_is_provide_then_they_should_be_added_to_url_query_param() throws PubNubException {
         Map<String, String> baseParams = getBaseParams();
         String expectedSpaceIdValue = "mySpace";
-        String expectedMessageTypeValue = "messageType";
+        String expectedType = "messageType";
         objectUnderTest = pubNub.publishFileMessage()
                 .channel("channel")
                 .fileName("myFileName.png")
                 .fileId("someFileId")
                 .spaceId(new SpaceId(expectedSpaceIdValue))
-                .messageType(new MessageType(expectedMessageTypeValue));
+                .type(expectedType);
 
         Call<List<Object>> publishFileMessageCall = objectUnderTest.doWork(baseParams);
 
         assertEquals(expectedSpaceIdValue, publishFileMessageCall.request().url().queryParameter(SPACE_ID_QUERY_PARAM));
-        assertEquals(expectedMessageTypeValue, publishFileMessageCall.request().url().queryParameter(MESSAGE_TYPE_QUERY_PARAM));
+        assertEquals(expectedType, publishFileMessageCall.request().url().queryParameter(MESSAGE_TYPE_QUERY_PARAM));
     }
 
     @Test

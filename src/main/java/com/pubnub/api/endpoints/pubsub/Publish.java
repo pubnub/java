@@ -1,6 +1,5 @@
 package com.pubnub.api.endpoints.pubsub;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
@@ -28,7 +27,7 @@ import java.util.Map;
 public class Publish extends Endpoint<List<Object>, PNPublishResult> {
 
     static final String SPACE_ID_QUERY_PARAMETER = "space-id";
-    static final String MESSAGE_TYPE_QUERY_PARAMETER = "type";
+    static final String TYPE_QUERY_PARAMETER = "type";
     @Setter
     private Object message;
     @Setter
@@ -44,7 +43,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
     @Setter
     private Integer ttl;
     @Setter
-    private MessageType messageType;
+    private String type;
     @Setter
     private SpaceId spaceId;
 
@@ -159,8 +158,8 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
             params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());
         }
 
-        if (messageType != null) {
-            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
+        if (type != null) {
+            params.put(TYPE_QUERY_PARAMETER, type);
         }
 
         params.putAll(encodeAuthParamValue(params));

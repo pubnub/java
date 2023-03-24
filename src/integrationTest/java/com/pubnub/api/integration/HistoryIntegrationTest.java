@@ -1,12 +1,12 @@
 package com.pubnub.api.integration;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.integration.util.RandomGenerator;
 import com.pubnub.api.models.consumer.PNPublishResult;
+import com.pubnub.api.models.consumer.history.HistoryMessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessageItem;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
@@ -124,7 +124,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testFetchSingleChannel() throws PubNubException {
+    public void testFetchSingleChannel() {
         final String expectedChannelName = random();
 
         publishMixed(pubNub, 10, expectedChannelName);
@@ -133,6 +133,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
             PNFetchMessagesResult result = pubNub.fetchMessages()
                     .channels(Collections.singletonList(expectedChannelName))
                     .includeMessageType(true)
+                    .includeType(true)
                     .includeSpaceId(true)
                     .maximumPerChannel(25)
                     .sync();
@@ -146,6 +147,8 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
             assertNotNull(messageItem.getTimetoken());
             assertNull(messageItem.getMeta());
             assertNull(messageItem.getActions());
+            assertNotNull(messageItem.getMessageType());
+            assertNotNull(messageItem.getType());
         }
     }
 
@@ -175,16 +178,17 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testFetchSingleChannel_SpaceId_MessageType() throws PubNubException {
+    public void testFetchSingleChannel_spaceId_messageType_type() throws PubNubException {
         final String expectedChannelName = random();
         final String message = "message";
         final SpaceId expectedSpaceId = new SpaceId("mySpace");
-        final MessageType expectedMessageType = new MessageType("myMessageType");
+        final String expectedType = "myType";
+        final HistoryMessageType expectedMessageType = HistoryMessageType.MESSAGE;
 
         PNPublishResult pnPublishResult = pubNub.publish()
                 .message(message)
                 .channel(expectedChannelName)
-                .messageType(expectedMessageType)
+                .type(expectedType)
                 .spaceId(expectedSpaceId)
                 .sync();
 
@@ -195,6 +199,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
                     .channels(Collections.singletonList(expectedChannelName))
                     .maximumPerChannel(25)
                     .includeMessageType(true)
+                    .includeType(true)
                     .includeSpaceId(true)
                     .sync();
             assertNotNull(result);
@@ -206,6 +211,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
             assertNotNull(messageItem.getMessage());
             assertNotNull(messageItem.getTimetoken());
             assertEquals(expectedSpaceId, messageItem.getSpaceId());
+            assertEquals(expectedType, messageItem.getType());
             assertEquals(expectedMessageType, messageItem.getMessageType());
         }
     }

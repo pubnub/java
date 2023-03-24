@@ -1,6 +1,5 @@
 package com.pubnub.api.integration;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
@@ -53,7 +52,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
         String meta = "This is meta";
         String fileName = "fileName" + channel + ".txt";
         String fileId = "fileId_" + random();
-        MessageType expectedMessageType = new MessageType("myMessageType");
+        String expectedType = "myType";
         SpaceId expectedSpaceId = new SpaceId("mySpace");
 
         pubNub.addListener(new LimitedListener() {
@@ -67,7 +66,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
             @Override
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
                 if (pnFileEventResult.getFile().getName().equals(fileName)) {
-                    assertEquals(expectedMessageType, pnFileEventResult.getMessageType());
+                    assertEquals(expectedType, pnFileEventResult.getType());
                     assertEquals(expectedSpaceId, pnFileEventResult.getSpaceId());
                     fileEventReceived.countDown();
                 }
@@ -86,7 +85,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
                 .fileId(fileId)
                 .message(message)
                 .meta(meta)
-                .messageType(expectedMessageType)
+                .type(expectedType)
                 .spaceId(expectedSpaceId)
                 .sync();
 
@@ -115,7 +114,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
         String message = "This is message";
         String meta = "This is meta";
         String fileName = "fileName" + channel + ".txt";
-        MessageType expectedMessageType = new MessageType("myMessageType");
+        String expectedType = "myType";
         SpaceId expectedSpaceId = new SpaceId("mySpace");
         CountDownLatch connectedLatch = new CountDownLatch(1);
         CountDownLatch fileEventReceived = new CountDownLatch(1);
@@ -131,7 +130,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
             @Override
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
                 if (pnFileEventResult.getFile().getName().equals(fileName)) {
-                    assertEquals(expectedMessageType, pnFileEventResult.getMessageType());
+                    assertEquals(expectedType, pnFileEventResult.getType());
                     assertEquals(expectedSpaceId, pnFileEventResult.getSpaceId());
                     fileEventReceived.countDown();
                 }
@@ -151,7 +150,7 @@ public class FilesIntegrationTests extends BaseIntegrationTest {
                     .inputStream(is)
                     .message(message)
                     .meta(meta)
-                    .messageType(expectedMessageType)
+                    .type(expectedType)
                     .spaceId(expectedSpaceId)
                     .sync();
         }

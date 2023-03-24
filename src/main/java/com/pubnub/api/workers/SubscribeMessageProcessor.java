@@ -4,14 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubRuntimeException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.SpaceId;
-import com.pubnub.api.enums.PNMessageType;
+import com.pubnub.api.enums.MessageType;
 import com.pubnub.api.managers.DuplicationManager;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.models.consumer.files.PNDownloadableFile;
@@ -81,17 +80,17 @@ public class SubscribeMessageProcessor {
             }
 
             BasePubSubResult basePubSubResult = getBasePubSubResult(message, channel, subscriptionMatch, publishMetaData);
-            MessageType messageType = getMessageTypeFromMessage(message);
+            String type = message.getType();
             SpaceId spaceId = getSpaceIdFromMessage(message);
             if (isMessage(message)) {
-                return new PNMessageResult(basePubSubResult, extractedMessage, messageType, spaceId);
+                return new PNMessageResult(basePubSubResult, extractedMessage, type, spaceId);
             } else if (isSignal(message)) {
-                return new PNSignalResult(basePubSubResult, extractedMessage, messageType, spaceId);
+                return new PNSignalResult(basePubSubResult, extractedMessage, type, spaceId);
             } else if (isUserOrSpaceOrMembershipObject(message)) {
                 ObjectPayload objectPayload = mapper.convertValue(extractedMessage, ObjectPayload.class);
                 if (canHandleObjectCallback(objectPayload)) {
-                    String type = objectPayload.getType();
-                    return getObjectResult(mapper, basePubSubResult, objectPayload, type);
+                    String entityType = objectPayload.getType();
+                    return getObjectResult(mapper, basePubSubResult, objectPayload, entityType);
                 }
             } else if (isMessageAction(message)) {
                 return getPnMessageActionResult(mapper, extractedMessage, basePubSubResult);
@@ -105,11 +104,6 @@ public class SubscribeMessageProcessor {
     @Nullable
     private SpaceId getSpaceIdFromMessage(SubscribeMessage message) {
         return message.getSpaceId() != null ? new SpaceId(message.getSpaceId()) : null;
-    }
-
-    @NotNull
-    private MessageType getMessageTypeFromMessage(SubscribeMessage message) {
-        return new MessageType(message.getPnMessageType(), message.getUserMessageType());
     }
 
     @Nullable
@@ -178,19 +172,19 @@ public class SubscribeMessageProcessor {
     }
 
     private boolean isMessage(SubscribeMessage message) {
-        return message.getPnMessageType() == PNMessageType.MESSAGE01 || message.getPnMessageType() == PNMessageType.MESSAGE02;
+        return message.getMessageType() == MessageType.MESSAGE01 || message.getMessageType() == MessageType.MESSAGE02;
     }
 
     private boolean isSignal(SubscribeMessage message) {
-        return message.getPnMessageType() == PNMessageType.SIGNAL;
+        return message.getMessageType() == MessageType.SIGNAL;
     }
 
     private boolean isUserOrSpaceOrMembershipObject(SubscribeMessage message) {
-        return message.getPnMessageType() == PNMessageType.OBJECT;
+        return message.getMessageType() == MessageType.OBJECT;
     }
 
     private boolean isMessageAction(SubscribeMessage message) {
-        return message.getPnMessageType() == PNMessageType.MESSAGE_ACTION;
+        return message.getMessageType() == MessageType.MESSAGE_ACTION;
     }
 
     private PNMessageActionResult getPnMessageActionResult(MapperManager mapper, JsonElement extractedMessage, BasePubSubResult result) {
@@ -207,7 +201,7 @@ public class SubscribeMessageProcessor {
     }
 
     private boolean isFile(SubscribeMessage message) {
-        return message.getPnMessageType() == PNMessageType.FILE;
+        return message.getMessageType() == MessageType.FILE;
     }
 
     private PNFileEventResult getPnFileEventResult(SubscribeMessage message, MapperManager mapper, PublishMetaData publishMetaData, JsonElement extractedMessage) {
@@ -218,7 +212,7 @@ public class SubscribeMessageProcessor {
         } else {
             jsonMessage = JsonNull.INSTANCE;
         }
-        MessageType messageType = getMessageTypeFromMessage(message);
+        String type = message.getType();
         SpaceId spaceId = getSpaceIdFromMessage(message);
 
         return PNFileEventResult.builder()
@@ -232,7 +226,7 @@ public class SubscribeMessageProcessor {
                 .publisher(message.getIssuingClientId())
                 .timetoken(publishMetaData.getPublishTimetoken())
                 .jsonMessage(jsonMessage)
-                .messageType(messageType)
+                .type(type)
                 .spaceId(spaceId)
                 .build();
     }

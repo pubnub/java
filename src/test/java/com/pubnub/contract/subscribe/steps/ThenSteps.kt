@@ -23,12 +23,12 @@ class ThenSteps(
             }
     }
 
-    @Then("response contains messages with {string} and {string} message types")
+    @Then("response contains messages with {string} and {string} types")
     fun response_contains_messages_with_message_types(
         messageTypeOfFirstMessage: String,
         messageTypeOfSecondMessage: String
     ) {
-        val listOfReceivedMessageTypes = subscribeState.messages.map { it.messageType.value }
+        val listOfReceivedMessageTypes = subscribeState.messages.map { it.type }
         assertThat(
             listOfReceivedMessageTypes,
             containsInAnyOrder(messageTypeOfFirstMessage, messageTypeOfSecondMessage)

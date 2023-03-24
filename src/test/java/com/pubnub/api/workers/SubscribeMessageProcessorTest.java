@@ -168,7 +168,7 @@ public class SubscribeMessageProcessorTest {
 
         assertThat(pnEvent, is(instanceOf(PNFileEventResult.class)));
         assertThat(fileEventResult.getMessage(), is(message));
-        assertThat(fileEventResult.getMessageType().getValue(), equalTo(messageType));
+        assertThat(fileEventResult.getType(), equalTo(messageType));
         assertThat(fileEventResult.getSpaceId().getValue(), equalTo(spaceId));
         assertThat(fileEventResult.getFile().getId(), equalTo(fileId));
         assertThat(fileEventResult.getFile().getName(), equalTo(fileName));
@@ -195,7 +195,7 @@ public class SubscribeMessageProcessorTest {
 
         assertThat(result, is(instanceOf(PNMessageResult.class)));
         assertThat(messageResult.getMessage().getAsString(), is(message));
-        assertThat(messageResult.getMessageType().getValue(), equalTo(messageType));
+        assertThat(messageResult.getType(), equalTo(messageType));
         assertThat(messageResult.getSpaceId().getValue(), equalTo(spaceId));
     }
 
@@ -220,7 +220,7 @@ public class SubscribeMessageProcessorTest {
 
         assertThat(result, is(instanceOf(PNSignalResult.class)));
         assertThat(signalResult.getMessage().getAsString(), is(message));
-        assertThat(signalResult.getMessageType().getValue(), equalTo(messageType));
+        assertThat(signalResult.getType(), equalTo(messageType));
         assertThat(signalResult.getSpaceId().getValue(), equalTo(spaceId));
 
 

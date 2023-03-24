@@ -10,7 +10,6 @@ import com.pubnub.api.endpoints.TestHarness;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
-import com.pubnub.api.MessageType;
 import org.awaitility.Awaitility;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -43,8 +42,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static com.pubnub.api.endpoints.pubsub.Publish.MESSAGE_TYPE_QUERY_PARAMETER;
 import static com.pubnub.api.endpoints.pubsub.Publish.SPACE_ID_QUERY_PARAMETER;
+import static com.pubnub.api.endpoints.pubsub.Publish.TYPE_QUERY_PARAMETER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
@@ -513,17 +512,17 @@ public class PublishTest extends TestHarness {
 
     @Test
     public void when_messageType_is_provided_then_queryParams_should_contains_messageTypeQueryParam() throws PubNubException {
-        String messageTypeValue = "simplyMessage";
+        String type = "simplyMessage";
 
         stubFor(get(urlPathEqualTo("/publish/myPublishKey/mySubscribeKey/0/" + CHANNEL_NAME + "/0/%22hirep%22"))
                 .willReturn(aResponse().withBody("[1,\"Sent\",\"14598111595318003\"]")));
 
 
-        instance.channel(CHANNEL_NAME).message("hirep").messageType(new MessageType(messageTypeValue)).sync();
+        instance.channel(CHANNEL_NAME).message("hirep").type(type).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
-        assertEquals(messageTypeValue, requests.get(0).queryParameter(MESSAGE_TYPE_QUERY_PARAMETER).firstValue());
+        assertEquals(type, requests.get(0).queryParameter(TYPE_QUERY_PARAMETER).firstValue());
     }
 
     @Test
@@ -536,6 +535,6 @@ public class PublishTest extends TestHarness {
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
-        assertThat(requests.get(0).getQueryParams(), not(hasKey(MESSAGE_TYPE_QUERY_PARAMETER)));
+        assertThat(requests.get(0).getQueryParams(), not(hasKey(TYPE_QUERY_PARAMETER)));
     }
 }
