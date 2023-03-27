@@ -1,6 +1,5 @@
 package com.pubnub.api.endpoints.pubsub;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
@@ -25,7 +24,7 @@ import java.util.Map;
 @Accessors(chain = true, fluent = true)
 public class Signal extends Endpoint<List<Object>, PNPublishResult> {
     static final String SPACE_ID_QUERY_PARAMETER = "space-id";
-    static final String MESSAGE_TYPE_QUERY_PARAMETER = "type";
+    static final String TYPE_QUERY_PARAMETER = "type";
 
     @Setter
     private Object message;
@@ -34,7 +33,7 @@ public class Signal extends Endpoint<List<Object>, PNPublishResult> {
     private String channel;
 
     @Setter
-    private MessageType messageType;
+    private String type;
 
     @Setter
     private SpaceId spaceId;
@@ -109,8 +108,8 @@ public class Signal extends Endpoint<List<Object>, PNPublishResult> {
     }
 
     private Map<String, String> extendRequestParamMapBySignalSpecificParams(Map<String, String> params) {
-        if (messageType != null) {
-            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
+        if (type != null) {
+            params.put(TYPE_QUERY_PARAMETER, type);
         }
         if (spaceId != null) {
             params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());

@@ -39,8 +39,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     private static final int MULTIPLE_CHANNEL_MAX_MESSAGES = 25;
     private static final int DEFAULT_MESSAGES_WITH_ACTIONS = 25;
     private static final int MAX_MESSAGES_WITH_ACTIONS = 25;
-    private static final String INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM = "include_type";
-    private static final String INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM = "include_message_type";
+    private static final String INCLUDE_TYPE_QUERY_PARAM = "include_type";                    //type is user-defined type
+    private static final String INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM = "include_message_type"; //messageType is int indicating if this is message or file
     private static final String INCLUDE_SPACE_ID_QUERY_PARAM = "include_space_id";
     private static final String MAXIMUM_PER_CHANNEL_PARAM_DEFAULTING_TO = "maximumPerChannel param defaulting to ";
     private static final String PN_OTHER = "pn_other";
@@ -65,6 +65,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     private Boolean includeMessageActions;
     @Setter
     private boolean includeMessageType = true;
+    @Setter
+    private boolean includeType = true;
     @Setter
     private boolean includeUUID = true;
     @Setter
@@ -250,7 +252,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         if (includeMeta) {
             params.put(INCLUDE_META_QUERY_PARAM, Boolean.toString(true));
         }
-        params.put(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM, String.valueOf(includeMessageType));
+        params.put(INCLUDE_TYPE_QUERY_PARAM, String.valueOf(includeType));
         params.put(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM, String.valueOf(includeMessageType));
         params.put(INCLUDE_SPACE_ID_QUERY_PARAM, String.valueOf(includeSpaceId));
 

@@ -1,6 +1,5 @@
 package com.pubnub.api.endpoints.files;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
@@ -46,7 +45,7 @@ public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMess
     @Setter
     private Boolean shouldStore;
     @Setter
-    private MessageType messageType;
+    private String type;
     @Setter
     private SpaceId spaceId;
 
@@ -126,8 +125,8 @@ public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMess
         if (spaceId != null) {
             params.put(SPACE_ID_QUERY_PARAMETER, spaceId.getValue());
         }
-        if (messageType != null) {
-            params.put(MESSAGE_TYPE_QUERY_PARAMETER, messageType.getValue());
+        if (type != null) {
+            params.put(MESSAGE_TYPE_QUERY_PARAMETER, type);
         }
 
         return filesService.notifyAboutFileUpload(configuration.getPublishKey(),

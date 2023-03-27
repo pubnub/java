@@ -76,6 +76,29 @@ class FetchMessagesTest {
         String include_type = call.request().url().queryParameter(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM);
         String include_space_id = call.request().url().queryParameter(INCLUDE_SPACE_ID_QUERY_PARAM);
         assertFalse(Boolean.parseBoolean(include_message_type));
+        assertTrue(Boolean.parseBoolean(include_type));
+        assertTrue(Boolean.parseBoolean(include_space_id));
+    }
+
+    @Test
+    void when_includeType_equal_false_is_specified_explicitly_in_api_call_then_request_should_contain_includeType_request_param_set_to_false() throws PubNubException {
+        //Given
+        Map<String, String> baseParams = getBaseParams();
+        FetchMessages objectUnderTest = pubnub.fetchMessages()
+                .channels(Arrays.asList("channel"))
+                .includeMessageActions(false)
+                .includeMeta(true)
+                .includeType(false)
+                .includeSpaceId(true);
+
+        //When
+        Call<FetchMessagesEnvelope> call = objectUnderTest.doWork(baseParams);
+
+        //Then
+        String include_message_type = call.request().url().queryParameter(INCLUDE_PN_MESSAGE_TYPE_QUERY_PARAM);
+        String include_type = call.request().url().queryParameter(INCLUDE_USER_MESSAGE_TYPE_QUERY_PARAM);
+        String include_space_id = call.request().url().queryParameter(INCLUDE_SPACE_ID_QUERY_PARAM);
+        assertTrue(Boolean.parseBoolean(include_message_type));
         assertFalse(Boolean.parseBoolean(include_type));
         assertTrue(Boolean.parseBoolean(include_space_id));
     }

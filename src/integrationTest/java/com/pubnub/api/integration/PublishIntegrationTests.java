@@ -2,12 +2,10 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
 import com.pubnub.api.callbacks.SubscribeCallback;
-import com.pubnub.api.enums.PNMessageType;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNPublishResult;
@@ -43,6 +41,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class PublishIntegrationTests extends BaseIntegrationTest {
 
@@ -75,16 +74,16 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPublishMessageWithMessageTypeAndSpaceId() throws PubNubException {
+    public void testPublishMessageWithTypeAndSpaceId() throws PubNubException {
         final String expectedChannel = randomChannel();
         final JsonObject messagePayload = generateMessage(pubNub);
         SpaceId expectedSpaceId = new SpaceId("chatIndeed");
-        MessageType expectedMessageType = new MessageType("userChosenMessageType");
+        String expectedType = "userChosenType";
 
         PNPublishResult pnPublishResult = pubNub.publish()
                 .message(messagePayload)
                 .channel(expectedChannel)
-                .messageType(expectedMessageType)
+                .type(expectedType)
                 .spaceId(expectedSpaceId)
                 .sync();
 
@@ -105,7 +104,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
 
         for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannel)) {
             assertEquals(expectedSpaceId, messageItem.getSpaceId());
-            assertEquals(expectedMessageType, messageItem.getMessageType());
+            assertEquals(expectedType, messageItem.getType());
         }
     }
 
@@ -313,7 +312,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
     @Test
     public void testOrgJsonObject_Get_Receive() throws PubNubException {
         final String channel = random();
-        final MessageType expectedUserMessageType = new MessageType("test");
+        final String expectedType = "test";
         final SpaceId expectedSpaceId = new SpaceId("1-to-1_chat");
         final JSONObject payload = generatePayloadJSON();
         final AtomicBoolean success = new AtomicBoolean();
@@ -332,7 +331,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
                 final JsonElement receivedMessage = pnMessageResult.getMessage();
-                assertEquals(expectedUserMessageType.getValue(), pnMessageResult.getMessageType().getValue());
+                assertEquals(expectedType, pnMessageResult.getType());
                 assertEquals(expectedSpaceId.getValue(), pnMessageResult.getSpaceId().getValue());
                 try {
                     final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
@@ -384,7 +383,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
         pubNub.publish()
                 .message(payload)
                 .channel(channel)
-                .messageType(expectedUserMessageType)
+                .type(expectedType)
                 .spaceId(expectedSpaceId)
                 .sync();
 
@@ -557,8 +556,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             @Override
             public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult pnMessageResult) {
                 final JsonElement receivedMessage = pnMessageResult.getMessage();
-                assertEquals(PNMessageType.MESSAGE01.toString(), pnMessageResult.getMessageType().getValue());
-                assertEquals(PNMessageType.MESSAGE02.toString(), pnMessageResult.getMessageType().getValue());
+                assertNull(pnMessageResult.getType());
                 try {
                     final JSONArray receivedArray = new JSONArray(receivedMessage.toString());
                     assertEquals(payload.toString(), receivedArray.toString());

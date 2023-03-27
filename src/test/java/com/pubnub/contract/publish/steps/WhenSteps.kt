@@ -1,6 +1,5 @@
 package com.pubnub.contract.publish.steps
 
-import com.pubnub.api.MessageType
 import com.pubnub.api.PubNubException
 import com.pubnub.api.SpaceId
 import com.pubnub.contract.state.World
@@ -10,10 +9,10 @@ class WhenSteps(
     private val world: World
 ) {
 
-    @When("I publish message with {string} space id and {string} message type")
-    fun I_publish_message_with_spaceId_and_messageType(spaceIdValue: String, userMessageTypeValue: String) {
+    @When("I publish message with {string} space id and {string} type")
+    fun I_publish_message_with_spaceId_and_messageType(spaceIdValue: String, typeValue: String) {
         val spaceId = SpaceId(spaceIdValue)
-        val userMessageType = MessageType(userMessageTypeValue)
+        val type = typeValue
         val message = "how are you today?"
         val channel = "my favourite channel"
 
@@ -22,7 +21,7 @@ class WhenSteps(
                 .message(message)
                 .channel(channel)
                 .spaceId(spaceId)
-                .messageType(userMessageType)
+                .type(type)
                 .sync()
 
             val timetoken = pnPublishResult?.timetoken

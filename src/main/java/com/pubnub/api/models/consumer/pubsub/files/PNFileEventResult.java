@@ -1,7 +1,6 @@
 package com.pubnub.api.models.consumer.pubsub.files;
 
 import com.google.gson.JsonElement;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.SpaceId;
 import com.pubnub.api.models.consumer.files.PNDownloadableFile;
 import com.pubnub.api.models.consumer.pubsub.PNEvent;
@@ -21,6 +20,6 @@ public class PNFileEventResult implements PNEvent {
     @NonNull
     private final PNDownloadableFile file;
     private final JsonElement jsonMessage;
-    private final MessageType messageType;
+    private final String type;
     private final SpaceId spaceId;
 }

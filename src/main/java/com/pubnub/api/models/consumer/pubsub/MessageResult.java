@@ -1,7 +1,6 @@
 package com.pubnub.api.models.consumer.pubsub;
 
 import com.google.gson.JsonElement;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.SpaceId;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,14 +10,13 @@ import lombok.ToString;
 public class MessageResult extends BasePubSubResult {
 
     private final JsonElement message;
-    private final MessageType messageType;
+    private final String type;
     private final SpaceId spaceId;
 
-    public MessageResult(BasePubSubResult basePubSubResult, JsonElement message, MessageType messageType, SpaceId spaceId) {
+    public MessageResult(BasePubSubResult basePubSubResult, JsonElement message, String type, SpaceId spaceId) {
         super(basePubSubResult);
         this.message = message;
-        this.messageType = messageType;
+        this.type = type;
         this.spaceId = spaceId;
     }
 }
-

@@ -3,7 +3,7 @@ package com.pubnub.contract.history.steps
 import com.pubnub.contract.history.state.FetchMessagesState
 import com.pubnub.contract.state.World
 import io.cucumber.java.en.When
-import java.util.Collections
+import java.util.*
 
 class WhenSteps(
     private val world: World,
@@ -21,11 +21,11 @@ class WhenSteps(
         world.responseStatus = 200
     }
 
-    @When("I fetch message history with 'includeMessageType' set to {string} for {string} channel")
-    fun I_fetch_message_history_with_includeMessageType_set_to_value_fo_channel(includeMessageTypeValue: String, channelName: String){
+    @When("I fetch message history with 'includeType' set to {string} for {string} channel")
+    fun I_fetch_message_history_with_includeType_set_to_value_for_channel(includeMessageTypeValue: String, channelName: String){
         val pnFetchMessagesResult = world.pubnub.fetchMessages()
             .channels(listOf(channelName))
-            .includeMessageType(includeMessageTypeValue.toBoolean())
+            .includeType(includeMessageTypeValue.toBoolean())
             .sync()
 
         fetchMessagesState.pnFetchMessagesResult = pnFetchMessagesResult

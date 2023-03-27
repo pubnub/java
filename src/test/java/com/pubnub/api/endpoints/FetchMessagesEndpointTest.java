@@ -4,18 +4,27 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
-import com.pubnub.api.PubNubRuntimeException;
+import com.pubnub.api.models.consumer.history.HistoryMessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessageItem;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
-import org.junit.*;
-import org.junit.jupiter.api.Assertions;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -113,24 +122,52 @@ public class FetchMessagesEndpointTest extends TestHarness {
     }
 
     @Test
-    public void should_return_userMessageType_when_userMessageTypePresent_in_response_and_includeMessageType_set_to_true() throws PubNubException {
+    public void should_return_MESSAGE_in_messageType_when_messageType_is_message_and_includeMessageType_set_to_true() throws PubNubException {
         final String expectedChannelName = "myChannel";
         String fetchMessagesUrl = "/v3/history/sub-key/mySubscribeKey/channel/" + expectedChannelName;
-        final String expectedUserMessageType = "myMessageType";
-        final Integer expectedPnMessageType = null;
+        final String expectedType = "myMessageType";
+        final Integer expectedMessageTypeFromServer = null;
+        final HistoryMessageType expectedMessageTypeFromSDK = HistoryMessageType.MESSAGE;
 
         stubFor(get(urlPathEqualTo(fetchMessagesUrl))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withBody(getJsonWithSpecificChannelAndUserMessageTypeAndPnMessageType(expectedChannelName, expectedUserMessageType, expectedPnMessageType))));
+                        .withBody(getJsonRepresentingMessageWithSpecificChannelAndMessageTypeAndType(expectedChannelName, expectedType, expectedMessageTypeFromServer))));
 
         final PNFetchMessagesResult fetchMessagesResult = pubnub.fetchMessages()
                 .channels(Collections.singletonList(expectedChannelName))
                 .includeMessageType(true)
                 .sync();
 
-        String messageTypeValue = fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getMessageType().getValue();
-        assertEquals(expectedUserMessageType, messageTypeValue);
+        String type = fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getType();
+        HistoryMessageType messageType = fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getMessageType();
+        assertEquals(expectedType, type);
+        assertEquals(expectedMessageTypeFromSDK, messageType);
+        assertNull(fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getSpaceId());
+    }
+
+    @Test
+    public void should_return_FILE_in_messageType_when_messageType_is_file_and_includeMessageType_set_to_true() throws PubNubException {
+        final String expectedChannelName = "myChannel";
+        String fetchMessagesUrl = "/v3/history/sub-key/mySubscribeKey/channel/" + expectedChannelName;
+        final String expectedType = "myMessageType";
+        final Integer expectedMessageTypeFromServer = 4;
+        final HistoryMessageType expectedMessageTypeFromSDK = HistoryMessageType.FILE;
+
+        stubFor(get(urlPathEqualTo(fetchMessagesUrl))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(getJsonRepresentingMessageWithSpecificChannelAndMessageTypeAndType(expectedChannelName, expectedType, expectedMessageTypeFromServer))));
+
+        final PNFetchMessagesResult fetchMessagesResult = pubnub.fetchMessages()
+                .channels(Collections.singletonList(expectedChannelName))
+                .includeMessageType(true)
+                .sync();
+
+        String type = fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getType();
+        HistoryMessageType messageType = fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getMessageType();
+        assertEquals(expectedType, type);
+        assertEquals(expectedMessageTypeFromSDK, messageType);
         assertNull(fetchMessagesResult.getChannels().get(expectedChannelName).get(0).getSpaceId());
     }
 
@@ -142,14 +179,16 @@ public class FetchMessagesEndpointTest extends TestHarness {
         stubFor(get(urlPathEqualTo(fetchMessagesUrl))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withBody(getJsonWithNoUserMessageTypeAndNoPnMessageType())));
+                        .withBody(getJsonWithMessageContainingNoTypeAndNoMessageType())));
 
         final PNFetchMessagesResult fetchMessagesResult = pubnub.fetchMessages()
                 .channels(Collections.singletonList(expectedChannelName))
                 .includeMessageType(false)
+                .includeType(false)
                 .sync();
 
         PNFetchMessageItem pnFetchMessageItem = fetchMessagesResult.getChannels().get(expectedChannelName).get(0);
+        assertNull(pnFetchMessageItem.getType());
         assertNull(pnFetchMessageItem.getMessageType());
     }
 
@@ -173,7 +212,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
         assertEquals(expectedSpaceIdValue, spaceIdValue);
     }
 
-    private String getJsonWithSpecificChannelAndUserMessageTypeAndPnMessageType(String channelName, String userMessageType, Integer pnMessageType) {
+    private String getJsonRepresentingMessageWithSpecificChannelAndMessageTypeAndType(String channelName, String type, Integer messageType) {
         return "{\n" +
                 "  \"status\": 200,\n" +
                 "  \"error\": false,\n" +
@@ -183,14 +222,14 @@ public class FetchMessagesEndpointTest extends TestHarness {
                 "      {\n" +
                 "        \"message\": \"0_msg\",\n" +
                 "        \"timetoken\": \"16703466236354401\",\n" +
-                "        \"message_type\": " + pnMessageType + ",\n" +
-                "        \"type\": \"" + userMessageType + "\",\n" +
+                "        \"message_type\": " + messageType + ",\n" +
+                "        \"type\": \"" + type + "\",\n" +
                 "        \"uuid\": \"client-d60257a5-2e70-4b40-b9d6-5dacf664fc0c\"\n" +
                 "      },\n" +
                 "      {\n" +
                 "        \"message\": \"1_msg\",\n" +
                 "        \"timetoken\": \"16703466289837512\",\n" +
-                "        \"message_type\": 1,\n" +
+                "        \"message_type\": 0,\n" +
                 "        \"type\": \"customMessageTypeHahaha\",\n" +
                 "        \"uuid\": \"client-d60257a5-2e70-4b40-b9d6-5dacf664fc0c\"\n" +
                 "      }\n" +
@@ -199,7 +238,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
                 "}";
     }
 
-    private String getJsonWithNoUserMessageTypeAndNoPnMessageType() {
+    private String getJsonWithMessageContainingNoTypeAndNoMessageType() {
         return "{\n" +
                 "  \"status\": 200,\n" +
                 "  \"error\": false,\n" +
@@ -239,7 +278,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
                 "      {\n" +
                 "        \"message\": \"1_msg\",\n" +
                 "        \"timetoken\": \"16703466289837512\",\n" +
-                "        \"message_type\": 1,\n" +
+                "        \"message_type\": 0,\n" +
                 "        \"type\": \"customMessageTypeHahaha\",\n" +
                 "        \"space_id\": \"customSpaceId\",\n" +
                 "        \"uuid\": \"client-d60257a5-2e70-4b40-b9d6-5dacf664fc0c\"\n" +

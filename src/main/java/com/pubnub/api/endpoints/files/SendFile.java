@@ -1,6 +1,5 @@
 package com.pubnub.api.endpoints.files;
 
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
@@ -58,7 +57,7 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
     @Setter
     private String cipherKey;
     @Setter
-    private MessageType messageType;
+    private String type;
     @Setter
     private SpaceId spaceId;
 
@@ -148,7 +147,7 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
                 .meta(meta)
                 .ttl(ttl)
                 .shouldStore(shouldStore)
-                .messageType(messageType)
+                .type(type)
                 .spaceId(spaceId);
     }
 

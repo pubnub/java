@@ -2,7 +2,6 @@ package com.pubnub.api.integration;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.SpaceId;
@@ -87,7 +86,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
 
         final String expectedChannel = randomChannel();
         final String expectedPayload = RandomGenerator.newValue(5);
-        final MessageType expectedUserMessageType = new MessageType("test");
+        final String expectedType = "test";
         final SpaceId expectedSpaceId = new SpaceId("1-to-1_chat");
 
         final PubNub observerClient = getPubNub();
@@ -106,7 +105,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
                         pubNub.signal()
                                 .message(expectedPayload)
                                 .channel(expectedChannel)
-                                .messageType(expectedUserMessageType)
+                                .type(expectedType)
                                 .spaceId(expectedSpaceId)
                                 .async((result, status1) -> {
                                     assertFalse(status1.isError());
@@ -133,7 +132,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
                 assertEquals(pubNub.getConfiguration().getUserId().getValue(), signal.getPublisher());
                 assertEquals(expectedChannel, signal.getChannel());
                 assertEquals(expectedPayload, new Gson().fromJson(signal.getMessage(), String.class));
-                assertEquals(expectedUserMessageType.getValue(), signal.getMessageType().getValue());
+                assertEquals(expectedType, signal.getType());
                 assertEquals(expectedSpaceId.getValue(), signal.getSpaceId().getValue());
                 success.set(true);
             }
@@ -207,7 +206,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
 
     @Test
     public void should_receive_signal_when_signal_is_sent() throws PubNubException {
-        final MessageType expectedUserMessageType = new MessageType("test");
+        final String expectedType = "test";
         final SpaceId expectedSpaceId = new SpaceId("1-to-1_chat");
         final JSONObject payload = generatePayloadJSON();
         final AtomicBoolean success = new AtomicBoolean();
@@ -232,7 +231,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
             @Override
             public void signal(@NotNull PubNub pubnub, @NotNull PNSignalResult pnSignalResult) {
                 final JsonElement receivedMessage = pnSignalResult.getMessage();
-                assertEquals(expectedUserMessageType.getValue(), pnSignalResult.getMessageType().getValue());
+                assertEquals(expectedType, pnSignalResult.getType());
                 assertEquals(expectedSpaceId.getValue(), pnSignalResult.getSpaceId().getValue());
                 try {
                     final JSONObject receivedObject = new JSONObject(receivedMessage.toString());
@@ -278,7 +277,7 @@ public class SignalIntegrationTests extends BaseIntegrationTest {
         pubNub.signal()
                 .channel(channel)
                 .message(payload)
-                .messageType(expectedUserMessageType)
+                .type(expectedType)
                 .spaceId(expectedSpaceId)
                 .sync();
     }

@@ -2,9 +2,7 @@ package com.pubnub.api.models.consumer.history;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
-import com.pubnub.api.MessageType;
 import com.pubnub.api.SpaceId;
-import com.pubnub.api.enums.PNMessageType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -30,11 +28,10 @@ public class PNFetchMessageItem {
 
     @Getter(AccessLevel.NONE)
     @SerializedName("message_type")
-    private final Integer pnMessageType;
+    private Integer messageType;
 
-    @Getter(AccessLevel.NONE)
-    @SerializedName("type")
-    private final String userMessageType;
+    //user defined type
+    private final String type;
 
     public SpaceId getSpaceId() {
         if (spaceId == null) {
@@ -43,22 +40,8 @@ public class PNFetchMessageItem {
         return new SpaceId(spaceId);
     }
 
-    /**
-     * Get message type of MessageItem.
-     * <p>
-     * Caution:
-     * When includeMessageType is set to true then pnMessageType can be null
-     * informing that MessageItem is of type "message".
-     * When includeMessageType is set to false then pnMessageType == null means that pnMessageType is not present.
-     *
-     * @return MessageType of PNFetchMessageItem
-     */
-    public MessageType getMessageType() {
-        if (includeMessageType) {
-            return new MessageType(PNMessageType.valueByPnMessageType(pnMessageType), userMessageType);
-        } else {
-            return null;
-        }
+    public HistoryMessageType getMessageType() {
+        return includeMessageType ? HistoryMessageType.of(messageType) : null;
     }
 
     @Data

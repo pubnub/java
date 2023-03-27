@@ -2,7 +2,7 @@ package com.pubnub.api.models.server;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
-import com.pubnub.api.enums.PNMessageType;
+import com.pubnub.api.enums.MessageType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @Data
 public class SubscribeMessage {
-    private static Set<PNMessageType> pnMessageTypesSupportingEncryption = new HashSet<>(Arrays.asList(PNMessageType.MESSAGE01, PNMessageType.MESSAGE02, PNMessageType.FILE));
+    private static Set<MessageType> messageTypesSupportingEncryption = new HashSet<>(Arrays.asList(MessageType.MESSAGE01, MessageType.MESSAGE02, MessageType.FILE));
 
     @SerializedName("a")
     private String shard;
@@ -46,19 +46,19 @@ public class SubscribeMessage {
     private JsonElement userMetadata;
 
     @SerializedName("e")
-    private Integer pnMessageType;
+    private Integer messageType;
 
     @SerializedName("mt")
-    private String userMessageType;
+    private String type;
 
     @SerializedName("si")
     private String spaceId;
 
-    public PNMessageType getPnMessageType() {
-        return PNMessageType.valueByPnMessageType(pnMessageType);
+    public MessageType getMessageType() {
+        return MessageType.valueByPnMessageType(messageType);
     }
 
     public boolean supportsEncryption() {
-        return pnMessageTypesSupportingEncryption.contains(getPnMessageType());
+        return messageTypesSupportingEncryption.contains(getMessageType());
     }
 }

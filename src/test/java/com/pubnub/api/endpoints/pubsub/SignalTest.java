@@ -159,7 +159,7 @@ public class SignalTest extends TestHarness {
                 assertEquals(expectedCoolChannel, signal.getChannel());
                 assertEquals(expectedMessage, signal.getMessage().getAsString());
                 assertEquals(issuingClient, signal.getPublisher());
-                assertEquals(expectedUserMessageTypeValue, signal.getMessageType().getValue());
+                assertEquals(expectedUserMessageTypeValue, signal.getType());
                 assertEquals(expectedSpaceIdValue, signal.getSpaceId().getValue());
                 success.set(true);
             }
