@@ -22,6 +22,17 @@ class PNFetchMessageItemTest {
         objectUnderTest = getPNFetchMessageItem(includeMessageType, spaceId, pnMessageType, type);
 
         assertNull(objectUnderTest.getMessageType());
+    }
+
+    @Test
+    void when_server_return_value_for_type_then_SDK_should_also_return_the_value() {
+        boolean includeMessageType = false;
+        String spaceId = null;
+        Integer pnMessageType = null;
+        String type = "myType";
+
+        objectUnderTest = getPNFetchMessageItem(includeMessageType, spaceId, pnMessageType, type);
+
         assertEquals(type, objectUnderTest.getType());
     }
 
@@ -38,7 +49,7 @@ class PNFetchMessageItemTest {
     }
 
     @Test
-    void when_includeMessageType_is_true_and_e_from_server_is_null_then_getMessageType_should_return_MESSAGE() {
+    void when_includeMessageType_is_true_and_messageType_is_null_then_getMessageType_should_return_MESSAGE() {
         boolean includeMessageType = true;
         String spaceId = null;
         Integer eValueFromServer = null;
@@ -50,7 +61,7 @@ class PNFetchMessageItemTest {
     }
 
     @Test
-    void when_includeMessageType_is_true_and_e_from_server_is_0_then_getMessageType_should_return_MESSAGE() {
+    void when_includeMessageType_is_true_and_messageType_is_0_then_getMessageType_should_return_MESSAGE() {
         boolean includeMessageType = true;
         String spaceId = null;
         Integer eValueFromServer = 0;
@@ -62,7 +73,7 @@ class PNFetchMessageItemTest {
     }
 
     @Test
-    void when_includeMessageType_is_true_and_e_from_server_is_4_then_getMessageType_should_return_FILE() {
+    void when_includeMessageType_is_true_and_messageType_is_4_then_getMessageType_should_return_FILE() {
         boolean includeMessageType = true;
         String spaceId = null;
         Integer eValueFromServer = 4;

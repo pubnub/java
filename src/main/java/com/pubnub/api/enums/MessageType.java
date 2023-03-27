@@ -11,9 +11,9 @@ public enum MessageType {
 
     MESSAGE01(null),
     MESSAGE02(0),
-    SIGNAL(1),         //this value is not expected in history call
-    OBJECT(2),         //this value is not expected in history call
-    MESSAGE_ACTION(3), //messageAction might be present in history call but inside "message" or "file"
+    SIGNAL(1),
+    OBJECT(2),
+    MESSAGE_ACTION(3),
     FILE(4);
 
     private static final Map<Integer, MessageType> BY_E_VALUE_FROM_SERVER = new HashMap<>();

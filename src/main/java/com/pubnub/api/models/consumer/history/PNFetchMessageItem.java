@@ -27,7 +27,6 @@ public class PNFetchMessageItem {
     private final boolean includeMessageType;
 
     @Getter(AccessLevel.NONE)
-    // "e" value null or 0 = message, 4 = file
     @SerializedName("message_type")
     private Integer messageType;
 
