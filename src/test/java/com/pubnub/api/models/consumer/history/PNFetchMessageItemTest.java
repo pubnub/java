@@ -111,6 +111,6 @@ class PNFetchMessageItemTest {
 
     @NotNull
     private PNFetchMessageItem getPNFetchMessageItem(boolean includeMessageType, String spaceId, Integer eValueFromServer, String type) {
-        return new PNFetchMessageItem(new JsonPrimitive("message1"), null, 16739754716727555L, null, "client-5d254772-8845-431b-8a68-cc2902eac4e4", spaceId, includeMessageType, eValueFromServer, type);
+        return new PNFetchMessageItem(new JsonPrimitive("message1"), null, 16739754716727555L, null, "client-5d254772-8845-431b-8a68-cc2902eac4e5", spaceId, includeMessageType, eValueFromServer, type);
     }
 }
