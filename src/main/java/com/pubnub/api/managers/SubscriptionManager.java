@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.pubnub.api.managers.StateManager.ChannelFilter.WITHOUT_TEMPORARY_UNAVAILABLE;
 import static com.pubnub.api.managers.StateManager.MILLIS_IN_SECOND;
@@ -33,7 +34,11 @@ public class SubscriptionManager {
 
     private static final int HEARTBEAT_INTERVAL_MULTIPLIER = 1000;
 
+    private static final int MAX_HEARTBEAT_RETRIES = 5;
+
     private volatile boolean connected;
+
+    private final AtomicInteger heartbeatRetries = new AtomicInteger(0);
 
     PubNub pubnub;
     private final TelemetryManager telemetryManager;
@@ -232,6 +237,7 @@ public class SubscriptionManager {
             heartbeatCall.silentCancel();
             heartbeatCall = null;
         }
+        heartbeatRetries.set(0);
     }
 
     private synchronized void cancelDelayedLoopIterationForTemporaryUnavailableChannels() {
@@ -452,15 +458,17 @@ public class SubscriptionManager {
                         pubnub.getConfiguration().getHeartbeatNotificationOptions();
 
                 if (status.isError()) {
+                    if (heartbeatRetries.getAndIncrement() >= MAX_HEARTBEAT_RETRIES) {
+                        stopHeartbeatTimer();
+                    }
+
                     if (heartbeatVerbosity == PNHeartbeatNotificationOptions.ALL
                             || heartbeatVerbosity == PNHeartbeatNotificationOptions.FAILURES) {
                         listenerManager.announce(status);
                     }
 
-                    // stop the heartbeating logic since an error happened.
-                    stopHeartbeatTimer();
-
                 } else {
+                    heartbeatRetries.set(0);
                     if (heartbeatVerbosity == PNHeartbeatNotificationOptions.ALL) {
                         listenerManager.announce(status);
                     }
