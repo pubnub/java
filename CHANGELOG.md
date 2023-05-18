@@ -1,3 +1,9 @@
+## v6.3.5
+May 18 2023
+
+#### Fixed
+- In case of error retry heartbeat call limited number of times.
+
 ## v6.3.4
 March 06 2023
 
