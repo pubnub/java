@@ -2,6 +2,8 @@ package com.pubnub.api.endpoints.presence;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.endpoints.TestHarness;
@@ -12,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,8 +31,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 
 public class SetStateEndpointTest extends TestHarness {
@@ -64,6 +70,14 @@ public class SetStateEndpointTest extends TestHarness {
                 .willReturn(aResponse().withBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : " +
                         "20, \"status\" : \"online\" }, \"service\": \"Presence\"}")));
 
+        String subKey = "mySubscribeKey";
+        String channel = "testChannel";
+
+        String urlRegexForHeartbeat = "/v2/presence/sub-key/" + subKey + "/channel/" + channel + "/heartbeat?.*";
+        stubFor(get(urlPathMatching(urlRegexForHeartbeat))
+                .willReturn(aResponse().withStatus(200).withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}"))); //we don't expose this response to client
+
+
         Map<String, Object> myState = new HashMap<>();
         myState.put("age", 20);
 
@@ -72,11 +86,13 @@ public class SetStateEndpointTest extends TestHarness {
 
         assert result != null;
 
-        assertEquals(pubnub.getMapper().elementToInt(result.getState(), "age"), 20);
-        assertEquals(pubnub.getMapper().elementToString(result.getState(), "status"), "online");
+        assertEquals(20, pubnub.getMapper().elementToInt(result.getState(), "age"));
+        assertEquals("online", pubnub.getMapper().elementToString(result.getState(), "status"));
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
+        List<LoggedRequest> heartbeatRequests = findAll(getRequestedFor(urlMatching(urlRegexForHeartbeat)));
+        assertEquals(0, heartbeatRequests.size());
     }
 
     @Test
@@ -99,8 +115,8 @@ public class SetStateEndpointTest extends TestHarness {
 
         assert result != null;
 
-        assertEquals(pubnub.getMapper().elementToInt(result.getState(), "age"), 20);
-        assertEquals(pubnub.getMapper().elementToString(result.getState(), "status"), "online");
+        assertEquals(20, pubnub.getMapper().elementToInt(result.getState(), "age"));
+        assertEquals("online", pubnub.getMapper().elementToString(result.getState(), "status"));
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -126,8 +142,8 @@ public class SetStateEndpointTest extends TestHarness {
 
         assert result != null;
 
-        assertEquals(pubnub.getMapper().elementToInt(result.getState(), "age"), 20);
-        assertEquals(pubnub.getMapper().elementToString(result.getState(), "status"), "online");
+        assertEquals(20, pubnub.getMapper().elementToInt(result.getState(), "age"));
+        assertEquals("online", pubnub.getMapper().elementToString(result.getState(), "status"));
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
     }
@@ -150,8 +166,8 @@ public class SetStateEndpointTest extends TestHarness {
 
         assert result != null;
 
-        assertEquals(pubnub.getMapper().elementToInt(result.getState(), "age"), 20);
-        assertEquals(pubnub.getMapper().elementToString(result.getState(), "status"), "online");
+        assertEquals(20, pubnub.getMapper().elementToInt(result.getState(), "age"));
+        assertEquals("online", pubnub.getMapper().elementToString(result.getState(), "status"));
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -176,8 +192,8 @@ public class SetStateEndpointTest extends TestHarness {
 
         assert result != null;
 
-        assertEquals(pubnub.getMapper().elementToInt(result.getState(), "age"), 20);
-        assertEquals(pubnub.getMapper().elementToString(result.getState(), "status"), "online");
+        assertEquals(20, pubnub.getMapper().elementToInt(result.getState(), "age"));
+        assertEquals("online", pubnub.getMapper().elementToString(result.getState(), "status"));
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -204,8 +220,8 @@ public class SetStateEndpointTest extends TestHarness {
 
         assert result != null;
 
-        assertEquals(pubnub.getMapper().elementToInt(result.getState(), "age"), 20);
-        assertEquals(pubnub.getMapper().elementToString(result.getState(), "status"), "online");
+        assertEquals(20, pubnub.getMapper().elementToInt(result.getState(), "age"));
+        assertEquals("online", pubnub.getMapper().elementToString(result.getState(), "status"));
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
         assertEquals(1, requests.size());
@@ -326,4 +342,157 @@ public class SetStateEndpointTest extends TestHarness {
         partialSetState.channels(Collections.singletonList("testChannel")).state(myState).sync();
     }
 
+    @Test
+    public void when_calling_setState_withHeartbeat_flag_should_call_heartbeat_and_not_setState_REST_API() throws PubNubException {
+        boolean withHeartbeat = true;
+        String subKey = "mySubscribeKey";
+        String channel = "testChannel";
+        String ageKey = "age";
+        String ageValue = "20";
+        String bikeKey = "bike";
+        String bikeValue = "Gravel";
+
+        String urlRegexForHeartbeat = "/v2/presence/sub-key/" + subKey + "/channel/" + channel + "/heartbeat?.*";
+        stubFor(get(urlPathMatching(urlRegexForHeartbeat))
+                .willReturn(aResponse().withStatus(200).withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}"))); //we don't expose this response to client
+
+        String urlRegexForSetState = "/v2/presence/sub-key/" + subKey + "/channel/" + channel + "/uuid/.*/data.*";
+        stubFor(get(urlPathMatching(urlRegexForSetState)));
+
+
+        Map<String, Object> myState = new HashMap<>();
+        myState.put(ageKey, 20);
+        myState.put(bikeKey, bikeValue);
+
+        PNSetStateResult result = partialSetState.channels(Collections.singletonList("testChannel")).state(myState).withHeartbeat(withHeartbeat).sync();
+
+        assertEquals(pubnub.getMapper().elementToInt(result.getState(), ageKey), Integer.parseInt(ageValue));
+        assertEquals(pubnub.getMapper().elementToString(result.getState(), bikeKey), bikeValue);
+
+        List<LoggedRequest> heartbeatRequests = findAll(getRequestedFor(urlMatching(urlRegexForHeartbeat)));
+        assertEquals(1, heartbeatRequests.size());
+
+        List<LoggedRequest> setStateRequests = findAll(getRequestedFor(urlMatching(urlRegexForSetState)));
+        assertEquals(0, setStateRequests.size());
+    }
+
+    @Test
+    public void when_calling_setState_withHeartbeat_flag_and_state_is_not_Json_should_throw_exception() throws PubNubException {
+        //given
+        boolean withHeartbeat = true;
+        String myStateIsNotJson = "new state";
+
+        //when
+        PubNubException exception = assertThrows(
+                PubNubException.class,
+                () -> partialSetState.channels(Collections.singletonList("testChannel")).state(myStateIsNotJson).withHeartbeat(withHeartbeat).sync()
+        );
+
+        //then
+        assertEquals("State must be a JSON object.", exception.getPubnubError().getMessage());
+    }
+
+    @Test
+    public void when_calling_setState_withHeartbeat_flag_for_two_channels_should_call_heartbeat_and_not_setState_REST_API() throws PubNubException, UnsupportedEncodingException {
+        //given
+        boolean withHeartbeat = true;
+        String channel1 = "Channel1";
+        String channel2 = "Channel2";
+        String subKey = "mySubscribeKey";
+        String ageKey = "age";
+        String ageValue = "20";
+        String bikeKey = "bike";
+        String bikeValue = "Gravel";
+
+        String urlRegexForHeartbeat = "/v2/presence/sub-key/" + subKey + "/channel/" + channel1 + "," + channel2 + "/heartbeat?.*";
+        stubFor(get(urlPathMatching(urlRegexForHeartbeat))
+                .willReturn(aResponse().withStatus(200).withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}"))); //we don't expose this response to client
+
+        String urlRegexForSetState = "/v2/presence/sub-key/" + subKey + "/channel/" + channel1 + "," + channel2 + "/uuid/.*/data.*";
+        stubFor(get(urlPathMatching(urlRegexForSetState)));
+
+        Map<String, Object> myState = new HashMap<>();
+        myState.put(ageKey, ageValue);
+        myState.put(bikeKey, bikeValue);
+
+        //when
+        PNSetStateResult result = partialSetState.channels(Arrays.asList(channel1, channel2)).state(myState).withHeartbeat(withHeartbeat).sync();
+
+        //then
+        assertEquals(pubnub.getMapper().elementToInt(result.getState(), ageKey), Integer.parseInt(ageValue));
+        assertEquals(pubnub.getMapper().elementToString(result.getState(), bikeKey), bikeValue);
+
+        List<LoggedRequest> heartbeatRequests = findAll(getRequestedFor(urlMatching(urlRegexForHeartbeat)));
+        assertEquals(1, heartbeatRequests.size());
+        String setStateWithHeartbeatUrl = heartbeatRequests.get(0).getUrl();
+        String stateValueInUrl = extractStateParameter(setStateWithHeartbeatUrl);
+        JsonObject jsonObject = JsonParser.parseString(stateValueInUrl).getAsJsonObject();
+        String myStateAsJson = pubnub.getMapper().toJson(myState);
+        assertEquals(myStateAsJson, jsonObject.get(channel1).toString());
+        assertEquals(myStateAsJson, jsonObject.get(channel2).toString());
+
+        List<LoggedRequest> setStateRequests = findAll(getRequestedFor(urlMatching(urlRegexForSetState)));
+        assertEquals(0, setStateRequests.size());
+    }
+
+    @Test
+    public void when_calling_setState_withHeartbeat_flag_for_two_channels_and_two_channelGroup_should_call_heartbeat_and_not_setState_REST_API() throws PubNubException, UnsupportedEncodingException {
+        //given
+        boolean withHeartbeat = true;
+        String channel1 = "Channel1";
+        String channel2 = "Channel2";
+        String channelGroup1 = "ChannelGroup1";
+        String channelGroup2 = "ChannelGroup2";
+        String subKey = "mySubscribeKey";
+        String ageKey = "age";
+        String ageValue = "20";
+        String bikeKey = "bike";
+        String bikeValue = "Gravel";
+
+        String urlRegexForHeartbeat = "/v2/presence/sub-key/" + subKey + "/channel/" + channel1 + "," + channel2 + "/heartbeat?.*";
+        stubFor(get(urlPathMatching(urlRegexForHeartbeat))
+                .willReturn(aResponse().withStatus(200).withBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}"))); //we don't expose this response to client
+
+        String urlRegexForSetState = "/v2/presence/sub-key/" + subKey + "/channel/" + channel1 + "," + channel2 + "/uuid/.*/data.*";
+        stubFor(get(urlPathMatching(urlRegexForSetState)));
+
+        Map<String, Object> myState = new HashMap<>();
+        myState.put(ageKey, 20);
+        myState.put(bikeKey, bikeValue);
+
+        //when
+        PNSetStateResult result = partialSetState
+                .channels(Arrays.asList(channel1, channel2))
+                .channelGroups(Arrays.asList(channelGroup1, channelGroup2))
+                .state(myState)
+                .withHeartbeat(withHeartbeat)
+                .sync();
+
+        //then
+        assertEquals(pubnub.getMapper().elementToInt(result.getState(), ageKey), Integer.parseInt(ageValue));
+        assertEquals(pubnub.getMapper().elementToString(result.getState(), bikeKey), bikeValue);
+
+        List<LoggedRequest> heartbeatRequests = findAll(getRequestedFor(urlMatching(urlRegexForHeartbeat)));
+        assertEquals(1, heartbeatRequests.size());
+
+        String setStateWithHeartbeatUrl = heartbeatRequests.get(0).getUrl();
+        String stateValueInUrl = extractStateParameter(setStateWithHeartbeatUrl);
+        JsonObject jsonObject = JsonParser.parseString(stateValueInUrl).getAsJsonObject();
+        String myStateAsJson = pubnub.getMapper().toJson(myState);
+        assertEquals(myStateAsJson, jsonObject.get(channel1).toString());
+        assertEquals(myStateAsJson, jsonObject.get(channel2).toString());
+        assertEquals(myStateAsJson, jsonObject.get(channelGroup1).toString());
+        assertEquals(myStateAsJson, jsonObject.get(channelGroup2).toString());
+
+        List<LoggedRequest> setStateRequests = findAll(getRequestedFor(urlMatching(urlRegexForSetState)));
+        assertEquals(0, setStateRequests.size());
+    }
+
+    private String extractStateParameter(String url) throws UnsupportedEncodingException {
+        String stateParam = "state=";
+        int startIndex = url.indexOf(stateParam);
+        int endIndex = url.indexOf("&", startIndex);
+        String encodedState = url.substring(startIndex + stateParam.length(), endIndex);
+        return URLDecoder.decode(encodedState, "UTF-8");
+    }
 }

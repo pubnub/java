@@ -366,6 +366,11 @@ public final class PubNubErrorBuilder {
      */
     public static final int PNERR_SPACEID_NULL_OR_EMPTY = 171;
 
+    /**
+     * State must be a JSON object.
+     */
+    public static final int PNERR_STATE_MUST_BE_JSON_OBJECT = 172;
+
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
             .errorCode(PNERR_TIMEOUT)
@@ -547,6 +552,11 @@ public final class PubNubErrorBuilder {
     public static final PubNubError PNERROBJ_STATE_MISSING = PubNubError.builder()
             .errorCode(PNERR_STATE_MISSING)
             .message("State Missing.")
+            .build();
+
+    public static final PubNubError PNERROBJ_STATE_MUST_BE_JSON_OBJECT = PubNubError.builder()
+            .errorCode(PNERR_STATE_MUST_BE_JSON_OBJECT)
+            .message("State must be a JSON object.")
             .build();
 
     public static final PubNubError PNERROBJ_MESSAGE_MISSING = PubNubError.builder()

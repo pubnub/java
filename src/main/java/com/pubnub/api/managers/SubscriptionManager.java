@@ -1,8 +1,14 @@
 package com.pubnub.api.managers;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.builder.dto.*;
+import com.pubnub.api.builder.dto.ChangeTemporaryUnavailableOperation;
 import com.pubnub.api.builder.dto.ChangeTemporaryUnavailableOperation.ChangeTemporaryUnavailableOperationBuilder;
+import com.pubnub.api.builder.dto.PresenceOperation;
+import com.pubnub.api.builder.dto.PubSubOperation;
+import com.pubnub.api.builder.dto.StateOperation;
+import com.pubnub.api.builder.dto.SubscribeOperation;
+import com.pubnub.api.builder.dto.TimetokenAndRegionOperation;
+import com.pubnub.api.builder.dto.UnsubscribeOperation;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.ReconnectionCallback;
 import com.pubnub.api.endpoints.presence.Heartbeat;
@@ -166,7 +172,8 @@ public class SubscriptionManager {
     }
 
     public void adaptStateBuilder(StateOperation stateOperation) {
-        reconnect(stateOperation);
+        connected = true;
+        this.startSubscribeLoop(stateOperation);
     }
 
     public void adaptSubscribeBuilder(SubscribeOperation subscribeOperation) {

@@ -1,13 +1,12 @@
 package com.pubnub.api.managers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
-import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.endpoints.TestHarness;
 import com.pubnub.api.enums.PNHeartbeatNotificationOptions;
@@ -17,7 +16,6 @@ import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.objects_api.channel.PNChannelMetadataResult;
 import com.pubnub.api.models.consumer.objects_api.membership.PNMembershipResult;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadataResult;
-import com.pubnub.api.models.consumer.presence.PNSetStateResult;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
@@ -36,12 +34,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.CheckedOutputStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
@@ -53,7 +49,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -1331,11 +1326,20 @@ public class SubscriptionManagerTest extends TestHarness {
     @SuppressWarnings("unchecked")
     @Test
     public void testSubscribeBuilderWithState() throws PubNubException {
-        final String expectedPayload = PubNubUtil.urlDecode("%7B%22ch1%22%3A%5B%22p1%22%2C%22p2%22%5D%2C%22cg2%22%3A" +
-                "%5B%22p1%22%2C%22p2%22%5D%7D");
+        String p1Key = "p1";
+        String p1Value = "valueP1";
+        String p2Key = "p2";
+        String p2Value = "valueP2";
+        String channel1 = "ch1";
+        String expectedPayloadJson = "{\"" + channel1 + "\":{\"" + p1Key + "\":\"" + p1Value + "\",\"" + p2Key + "\":\"" + p2Value + "\"},\"cg2\":{\"p1\":\"valueP1\",\"p2\":\"valueP2\"}}";
+        final String expectedPayload = PubNubUtil.urlDecode(expectedPayloadJson);
+        final JsonObject state = new JsonObject();
+        state.addProperty(p1Key, p1Value);
+        state.addProperty(p2Key, p2Value);
+
         final Map<String, Object> expectedMap = pubnub.getMapper().fromJson(expectedPayload, Map.class);
 
-        stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/ch2,ch1/0"))
+        stubFor(get(urlPathEqualTo("/v2/subscribe/mySubscribeKey/ch2," + channel1 + "/0"))
                 .willReturn(aResponse().withBody("{\"t\":{\"t\":\"14607577960932487\",\"r\":1},\"m\":[{\"a\":\"4\"," +
                         "\"f\":0,\"i\":\"Client-g5d4g\",\"p\":{\"t\":\"14607577960925503\",\"r\":1}," +
                         "\"k\":\"sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f\",\"c\":\"coolChannel\"," +
@@ -1344,15 +1348,15 @@ public class SubscriptionManagerTest extends TestHarness {
         pubnub.getConfiguration().setPresenceTimeout(20);
         pubnub.getConfiguration().setHeartbeatNotificationOptions(PNHeartbeatNotificationOptions.ALL);
 
-        pubnub.subscribe().channels(Arrays.asList("ch1", "ch2")).channelGroups(Arrays.asList("cg1", "cg2")).execute();
-        pubnub.setPresenceState().channels(Arrays.asList("ch1")).channelGroups(Arrays.asList("cg2"))
-                .state(Arrays.asList("p1", "p2"))
+        pubnub.subscribe().channels(Arrays.asList(channel1, "ch2")).channelGroups(Arrays.asList("cg1", "cg2")).execute();
+        pubnub.setPresenceState().channels(Arrays.asList(channel1)).channelGroups(Arrays.asList("cg2"))
+                .state(state)
                 .async((result, status) -> {
                 });
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS)
                 .until(() -> findAll(getRequestedFor(urlMatching(
-                        "/v2/subscribe/" + pubnub.getConfiguration().getSubscribeKey() + "/ch2,ch1/.*"))).stream().anyMatch(req -> {
+                        "/v2/subscribe/" + pubnub.getConfiguration().getSubscribeKey() + "/ch2," + channel1 + "/.*"))).stream().anyMatch(req -> {
                     String stateString = PubNubUtil.urlDecode(req.queryParameter("state").firstValue());
                     Map<String, Object> actualMap = null;
                     try {
@@ -1364,8 +1368,8 @@ public class SubscriptionManagerTest extends TestHarness {
                 }));
         Awaitility.await().atMost(5, TimeUnit.SECONDS)
                 .until(() -> findAll(getRequestedFor(urlMatching(
-                            "/v2/presence/sub-key/" + pubnub.getConfiguration().getSubscribeKey() + "/channel/ch2," +
-                                    "ch1/heartbeat.*"))).stream().anyMatch(req -> !req.getQueryParams().containsKey("state")));
+                        "/v2/presence/sub-key/" + pubnub.getConfiguration().getSubscribeKey() + "/channel/ch2," +
+                                channel1 + "/heartbeat.*"))).stream().anyMatch(req -> !req.getQueryParams().containsKey("state")));
 
     }
 
@@ -3088,7 +3092,7 @@ public class SubscriptionManagerTest extends TestHarness {
 
             @Override
             public void uuid(@NotNull PubNub pubnub, @NotNull PNUUIDMetadataResult pnUUIDMetadataResult) {
-                
+
             }
 
             @Override

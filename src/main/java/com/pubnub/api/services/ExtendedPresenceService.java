@@ -33,7 +33,7 @@ public interface ExtendedPresenceService {
                                          @QueryMap Map<String, String> options);
 
     @GET("v2/presence/sub-key/{subKey}/channel/{channel}/uuid/{uuid}/data")
-    Call<Envelope<JsonElement>> setState(@Path("subKey") String subKey,
+    Call<Envelope> setState(@Path("subKey") String subKey,
                                          @Path("channel") String channel,
                                          @Path("uuid") String uuid,
                                          @QueryMap(encoded = true) Map<String, String> options);
