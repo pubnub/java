@@ -1,5 +1,6 @@
 package com.pubnub.api.services;
 
+import com.google.gson.JsonElement;
 import com.pubnub.api.models.server.Envelope;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,7 +17,7 @@ public interface PresenceService {
                          @QueryMap Map<String, String> options);
 
     @GET("v2/presence/sub-key/{subKey}/channel/{channel}/heartbeat")
-    Call<Envelope> heartbeat(@Path("subKey") String subKey,
-                             @Path("channel") String channel,
-                             @QueryMap(encoded = true) Map<String, String> options);
+    Call<Envelope<JsonElement>> heartbeat(@Path("subKey") String subKey,
+                                          @Path("channel") String channel,
+                                          @QueryMap(encoded = true) Map<String, String> options);
 }

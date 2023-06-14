@@ -1,6 +1,5 @@
 package com.pubnub.api.endpoints.presence;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,7 +20,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -32,7 +32,7 @@ import java.util.Map;
 
 
 @Accessors(chain = true, fluent = true)
-public class SetState extends Endpoint<Envelope, PNSetStateResult> {
+public class SetState extends Endpoint<Envelope<JsonElement>, PNSetStateResult> {
 
     @Getter(AccessLevel.NONE)
     private SubscriptionManager subscriptionManager;
@@ -77,7 +77,7 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
         }
         //Heartbeat endpoint accepts state being not json and not returns error but state is not being stored in this case
         String stringifiedState = this.getPubnub().getMapper().toJson(state);
-        if (!isValidJson(stringifiedState)) {
+        if (!isJsonObject(stringifiedState)) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_STATE_MUST_BE_JSON_OBJECT).build();
         }
         if (this.getPubnub().getConfiguration().getSubscribeKey() == null || this.getPubnub().getConfiguration().getSubscribeKey().isEmpty()) {
@@ -86,22 +86,15 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
         if (channels.size() == 0 && channelGroups.size() == 0) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CHANNEL_AND_GROUP_MISSING).build();
         }
+        if (withHeartbeat && uuid != null && !uuid.equals(this.getPubnub().getConfiguration().getUserId().getValue())) {
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_USERID_CAN_NOT_BE_DIFFERENT_FROM_IN_CONFIGURATION_WHEN_WITHHEARTBEAT_TRUE).build();
+        }
     }
 
     @Override
-    protected Call<Envelope> doWork(Map<String, String> params) throws PubNubException {
+    protected Call<Envelope<JsonElement>> doWork(Map<String, String> params) throws PubNubException {
         String selectedUUID = uuid != null ? uuid : this.getPubnub().getConfiguration().getUserId().getValue();
-        String stringifiedState;
-
-        // only store the state change if we are modifying it for ourselves.
-        if (selectedUUID.equals(this.getPubnub().getConfiguration().getUserId().getValue())) {
-            StateOperation stateOperation = StateOperation.builder()
-                    .state(state)
-                    .channels(channels)
-                    .channelGroups(channelGroups)
-                    .build();
-            subscriptionManager.adaptStateBuilder(stateOperation);
-        }
+        storeStateChangeForSubscribe(selectedUUID);
 
         if (channelGroups.size() > 0) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
@@ -111,12 +104,12 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
 
         if (withHeartbeat) {
             params.put("heartbeat", String.valueOf(this.getPubnub().getConfiguration().getPresenceTimeout()));
-            String encodedStateForChannelsAndGroups = getStateParamValue();
+            String encodedStateForChannelsAndGroups = composeStateParamValue();
             params.put("state", encodedStateForChannelsAndGroups);
             params.putAll(encodeParams(params));
             return this.getRetrofit().getPresenceService().heartbeat(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, params);
         } else {
-            stringifiedState = this.getPubnub().getMapper().toJson(state);
+            String stringifiedState = this.getPubnub().getMapper().toJson(state);
             String encodedState = PubNubUtil.urlEncode(stringifiedState);
             params.put("state", encodedState);
             params.putAll(encodeParams(params));
@@ -126,7 +119,7 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
     }
 
     @Override
-    protected PNSetStateResult createResponse(Response<Envelope> input) throws PubNubException {
+    protected PNSetStateResult createResponse(Response<Envelope<JsonElement>> input) throws PubNubException {
         if (withHeartbeat) {
             //heartbeat endpoint doesn't return state as presenceData endpoint, so we just return state provided by user
             String stateAsString = this.getPubnub().getMapper().toJson(state);
@@ -138,8 +131,7 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
             if (input.body() == null || input.body().getPayload() == null) {
                 throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
             }
-            JsonElement jsonElement = JsonParser.parseString(new Gson().toJson(input.body().getPayload()));
-            PNSetStateResult.PNSetStateResultBuilder pnSetStateResult = PNSetStateResult.builder().state(jsonElement);
+            PNSetStateResult.PNSetStateResultBuilder pnSetStateResult = PNSetStateResult.builder().state(input.body().getPayload());
 
             return pnSetStateResult.build();
         }
@@ -155,8 +147,20 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
         return true;
     }
 
-    @Nullable
-    private String getStateParamValue() throws PubNubException {
+
+    private void storeStateChangeForSubscribe(String selectedUUID) {
+        // only store the state change if we are modifying it for ourselves.
+        if (selectedUUID.equals(this.getPubnub().getConfiguration().getUserId().getValue())) {
+            StateOperation stateOperation = StateOperation.builder()
+                    .state(state)
+                    .channels(channels)
+                    .channelGroups(channelGroups)
+                    .build();
+            subscriptionManager.adaptStateBuilder(stateOperation);
+        }
+    }
+
+    private String composeStateParamValue() throws PubNubException {
         Map<String, Object> stateParamValue = new HashMap<>();
         for (String channel : channels) {
             stateParamValue.put(channel, state);
@@ -168,5 +172,14 @@ public class SetState extends Endpoint<Envelope, PNSetStateResult> {
         String stringifiedStatePerChannel = this.getPubnub().getMapper().toJson(stateParamValue);
         String encodedStatePerChannel = PubNubUtil.urlEncode(stringifiedStatePerChannel);
         return encodedStatePerChannel;
+    }
+
+    private boolean isJsonObject(String json) {
+        try {
+            new JSONObject(json);
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
     }
 }

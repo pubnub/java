@@ -22,6 +22,7 @@ import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.hamcrest.core.IsEqual;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -210,6 +211,7 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
 
     //this test not passes right now because server doesn't emit "state-change" presence event for setState(withHeartbeat)
     //once server change is on Prod modify it by replacing Thread.sleep(10000) with Awaitility.await()
+    @Ignore
     @Test
     public void should_setState_withHeartbeat() throws InterruptedException {
 //        enableHeartbeatLoop(2);

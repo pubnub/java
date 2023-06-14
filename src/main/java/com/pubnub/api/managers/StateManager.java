@@ -87,6 +87,7 @@ public class StateManager {
                 stateChanged = true;
                 announceStatus = PNStatusCategory.PNConnectedCategory;
             } else if (pubSubOperation instanceof StateOperation) {
+                stateChanged = true;
                 adaptStateBuilder((StateOperation) pubSubOperation);
             } else if (pubSubOperation instanceof PresenceOperation) {
                 adaptPresenceBuilder((PresenceOperation) pubSubOperation);

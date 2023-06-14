@@ -1,7 +1,6 @@
 package com.pubnub.api.managers;
 
 import com.pubnub.api.PNConfiguration;
-import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.UserId;
 import com.pubnub.api.builder.dto.PresenceOperation;
@@ -20,10 +19,10 @@ import java.util.UUID;
 import static com.pubnub.api.managers.StateManager.HeartbeatStateData;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class StateManagerTest {
@@ -169,6 +168,21 @@ public class StateManagerTest {
                 Matchers.equalTo(mapChannelsToState(channelsToSubscribe, state)));
         assertThat(stateManagerUnderTest.heartbeatStateData().getStatePayload(),
                 Matchers.equalTo(mapChannelsToState(channelsToSubscribe, state)));
+    }
+
+    @Test
+    public void should_inform_about_changed_state_when_handling_stateOperation() throws PubNubException {
+        //given
+        StateManager stateManagerUnderTest = new StateManager(withManualPresenceMode(config()));
+        Map<String, Object> myState = new HashMap<>();
+        myState.put("age", 20);
+        myState.put("bike", "gravel");
+
+        //when
+        boolean stateChanged = stateManagerUnderTest.handleOperation(stateOperation(channelsToSubscribe, myState));
+
+        //then
+        assertEquals(true, stateChanged);
     }
 
     private Map<String, Object> mapChannelsToState(List<String> channels, Object state) {

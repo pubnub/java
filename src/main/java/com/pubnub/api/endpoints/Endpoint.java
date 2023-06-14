@@ -24,8 +24,6 @@ import lombok.extern.java.Log;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONException;
-import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -404,15 +402,6 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
             encodedParams.put(PubNubUtil.AUTH_QUERY_PARAM_NAME, PubNubUtil.urlEncode(encodedParams.get(PubNubUtil.AUTH_QUERY_PARAM_NAME)));
         }
         return encodedParams;
-    }
-
-    protected boolean isValidJson(String json) {
-        try {
-            new JSONObject(json);
-        } catch (JSONException e) {
-            return false;
-        }
-        return true;
     }
 
     protected abstract List<String> getAffectedChannels();

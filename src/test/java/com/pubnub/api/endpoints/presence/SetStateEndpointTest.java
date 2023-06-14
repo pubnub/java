@@ -377,7 +377,7 @@ public class SetStateEndpointTest extends TestHarness {
     }
 
     @Test
-    public void when_calling_setState_withHeartbeat_flag_and_state_is_not_Json_should_throw_exception() throws PubNubException {
+    public void when_calling_setState_withHeartbeat_flag_and_state_is_not_JsonObject_should_throw_exception() throws PubNubException {
         //given
         boolean withHeartbeat = true;
         String myStateIsNotJson = "new state";
@@ -457,7 +457,7 @@ public class SetStateEndpointTest extends TestHarness {
         stubFor(get(urlPathMatching(urlRegexForSetState)));
 
         Map<String, Object> myState = new HashMap<>();
-        myState.put(ageKey, 20);
+        myState.put(ageKey, ageValue);
         myState.put(bikeKey, bikeValue);
 
         //when
@@ -486,6 +486,30 @@ public class SetStateEndpointTest extends TestHarness {
 
         List<LoggedRequest> setStateRequests = findAll(getRequestedFor(urlMatching(urlRegexForSetState)));
         assertEquals(0, setStateRequests.size());
+    }
+
+    @Test
+    public void should_throw_exception_when_calling_setState_withHeartbeat_for_userId_different_from_userId_in_configuration() {
+        //given
+        boolean withHeartbeat = true;
+        String userIdValue = "different from pubnub.getConfiguration().getUserId().getValue()";
+        Map<String, Object> myState = new HashMap<>();
+        myState.put("age", 20);
+
+
+        //when
+        PubNubException exception = assertThrows(
+                PubNubException.class,
+                () -> partialSetState
+                        .channels(Collections.singletonList("testChannel"))
+                        .state(myState)
+                        .uuid(userIdValue)
+                        .withHeartbeat(withHeartbeat)
+                        .sync()
+        );
+
+        //then
+        assertEquals("UserId can't be different from UserId in configuration when flag withHeartbeat is set to true.", exception.getPubnubError().getMessage());
     }
 
     private String extractStateParameter(String url) throws UnsupportedEncodingException {
