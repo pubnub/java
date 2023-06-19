@@ -209,9 +209,8 @@ public class PresenceIntegrationTests extends BaseIntegrationTest {
         listen(success);
     }
 
-    //this test not passes right now because server doesn't emit "state-change" presence event for setState(withHeartbeat)
-    //once server change is on Prod modify it by replacing Thread.sleep(10000) with Awaitility.await()
-    @Ignore
+    @Ignore("For now server doesn't emit state-change event on Heartbeat as default. To do this you need to set presence_heartbeat_state_change_event flag on keys. " +
+            "Server plans to generate state-change event as default. Once server change is on Prod modify it by replacing Thread.sleep(10000) with Awaitility.await()")
     @Test
     public void should_setState_withHeartbeat() throws InterruptedException {
 //        enableHeartbeatLoop(2);
