@@ -1,9 +1,9 @@
 name: java
-version: 6.3.5
+version: 6.3.6
 schema: 1
 scm: github.com/pubnub/java
 files:
-  - build/libs/pubnub-gson-6.3.5-all.jar
+  - build/libs/pubnub-gson-6.3.6-all.jar
 sdks:
   - 
       type: library
@@ -23,8 +23,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: GitHub
-              package-name: pubnub-gson-6.3.5
-              location: https://github.com/pubnub/java/releases/download/v6.3.5/pubnub-gson-6.3.5-all.jar
+              package-name: pubnub-gson-6.3.6
+              location: https://github.com/pubnub/java/releases/download/v6.3.6/pubnub-gson-6.3.6-all.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -135,8 +135,8 @@ sdks:
             -
               distribution-type: library
               distribution-repository: maven 
-              package-name: pubnub-gson-6.3.5
-              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.5/pubnub-gson-6.3.5.jar
+              package-name: pubnub-gson-6.3.6
+              location: https://repo.maven.apache.org/maven2/com/pubnub/pubnub-gson/6.3.6/pubnub-gson-6.3.6.jar
               supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -234,6 +234,11 @@ sdks:
                   is-required: Required
 
 changelog:
+  - date: 2023-06-19
+    version: v6.3.6
+    changes:
+      - type: feature
+        text: "Added possibility to set state using heartbeat endpoint. ."
   - date: 2023-05-18
     version: v6.3.5
     changes:

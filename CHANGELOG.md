@@ -1,3 +1,9 @@
+## v6.3.6
+June 19 2023
+
+#### Added
+- Added possibility to set state using heartbeat endpoint. .
+
 ## v6.3.5
 May 18 2023
 
