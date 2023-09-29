@@ -4,6 +4,7 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.endpoints.remoteaction.RemoteAction;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.enums.PNStatusCategory;
@@ -13,7 +14,6 @@ import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.server.files.FileUploadRequestDetails;
 import com.pubnub.api.models.server.files.FormField;
 import com.pubnub.api.services.S3Service;
-import com.pubnub.api.vendor.FileEncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -37,8 +37,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import static com.pubnub.api.vendor.FileEncryptionUtil.effectiveCipherKey;
-
 @Slf4j
 class UploadFile implements RemoteAction<Void> {
     private static final MediaType APPLICATION_OCTET_STREAM = MediaType.get("application/octet-stream");
@@ -47,7 +45,7 @@ class UploadFile implements RemoteAction<Void> {
     private final S3Service s3Service;
     private final String fileName;
     private final byte[] content;
-    private final String cipherKey;
+    private final CryptoModule cryptoModule;
     private final FormField key;
     private final List<FormField> formParams;
     private final String baseUrl;
@@ -56,14 +54,14 @@ class UploadFile implements RemoteAction<Void> {
     UploadFile(S3Service s3Service,
                String fileName,
                byte[] content,
-               String cipherKey,
+               CryptoModule cryptoModule,
                FormField key,
                List<FormField> formParams,
                String baseUrl) {
         this.s3Service = s3Service;
         this.fileName = fileName;
         this.content = content;
-        this.cipherKey = cipherKey;
+        this.cryptoModule = cryptoModule;
         this.key = key;
         this.formParams = formParams;
         this.baseUrl = baseUrl;
@@ -86,10 +84,10 @@ class UploadFile implements RemoteAction<Void> {
         MediaType mediaType = getMediaType(getContentType(formParams));
 
         RequestBody requestBody;
-        if (cipherKey == null) {
+        if (cryptoModule == null) {
             requestBody = RequestBody.create(content, mediaType);
         } else {
-            requestBody = RequestBody.create(FileEncryptionUtil.encryptToBytes(cipherKey, content), mediaType);
+            requestBody = RequestBody.create(cryptoModule.encrypt(content), mediaType);
         }
 
         builder.addFormDataPart(FILE_PART_MULTIPART, fileName, requestBody);
@@ -115,7 +113,7 @@ class UploadFile implements RemoteAction<Void> {
 
         try {
             return MediaType.get(contentType);
-        }  catch (Throwable t) {
+        } catch (Throwable t) {
             log.warn("Content-Type: " + contentType + " was not recognized by MediaType.get", t);
             return APPLICATION_OCTET_STREAM;
         }
@@ -164,7 +162,7 @@ class UploadFile implements RemoteAction<Void> {
                         PNStatusCategory pnStatusCategory = PNStatusCategory.PNUnknownCategory;
 
                         if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
-                            || response.code() == HttpURLConnection.HTTP_FORBIDDEN) {
+                                || response.code() == HttpURLConnection.HTTP_FORBIDDEN) {
                             pnStatusCategory = PNStatusCategory.PNAccessDeniedCategory;
                         }
 
@@ -305,14 +303,14 @@ class UploadFile implements RemoteAction<Void> {
 
         RemoteAction<Void> create(String fileName,
                                   byte[] content,
-                                  String cipherKey,
+                                  CryptoModule cryptoModule,
                                   FileUploadRequestDetails fileUploadRequestDetails) {
-            String effectiveCipherKey = effectiveCipherKey(pubNub, cipherKey);
+
 
             return new UploadFile(retrofitManager.getS3Service(),
                     fileName,
                     content,
-                    effectiveCipherKey,
+                    cryptoModule,
                     fileUploadRequestDetails.getKeyFormField(), fileUploadRequestDetails.getFormFields(),
                     fileUploadRequestDetails.getUrl());
         }

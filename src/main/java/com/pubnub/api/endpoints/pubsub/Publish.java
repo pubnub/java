@@ -4,6 +4,8 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.builder.PubNubErrorBuilder;
+import com.pubnub.api.crypto.CryptoModule;
+import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.managers.MapperManager;
@@ -12,7 +14,6 @@ import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.PNPublishResult;
-import com.pubnub.api.vendor.Crypto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import retrofit2.Call;
@@ -109,9 +110,9 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
             params.put("norep", "true");
         }
 
-        if (this.getPubnub().getConfiguration().getCipherKey() != null) {
-            Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey(), this.getPubnub().getConfiguration().isUseRandomInitializationVector());
-            stringifiedMessage = crypto.encrypt(stringifiedMessage).replace("\n", "");
+        CryptoModule cryptoModule = this.getPubnub().getCryptoModule();
+        if (cryptoModule != null) {
+            stringifiedMessage = CryptoModuleKt.encryptString(cryptoModule, stringifiedMessage).replace("\n", "");
         }
 
         params.putAll(encodeParams(params));
@@ -119,7 +120,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
         if (usePOST != null && usePOST) {
             Object payloadToSend;
 
-            if (this.getPubnub().getConfiguration().getCipherKey() != null) {
+            if (cryptoModule != null) {
                 payloadToSend = stringifiedMessage;
             } else {
                 payloadToSend = message;
@@ -130,7 +131,7 @@ public class Publish extends Endpoint<List<Object>, PNPublishResult> {
                     channel, payloadToSend, params);
         } else {
 
-            if (this.getPubnub().getConfiguration().getCipherKey() != null) {
+            if (cryptoModule != null) {
                 stringifiedMessage = "\"".concat(stringifiedMessage).concat("\"");
             }
 

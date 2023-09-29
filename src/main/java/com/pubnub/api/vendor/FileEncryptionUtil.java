@@ -2,6 +2,7 @@ package com.pubnub.api.vendor;
 
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.crypto.CryptoModule;
 import lombok.Data;
 
 import javax.crypto.BadPaddingException;
@@ -10,7 +11,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -33,15 +38,15 @@ public final class FileEncryptionUtil {
         final byte[] dataToDecrypt;
     }
 
-    private FileEncryptionUtil() {}
+    public static CryptoModule effectiveCryptoModule(PubNub pubNub, String cipherKey) {
+        return effectiveCryptoModule(pubNub.getCryptoModule(), cipherKey);
+    }
 
-    public static String effectiveCipherKey(PubNub pubNub, String cipherKey) {
+    public static CryptoModule effectiveCryptoModule(CryptoModule cryptoModule, String cipherKey) {
         if (cipherKey != null) {
-            return cipherKey;
-        } else if (pubNub.getConfiguration().getCipherKey() != null) {
-            return pubNub.getConfiguration().getCipherKey();
+            return CryptoModule.createLegacyCryptoModule(cipherKey, true);
         } else {
-            return null;
+            return cryptoModule;
         }
     }
 
@@ -68,9 +73,9 @@ public final class FileEncryptionUtil {
             return new ByteArrayInputStream(encryptToBytes(cipherKey, readBytes(inputStreamToEncrypt)));
         } catch (IOException e) {
             throw PubNubException.builder()
-                        .errormsg(e.getMessage())
-                        .cause(e)
-                        .build();
+                    .errormsg(e.getMessage())
+                    .cause(e)
+                    .build();
         }
     }
 
@@ -89,22 +94,22 @@ public final class FileEncryptionUtil {
     }
 
     private static IvAndData loadIvAndDataFromInputStream(final InputStream inputStreamToEncrypt) throws IOException {
-            final byte[] ivBytes = new byte[IV_SIZE_BYTES];
-            {
-                int read;
-                int readSoFar = 0;
-                do {
-                    read = inputStreamToEncrypt.read(ivBytes, readSoFar, IV_SIZE_BYTES - readSoFar);
-                    if (read != -1) {
-                        readSoFar += read;
-                    }
-                } while (read != -1 && readSoFar < IV_SIZE_BYTES);
-                if (read == -1) {
-                    throw new IOException("EOF before IV fully read");
+        final byte[] ivBytes = new byte[IV_SIZE_BYTES];
+        {
+            int read;
+            int readSoFar = 0;
+            do {
+                read = inputStreamToEncrypt.read(ivBytes, readSoFar, IV_SIZE_BYTES - readSoFar);
+                if (read != -1) {
+                    readSoFar += read;
                 }
+            } while (read != -1 && readSoFar < IV_SIZE_BYTES);
+            if (read == -1) {
+                throw new IOException("EOF before IV fully read");
             }
+        }
 
-            return new IvAndData(ivBytes, readBytes(inputStreamToEncrypt));
+        return new IvAndData(ivBytes, readBytes(inputStreamToEncrypt));
     }
 
     private static Cipher encryptionCipher(final byte[] keyBytes, final byte[] ivBytes)
@@ -131,8 +136,8 @@ public final class FileEncryptionUtil {
 
     private static byte[] keyBytes(final String cipherKey) throws UnsupportedEncodingException, PubNubException {
         return new String(hexEncode(sha256(cipherKey.getBytes(ENCODING_UTF_8))), ENCODING_UTF_8)
-                        .substring(0, 32)
-                        .toLowerCase().getBytes(ENCODING_UTF_8);
+                .substring(0, 32)
+                .toLowerCase().getBytes(ENCODING_UTF_8);
     }
 
     private static byte[] randomIv() throws NoSuchAlgorithmException {

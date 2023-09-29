@@ -317,7 +317,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         final PubNub observer = getPubNub();
         observer.getConfiguration().setCipherKey(expectedCipherKey);
 
-        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey());
+        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey()); //todo
 
         final String expectedChannelName = random();
         final int expectedMessageCount = 10;
@@ -348,7 +348,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         final PubNub observer = getPubNub();
         observer.getConfiguration().setCipherKey(expectedCipherKey);
 
-        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey());
+        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey()); //todo
 
         final String expectedChannelName = random();
         final int expectedMessageCount = 10;
@@ -379,7 +379,7 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         final PubNub observer = getPubNub();
         observer.getConfiguration().setCipherKey(expectedCipherKey);
 
-        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey());
+        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey()); //todo
 
         final String expectedChannelName = random();
         final int expectedMessageCount = 10;

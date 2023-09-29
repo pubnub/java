@@ -3,6 +3,7 @@ package com.pubnub.api.endpoints.files;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.endpoints.remoteaction.TestRemoteAction;
 import com.pubnub.api.managers.RetrofitManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
@@ -190,7 +191,8 @@ public class SendFileTest implements TestsWithFiles {
                 publishFileMessageBuilder,
                 sendFileToS3Factory,
                 Executors.newSingleThreadExecutor(),
-                numberOfRetries
+                numberOfRetries,
+                CryptoModule.createLegacyCryptoModule("enigma", true)
         );
     }
 

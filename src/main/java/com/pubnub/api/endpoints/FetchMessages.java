@@ -6,6 +6,8 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.builder.PubNubErrorBuilder;
+import com.pubnub.api.crypto.CryptoModule;
+import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.managers.RetrofitManager;
@@ -15,7 +17,6 @@ import com.pubnub.api.models.consumer.PNBoundedPage;
 import com.pubnub.api.models.consumer.history.PNFetchMessageItem;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.server.FetchMessagesEnvelope;
-import com.pubnub.api.vendor.Crypto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -204,13 +205,12 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     }
 
     private JsonElement processMessage(JsonElement message) throws PubNubException {
-        // if we do not have a crypto key, there is no way to process the node; let's return.
-        if (this.getPubnub().getConfiguration().getCipherKey() == null) {
+        // if we do not have a crypto module, there is no way to process the node; let's return.
+        CryptoModule cryptoModule = this.getPubnub().getCryptoModule();
+        if (cryptoModule == null) {
             return message;
         }
 
-        Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey(),
-                this.getPubnub().getConfiguration().isUseRandomInitializationVector());
         MapperManager mapper = this.getPubnub().getMapper();
         String inputText;
         String outputText;
@@ -222,7 +222,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
             inputText = mapper.elementToString(message);
         }
 
-        outputText = crypto.decrypt(inputText);
+        outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload
