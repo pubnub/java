@@ -2,6 +2,7 @@ package com.pubnub.api.integration;
 
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.integration.util.RandomGenerator;
 import com.pubnub.api.models.consumer.PNPublishResult;
@@ -312,12 +313,10 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     @Test
     public void testHistorySingleChannel_IncludeAll_Crypto() throws PubNubException {
         final String expectedCipherKey = random();
-        pubNub.getConfiguration().setCipherKey(expectedCipherKey);
+        pubNub.getConfiguration().setCryptoModule(CryptoModule.createLegacyCryptoModule(expectedCipherKey, true));
 
         final PubNub observer = getPubNub();
-        observer.getConfiguration().setCipherKey(expectedCipherKey);
-
-        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey()); //todo
+        observer.getConfiguration().setCryptoModule(CryptoModule.createLegacyCryptoModule(expectedCipherKey, true));
 
         final String expectedChannelName = random();
         final int expectedMessageCount = 10;
@@ -343,12 +342,11 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     @Test
     public void testFetchSingleChannel_IncludeAll_Crypto() throws PubNubException {
         final String expectedCipherKey = random();
-        pubNub.getConfiguration().setCipherKey(expectedCipherKey);
+        pubNub.getConfiguration().setCryptoModule(CryptoModule.createLegacyCryptoModule(expectedCipherKey, false));
 
         final PubNub observer = getPubNub();
-        observer.getConfiguration().setCipherKey(expectedCipherKey);
+        observer.getConfiguration().setCryptoModule(CryptoModule.createLegacyCryptoModule(expectedCipherKey, false));
 
-        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey()); //todo
 
         final String expectedChannelName = random();
         final int expectedMessageCount = 10;

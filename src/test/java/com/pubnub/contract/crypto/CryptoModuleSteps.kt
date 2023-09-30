@@ -42,6 +42,7 @@ class CryptoModuleSteps(
         cryptoModuleState.initializationVectorType = initializationVectorType
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @Given("Legacy code with {string} cipher key and {string} vector")
     fun legacy_code_with_cipher_key_and_vector(cipherKey: String, initializationVectorType: String) {
         // this is fine, nothing here
