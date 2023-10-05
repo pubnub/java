@@ -5,17 +5,21 @@ import com.pubnub.api.crypto.cryptor.Cryptor
 import com.pubnub.api.crypto.cryptor.LegacyCryptor
 import com.pubnub.api.crypto.data.EncryptedData
 import com.pubnub.api.crypto.data.EncryptedStreamData
+import com.pubnub.api.crypto.exception.PubNubError
+import com.pubnub.api.crypto.exception.PubNubException
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.*
 import org.hamcrest.Matchers.`is` as iz
@@ -211,6 +215,72 @@ class CryptoModuleTest {
         assertArrayEquals(msgToEncrypt, decryptedMsg)
     }
 
+    @ParameterizedTest
+    @MethodSource("legacyAndAesCbcCryptors")
+    fun `should throw exception when encrypting empty data`(cryptoModule: CryptoModule) {
+        // given
+        val dataToBeEncrypted = ByteArray(0)
+
+        // when
+        val exception = assertThrows(PubNubException::class.java) {
+            cryptoModule.encrypt(dataToBeEncrypted)
+        }
+
+        // then
+        assertEquals("Encryption/Decryption of empty data not allowed.", exception.errorMessage)
+        assertEquals(PubNubError.ENCRYPTION_AND_DECRYPTION_OF_EMPTY_DATA_NOT_ALLOWED, exception.pubnubError)
+    }
+
+    @ParameterizedTest
+    @MethodSource("legacyAndAesCbcCryptors")
+    fun `should throw exception when decrypting empty data`(cryptoModule: CryptoModule) {
+        // given
+        val dataToBeDecrypted = ByteArray(0)
+
+        // when
+        val exception = assertThrows(PubNubException::class.java) {
+            cryptoModule.decrypt(dataToBeDecrypted)
+        }
+
+        // then
+        assertEquals("Encryption/Decryption of empty data not allowed.", exception.errorMessage)
+        assertEquals(PubNubError.ENCRYPTION_AND_DECRYPTION_OF_EMPTY_DATA_NOT_ALLOWED, exception.pubnubError)
+    }
+
+    @ParameterizedTest
+    @MethodSource("legacyAndAesCbcCryptors")
+    fun `should throw exception when encrypting empty stream`(cryptoModule: CryptoModule) {
+        // given
+        val dataToBeEncrypted = ByteArray(0)
+        val streamToBeEncrypted = ByteArrayInputStream(dataToBeEncrypted)
+
+        // when
+        val exception = assertThrows(PubNubException::class.java) {
+            cryptoModule.encryptStream(streamToBeEncrypted)
+        }
+
+        // then
+        assertEquals("Encryption/Decryption of empty data not allowed.", exception.errorMessage)
+        assertEquals(PubNubError.ENCRYPTION_AND_DECRYPTION_OF_EMPTY_DATA_NOT_ALLOWED, exception.pubnubError)
+    }
+
+    @ParameterizedTest
+    @MethodSource("legacyAndAesCbcCryptors")
+    fun `should throw exception when decrypting empty stream`(cryptoModule: CryptoModule) {
+        // given
+        val dataToBeDecrypted = ByteArray(0)
+        val streamToBeDecrypted = ByteArrayInputStream(dataToBeDecrypted)
+
+        // when
+        val exception = assertThrows(PubNubException::class.java) {
+            cryptoModule.decryptStream(streamToBeDecrypted)
+        }
+
+        // then
+        assertEquals("Encryption/Decryption of empty data not allowed.", exception.errorMessage)
+        assertEquals(PubNubError.ENCRYPTION_AND_DECRYPTION_OF_EMPTY_DATA_NOT_ALLOWED, exception.pubnubError)
+    }
+
     private fun myCustomCryptor() = object : Cryptor {
         override fun id(): ByteArray {
             return byteArrayOf('C'.code.toByte(), 'U'.code.toByte(), 'S'.code.toByte(), 'T'.code.toByte())
@@ -245,7 +315,6 @@ class CryptoModuleTest {
     @MethodSource("encryptStreamDecryptStreamSource")
     fun encryptStreamDecryptStream(input: String, cryptoModule: CryptoModule) {
         val encrypted = cryptoModule.encryptStream(input.byteInputStream())
-        println(Base64.getEncoder().encodeToString(cryptoModule.encryptStream(input.byteInputStream()).readBytes()))
         val decrypted = cryptoModule.decryptStream(encrypted)
         assertEquals(input, String(decrypted.readBytes()))
     }
@@ -273,6 +342,14 @@ class CryptoModuleTest {
             Arguments.of("Hello world2", CryptoModule.createLegacyCryptoModule("myCipherKey", false)),
             Arguments.of("Hello world3", CryptoModule.createAesCbcCryptoModule("myCipherKey", true)),
             Arguments.of("Hello world4", CryptoModule.createAesCbcCryptoModule("myCipherKey", false)),
+        )
+
+        @JvmStatic
+        fun legacyAndAesCbcCryptors(): List<Arguments> = listOf(
+            Arguments.of(CryptoModule.createLegacyCryptoModule("myCipherKey", true)),
+            Arguments.of(CryptoModule.createLegacyCryptoModule("myCipherKey", false)),
+            Arguments.of(CryptoModule.createAesCbcCryptoModule("myCipherKey", true)),
+            Arguments.of(CryptoModule.createAesCbcCryptoModule("myCipherKey", false)),
         )
     }
 }

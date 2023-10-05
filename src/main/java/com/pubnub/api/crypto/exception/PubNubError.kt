@@ -221,6 +221,11 @@ enum class PubNubError(private val code: Int, val message: String) {
         "Cryptor header parse error."
     ),
 
+    ENCRYPTION_AND_DECRYPTION_OF_EMPTY_DATA_NOT_ALLOWED(
+        176,
+        "Encryption of empty data not allowed."
+    ),
+
     ;
 
     override fun toString(): String {
