@@ -192,8 +192,8 @@ sdks:
                   is-required: Required
                 -
                   name: okhttp
-                  min-version: 3.12.6
-                  location: https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/3.12.6/okhttp-3.12.6.jar
+                  min-version: 4.10.0
+                  location: https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/4.10.0/okhttp-4.10.0.jar
                   license: Apache License, Version 2.0
                   license-url: https://github.com/square/okhttp/blob/parent-3.12.6/LICENSE.txt
                   is-required: Required
@@ -206,30 +206,23 @@ sdks:
                   is-required: Required
                 -
                   name: gson
-                  min-version: 2.8.6
-                  location: https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar
+                  min-version: 2.9.0
+                  location: https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.9.0/gson-2.9.0.jar
                   license: Apache License, Version 2.0
                   license-url: https://github.com/google/gson/blob/gson-parent-2.8.6/LICENSE
                   is-required: Required
                 -
                   name: jackson-databind
-                  min-version: 2.9.9
-                  location: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.9/jackson-databind-2.9.9.jar
+                  min-version: 2.14.2
+                  location: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.2/jackson-databind-2.14.2.jar
                   license: Apache License, Version 2.0
                   license-url: hhttps://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.9.9/README.md
                   is-required: Required
                 -
-                  name: jackson-module-kotlin
-                  min-version: 2.9.9
-                  location: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.9.9/jackson-module-kotlin-2.9.9.jar
-                  license: Apache License, Version 2.0
-                  license-url: "" 
-                  is-required: Required
-                -
                   name: json
-                  min-version: "20190722"
-                  location: https://repo.maven.apache.org/maven2/org/json/json/20190722/json-20190722.jar
-                  license: ""
+                  min-version: "20230227"
+                  location: https://repo.maven.apache.org/maven2/org/json/json/20230227/json-20230227.jar
+                  license: Public Domain
                   license-url: https://github.com/stleary/JSON-java/blob/20190722/LICENSE
                   is-required: Required
 
