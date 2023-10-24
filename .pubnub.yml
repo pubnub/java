@@ -107,13 +107,6 @@ sdks:
                   license-url: https://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.14.2/README.md
                   is-required: Required
                 -
-                  name: jackson-module-kotlin
-                  min-version: 2.9.9
-                  location: Shipped within library
-                  license: Apache License, Version 2.0
-                  license-url: "" 
-                  is-required: Required
-                -
                   name: json
                   min-version: "20230227"
                   location: Shipped within library
