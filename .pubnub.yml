@@ -16,111 +16,6 @@ sdks:
             - Server
             - Mobile
           source-repository: https://github.com/pubnub/java
-          documentation: https://www.pubnub.com/docs/sdks/java/
-          tier: 1
-          artifact-type: library
-          distributions:
-            -
-              distribution-type: library
-              distribution-repository: GitHub
-              package-name: pubnub-gson-6.4.0
-              location: https://github.com/pubnub/java/releases/download/v6.4.0/pubnub-gson-6.4.0-all.jar
-              supported-platforms:
-                supported-operating-systems:
-                  Android:
-                    runtime-version:
-                      - ART
-                    target-api-level: 
-                      - 23
-                    minimum-api-level:
-                      - 23
-                    maximum-api-level:
-                      - 30  
-                    target-architecture:
-                      - armeabi-v7a
-                      - atom
-                      - armeabi
-                      - arm64-v8a
-                  Linux:
-                    runtime-version:
-                      - JVM 8 
-                    minimum-os-version:
-                      - Ubuntu 12.04
-                    maximum-os-version:
-                      - Ubuntu 20.04 LTS
-                    target-architecture:
-                      - x86
-                      - x86-64
-                  macOS:
-                    runtime-version:
-                      - JVM 8
-                    minimum-os-version:
-                      - macOS 10.12
-                    maximum-os-version:
-                      - macOS 11.0.1
-                    target-architecture:
-                      - x86-64
-                  Windows:
-                    runtime-version:
-                      - JVM 8
-                    minimum-os-version:
-                      - Windows Vista Ultimate
-                    maximum-os-version:
-                      - Windows 10 Home
-                    target-architecture:
-                      - x86
-                      - x86-64
-              requires:
-                -
-                  name: retrofit
-                  min-version: 2.6.2
-                  location: Shipped within library
-                  license: Apache License, Version 2.0
-                  license-url: https://github.com/square/retrofit/blob/parent-2.6.2/LICENSE.txt
-                  is-required: Required
-                -
-                  name: okhttp
-                  min-version: 4.10.0
-                  location: Shipped within library
-                  license: Apache License, Version 2.0
-                  license-url: https://github.com/square/okhttp/blob/parent-4.10.0/LICENSE.txt
-                  is-required: Required
-                -
-                  name: converter-gson
-                  min-version: 2.6.2
-                  location: Shipped within library
-                  license: Apache License, Version 2.0
-                  license-url: https://github.com/square/retrofit/blob/parent-2.6.2/LICENSE.txt
-                  is-required: Required
-                -
-                  name: gson
-                  min-version: 2.9.0
-                  location: Shipped within library
-                  license: Apache License, Version 2.0
-                  license-url: https://github.com/google/gson/blob/gson-parent-2.9.0/LICENSE
-                  is-required: Required
-                -
-                  name: jackson-databind
-                  min-version: 2.14.2
-                  location: Shipped within library
-                  license: Apache License, Version 2.0
-                  license-url: https://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.14.2/README.md
-                  is-required: Required
-                -
-                  name: json
-                  min-version: "20230227"
-                  location: Shipped within library
-                  license: "Public Domain"
-                  license-url: https://github.com/stleary/JSON-java/blob/20230227/LICENSE
-                  is-required: Required
-
-        -
-
-          language: java 
-          tags:
-            - Server
-            - Mobile
-          source-repository: https://github.com/pubnub/java
           documentation: https://www.pubnub.com/docs/sdks/java
           tier: 1
           artifact-type: library
@@ -188,7 +83,7 @@ sdks:
                   min-version: 4.10.0
                   location: https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/4.10.0/okhttp-4.10.0.jar
                   license: Apache License, Version 2.0
-                  license-url: https://github.com/square/okhttp/blob/parent-3.12.6/LICENSE.txt
+                  license-url: https://github.com/square/okhttp/blob/parent-4.10.0/LICENSE.txt
                   is-required: Required
                 -
                   name: converter-gson
@@ -202,21 +97,21 @@ sdks:
                   min-version: 2.9.0
                   location: https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.9.0/gson-2.9.0.jar
                   license: Apache License, Version 2.0
-                  license-url: https://github.com/google/gson/blob/gson-parent-2.8.6/LICENSE
+                  license-url: https://github.com/google/gson/blob/gson-parent-2.9.0/LICENSE
                   is-required: Required
                 -
                   name: jackson-databind
                   min-version: 2.14.2
                   location: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.2/jackson-databind-2.14.2.jar
                   license: Apache License, Version 2.0
-                  license-url: hhttps://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.9.9/README.md
+                  license-url: hhttps://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.14.2/README.md
                   is-required: Required
                 -
                   name: json
                   min-version: "20230227"
                   location: https://repo.maven.apache.org/maven2/org/json/json/20230227/json-20230227.jar
                   license: Public Domain
-                  license-url: https://github.com/stleary/JSON-java/blob/20190722/LICENSE
+                  license-url: https://github.com/stleary/JSON-java/blob/20230227/LICENSE
                   is-required: Required
 
 changelog:
