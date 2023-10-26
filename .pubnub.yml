@@ -108,10 +108,10 @@ sdks:
                   is-required: Required
                 -
                   name: json
-                  min-version: "20230227"
-                  location: https://repo.maven.apache.org/maven2/org/json/json/20230227/json-20230227.jar
+                  min-version: "20231013"
+                  location: https://repo.maven.apache.org/maven2/org/json/json/20231013/json-20231013.jar
                   license: Public Domain
-                  license-url: https://github.com/stleary/JSON-java/blob/20230227/LICENSE
+                  license-url: https://github.com/stleary/JSON-java/blob/20231013/LICENSE
                   is-required: Required
 
 changelog:
