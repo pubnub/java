@@ -11,13 +11,11 @@ jobs:
   process:
     name: Process command
     if: github.event.issue.pull_request && endsWith(github.repository, '-private') != true
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
+    runs-on: ubuntu-latest
     steps:
       - name: Check referred user
         id: user-check
-        env: 
+        env:
           CLEN_BOT: ${{ secrets.CLEN_BOT }}
         run: echo "expected-user=${{ startsWith(github.event.comment.body, format('@{0} ', env.CLEN_BOT)) }}" >> $GITHUB_OUTPUT
       - name: Regular comment
@@ -27,7 +25,7 @@ jobs:
         if: steps.user-check.outputs.expected-user == 'true'
         uses: actions/checkout@v3
         with:
-           token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
       - name: Checkout release actions
         if: steps.user-check.outputs.expected-user == 'true'
         uses: actions/checkout@v3

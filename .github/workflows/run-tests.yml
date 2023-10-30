@@ -13,9 +13,7 @@ defaults:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
+    runs-on: ubuntu-latest
     env:
       SUB_KEY: ${{ secrets.SUB_KEY }}
       PUB_KEY: ${{ secrets.PUB_KEY }}
@@ -43,9 +41,7 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   acceptance-tests:
     name: Acceptance tests
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
+    runs-on: ubuntu-latest
     env:
       pubKey: somePubKey
       subKey: someSubKey
@@ -97,9 +93,7 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-tests:
     name: Tests
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
+    runs-on: ubuntu-latest
     needs: [tests, acceptance-tests]
     steps:
       - name: Tests summary
