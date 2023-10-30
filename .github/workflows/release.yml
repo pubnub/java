@@ -2,16 +2,13 @@ name: Automated product release
 
 on:
   pull_request:
-    branches: [ master ]
-    types: [ closed ]
-
+    branches: [master]
+    types: [closed]
 
 jobs:
   check-release:
     name: Check release required
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
+    runs-on: ubuntu-latest
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     outputs:
       release: ${{ steps.check.outputs.ready }}
@@ -30,9 +27,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
   publish:
     name: Publish package
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
+    runs-on: ubuntu-latest
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
     steps:
@@ -74,4 +69,3 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           acceptance-tests-workflow: Tests
-
