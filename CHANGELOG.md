@@ -1,3 +1,10 @@
+## v6.4.1
+October 30 2023
+
+#### Fixed
+- Updated the JSON lib to version 20231013.
+- Changed license type from MIT to PubNub Software Development Kit License.
+
 ## v6.4.0
 October 16 2023
 
