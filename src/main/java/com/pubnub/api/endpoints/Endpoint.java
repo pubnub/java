@@ -304,6 +304,10 @@ public abstract class Endpoint<Input, Output> implements RemoteAction<Output> {
      */
     @Override
     public void silentCancel() {
+        if (call == null) {
+            System.out.println("CALL IS NULL!");
+            System.exit(-1);
+        }
         if (call != null && !call.isCanceled()) {
             this.silenceFailures = true;
             call.cancel();

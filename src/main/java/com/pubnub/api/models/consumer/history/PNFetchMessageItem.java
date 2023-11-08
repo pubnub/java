@@ -2,6 +2,7 @@ package com.pubnub.api.models.consumer.history;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
+import com.pubnub.api.PubNubError;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class PNFetchMessageItem {
     private final Long timetoken;
     private final HashMap<String, HashMap<String, List<Action>>> actions;
     private final String uuid;
+    private final PubNubError error;
+
     @SerializedName("message_type")
     @Getter(AccessLevel.NONE)
     private final String messageType;

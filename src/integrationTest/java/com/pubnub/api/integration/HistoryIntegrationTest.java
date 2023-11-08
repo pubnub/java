@@ -341,6 +341,37 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    public void testReadUnencryptedMessage_FromHistory_WithCrypto() throws PubNubException {
+        final String expectedCipherKey = random();
+        pubNub.getConfiguration().setCipherKey(expectedCipherKey);
+
+        final PubNub observer = getPubNub();
+        observer.getConfiguration().setCipherKey(expectedCipherKey);
+
+        assertEquals(pubNub.getConfiguration().getCipherKey(), observer.getConfiguration().getCipherKey());
+
+        final String expectedChannelName = random();
+        final int expectedMessageCount = 10;
+
+        assertEquals(expectedMessageCount,
+                publishMixed(pubNub, expectedMessageCount, expectedChannelName).size());
+
+        final PNHistoryResult historyResult = observer.history()
+                .channel(expectedChannelName)
+                .includeTimetoken(true)
+                .includeMeta(true)
+                .sync();
+
+        assert historyResult != null;
+        for (PNHistoryItemResult message : historyResult.getMessages()) {
+            assertNotNull(message.getEntry());
+            assertNotNull(message.getTimetoken());
+            assertNotNull(message.getMeta());
+            assertTrue(message.getEntry().toString().contains("_msg"));
+        }
+    }
+
+    @Test
     public void testFetchSingleChannel_IncludeAll_Crypto() throws PubNubException {
         final String expectedCipherKey = random();
         pubNub.getConfiguration().setCipherKey(expectedCipherKey);

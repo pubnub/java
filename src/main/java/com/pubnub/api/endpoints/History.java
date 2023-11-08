@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.pubnub.api.endpoints.FetchMessages.PN_OTHER;
+
 @Accessors(chain = true, fluent = true)
 public class History extends Endpoint<JsonElement, PNHistoryResult> {
     private static final int MAX_COUNT = 100;
@@ -130,7 +132,16 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                     JsonElement message;
 
                     if (includeTimetoken || includeMeta) {
-                        message = processMessage(mapper.getField(historyEntry, "message"));
+                        try {
+                            message = processMessage(mapper.getField(historyEntry, "message"));
+                        } catch (PubNubException e) {
+                            if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
+                                message = e.getJso();
+                                historyItem.error(e.getPubnubError());
+                            } else {
+                                throw e;
+                            }
+                        }
                         if (includeTimetoken) {
                             historyItem.timetoken(mapper.elementToLong(historyEntry, "timetoken"));
                         }
@@ -138,7 +149,16 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                             historyItem.meta(mapper.getField(historyEntry, "meta"));
                         }
                     } else {
-                        message = processMessage(historyEntry);
+                        try {
+                            message = processMessage(historyEntry);
+                        } catch (PubNubException e) {
+                            if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
+                                message = e.getJso();
+                                historyItem.error(e.getPubnubError());
+                            } else {
+                                throw e;
+                            }
+                        }
                     }
 
                     historyItem.entry(message);
@@ -151,7 +171,6 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                         .jso(input.body())
                         .build();
             }
-
 
             historyData.messages(messages);
         }
@@ -181,8 +200,8 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
         String outputText;
         JsonElement outputObject;
 
-        if (mapper.isJsonObject(message) && mapper.hasField(message, "pn_other")) {
-            inputText = mapper.elementToString(message, "pn_other");
+        if (mapper.isJsonObject(message) && mapper.hasField(message, PN_OTHER)) {
+            inputText = mapper.elementToString(message, PN_OTHER);
         } else {
             inputText = mapper.elementToString(message);
         }
@@ -191,9 +210,9 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
         outputObject = this.getPubnub().getMapper().fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload
-        if (mapper.isJsonObject(message) && mapper.hasField(message, "pn_other")) {
+        if (mapper.isJsonObject(message) && mapper.hasField(message, PN_OTHER)) {
             JsonObject objectNode = mapper.getAsObject(message);
-            mapper.putOnObject(objectNode, "pn_other", outputObject);
+            mapper.putOnObject(objectNode, PN_OTHER, outputObject);
             outputObject = objectNode;
         }
 

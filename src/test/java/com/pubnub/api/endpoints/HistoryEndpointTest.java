@@ -31,6 +31,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.pubnub.api.endpoints.FetchMessages.PN_OTHER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -229,7 +230,7 @@ public class HistoryEndpointTest extends TestHarness {
 
         assertNull(response.getMessages().get(0).getTimetoken());
         assertEquals("hey",
-                response.getMessages().get(0).getEntry().getAsJsonObject().get("pn_other").getAsJsonObject().get(
+                response.getMessages().get(0).getEntry().getAsJsonObject().get(PN_OTHER).getAsJsonObject().get(
                         "text").getAsString());
 
     }

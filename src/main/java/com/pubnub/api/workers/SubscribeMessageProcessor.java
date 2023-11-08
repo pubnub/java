@@ -47,6 +47,8 @@ public class SubscribeMessageProcessor {
     private final PubNub pubnub;
     private final DuplicationManager duplicationManager;
 
+    private static final String PN_OTHER = "pn_other";
+
     @SuppressWarnings("deprecation")
     PNEvent processIncomingPayload(SubscribeMessage message) throws PubNubException {
         MapperManager mapper = this.pubnub.getMapper();
@@ -209,8 +211,8 @@ public class SubscribeMessageProcessor {
         String outputText;
         JsonElement outputObject;
 
-        if (mapper.isJsonObject(input) && mapper.hasField(input, "pn_other")) {
-            inputText = mapper.elementToString(input, "pn_other");
+        if (mapper.isJsonObject(input) && mapper.hasField(input, PN_OTHER)) {
+            inputText = mapper.elementToString(input, PN_OTHER);
         } else {
             inputText = mapper.elementToString(input);
         }
@@ -220,9 +222,9 @@ public class SubscribeMessageProcessor {
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload
-        if (mapper.isJsonObject(input) && mapper.hasField(input, "pn_other")) {
+        if (mapper.isJsonObject(input) && mapper.hasField(input, PN_OTHER)) {
             JsonObject objectNode = mapper.getAsObject(input);
-            mapper.putOnObject(objectNode, "pn_other", outputObject);
+            mapper.putOnObject(objectNode, PN_OTHER, outputObject);
             outputObject = objectNode;
         }
 

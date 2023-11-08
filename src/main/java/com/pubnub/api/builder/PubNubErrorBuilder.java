@@ -376,6 +376,11 @@ public final class PubNubErrorBuilder {
      */
     public static final int PNERR_USERID_CAN_NOT_BE_DIFFERENT = 173;
 
+    /**
+     * Used when crypto is configured but the message was not encrypted.
+     */
+    public static final int PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED = 177;
+
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()
             .errorCode(PNERR_TIMEOUT)
@@ -748,6 +753,11 @@ public final class PubNubErrorBuilder {
     public static final PubNubError PNERROBJ_USERID_CAN_NOT_BE_DIFFERENT_FROM_IN_CONFIGURATION_WHEN_WITHHEARTBEAT_TRUE = PubNubError.builder()
             .errorCode(PNERR_USERID_CAN_NOT_BE_DIFFERENT)
             .message("UserId can't be different from UserId in configuration when flag withHeartbeat is set to true.")
+            .build();
+
+    public static final PubNubError PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED = PubNubError.builder()
+            .errorCode(PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED)
+            .message("Crypto is configured but message is not encrypted.")
             .build();
 
     private PubNubErrorBuilder() {

@@ -3,6 +3,7 @@ package com.pubnub.api.endpoints;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubError;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.builder.PubNubErrorBuilder;
@@ -38,6 +39,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     private static final int MULTIPLE_CHANNEL_MAX_MESSAGES = 25;
     private static final int DEFAULT_MESSAGES_WITH_ACTIONS = 25;
     private static final int MAX_MESSAGES_WITH_ACTIONS = 25;
+    static final String PN_OTHER = "pn_other";
 
     @Setter
     private List<String> channels;
@@ -165,7 +167,16 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
             for (PNFetchMessageItem item : entry.getValue()) {
                 PNFetchMessageItem.PNFetchMessageItemBuilder messageItemBuilder = item.toBuilder();
 
-                messageItemBuilder.message(processMessage(item.getMessage()));
+                try {
+                    messageItemBuilder.message(processMessage(item.getMessage()));
+                } catch (PubNubException e) {
+                    if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
+                        messageItemBuilder.message(e.getJso());
+                        messageItemBuilder.error(e.getPubnubError());
+                    } else {
+                        throw e;
+                    }
+                }
                 if (includeMessageActions) {
                     if (item.getActions() != null) {
                         messageItemBuilder.actions(item.getActions());
@@ -216,22 +227,38 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         String outputText;
         JsonElement outputObject;
 
-        if (mapper.isJsonObject(message) && mapper.hasField(message, "pn_other")) {
-            inputText = mapper.elementToString(message, "pn_other");
+        if (mapper.isJsonObject(message)) {
+            if (mapper.hasField(message, PN_OTHER)) {
+                inputText = mapper.elementToString(message, PN_OTHER);
+            } else {
+                PubNubError error = logAndReturnDecryptionError();
+                throw new PubNubException(error.getMessage(), error, message, null, 0, null, null);
+            }
         } else {
             inputText = mapper.elementToString(message);
         }
 
-        outputText = crypto.decrypt(inputText);
+        try {
+            outputText = crypto.decrypt(inputText);
+        } catch (PubNubException e) {
+            PubNubError error = logAndReturnDecryptionError();
+            throw new PubNubException(error.getMessage(), error, message, null, 0, null, null);
+        }
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload
-        if (mapper.isJsonObject(message) && mapper.hasField(message, "pn_other")) {
+        if (mapper.isJsonObject(message) && mapper.hasField(message, PN_OTHER)) {
             JsonObject objectNode = mapper.getAsObject(message);
-            mapper.putOnObject(objectNode, "pn_other", outputObject);
+            mapper.putOnObject(objectNode, PN_OTHER, outputObject);
             outputObject = objectNode;
         }
 
         return outputObject;
+    }
+
+    private PubNubError logAndReturnDecryptionError() {
+        String errorMessage = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED.getMessage();
+        log.warn(errorMessage);
+        return PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
     }
 }
