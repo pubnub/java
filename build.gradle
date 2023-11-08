@@ -14,15 +14,15 @@ version = '6.4.1'
 
 description = """"""
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 configurations.all {
 }
 
 lombok {
-    version = "1.18.30"
+    version = "1.18.4"
 }
 
 repositories {
@@ -81,7 +81,7 @@ dependencies {
 }
 
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = "0.8.2"
 }
 
 jacocoTestReport {

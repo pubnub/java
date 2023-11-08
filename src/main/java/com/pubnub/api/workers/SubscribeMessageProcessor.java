@@ -221,7 +221,11 @@ public class SubscribeMessageProcessor {
             inputText = mapper.elementToString(input);
         }
 
-        outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
+        try {
+            outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
+        } catch (com.pubnub.api.crypto.exception.PubNubException e) {
+            throw new PubNubException(e.getMessage(), null, input, null, 0, null, null);
+        }
 
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 

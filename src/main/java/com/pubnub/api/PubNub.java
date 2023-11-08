@@ -478,7 +478,13 @@ public class PubNub {
         }
         CryptoModule cryptoModule = getCryptoModuleOrThrow(cipherKey);
 
-        return CryptoModuleKt.decryptString(cryptoModule, inputString);
+        try {
+            return CryptoModuleKt.decryptString(cryptoModule, inputString);
+        } catch (com.pubnub.api.crypto.exception.PubNubException e) {
+            throw new PubNubException(
+                    e.getErrorMessage(), null, null, null, e.getStatusCode(), e.getAffectedCall(), e
+            );
+        }
     }
 
     private CryptoModule getCryptoModuleOrThrow(String cipherKey) throws PubNubException {

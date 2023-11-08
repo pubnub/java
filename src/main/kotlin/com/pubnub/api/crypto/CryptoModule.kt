@@ -165,6 +165,7 @@ class CryptoModule internal constructor(
 internal fun CryptoModule.encryptString(inputString: String): String =
     String(Base64.encode(encrypt(inputString.toByteArray()), Base64.NO_WRAP))
 
+@Throws(PubNubException::class)
 internal fun CryptoModule.decryptString(inputString: String): String =
     decrypt(Base64.decode(inputString, Base64.NO_WRAP)).toString(Charsets.UTF_8)
 
