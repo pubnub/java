@@ -5,6 +5,8 @@ import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.builder.SubscribeBuilder;
 import com.pubnub.api.builder.UnsubscribeBuilder;
 import com.pubnub.api.callbacks.SubscribeCallback;
+import com.pubnub.api.crypto.CryptoModule;
+import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.endpoints.DeleteMessages;
 import com.pubnub.api.endpoints.FetchMessages;
 import com.pubnub.api.endpoints.History;
@@ -68,8 +70,6 @@ import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.managers.token_manager.TokenParser;
 import com.pubnub.api.models.consumer.access_manager.v3.PNToken;
-import com.pubnub.api.vendor.Crypto;
-import com.pubnub.api.vendor.FileEncryptionUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,11 +105,15 @@ public class PubNub {
     private static final int TIMESTAMP_DIVIDER = 1000;
     private static final int MAX_SEQUENCE = 65535;
 
-    private static final String SDK_VERSION = "6.3.6";
+    private static final String SDK_VERSION = "6.4.1";
     private final ListenerManager listenerManager;
     private final StateManager stateManager;
 
     private final TokenManager tokenManager;
+
+    public CryptoModule getCryptoModule() {
+        return configuration.getCryptoModule();
+    }
 
     public PubNub(@NotNull PNConfiguration initialConfig) {
         this.configuration = initialConfig;
@@ -456,8 +460,7 @@ public class PubNub {
         if (inputString == null) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
-
-        return decrypt(inputString, this.getConfiguration().getCipherKey());
+        return decrypt(inputString, null);
     }
 
     /**
@@ -473,16 +476,33 @@ public class PubNub {
         if (inputString == null) {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
-        boolean dynamicIV = this.getConfiguration().isUseRandomInitializationVector();
-        return new Crypto(cipherKey, dynamicIV).decrypt(inputString);
+        CryptoModule cryptoModule = getCryptoModuleOrThrow(cipherKey);
+
+        return CryptoModuleKt.decryptString(cryptoModule, inputString);
+    }
+
+    private CryptoModule getCryptoModuleOrThrow(String cipherKey) throws PubNubException {
+        CryptoModule effectiveCryptoModule;
+        if (cipherKey != null) {
+            effectiveCryptoModule = CryptoModule.createLegacyCryptoModule(cipherKey, this.getConfiguration().isUseRandomInitializationVector());
+        } else {
+            CryptoModule cryptoModule = getCryptoModule();
+            if (cryptoModule != null) {
+                effectiveCryptoModule = cryptoModule;
+            } else {
+                throw PubNubException.builder().errormsg("Crypto module is not initialized").build();
+            }
+        }
+        return effectiveCryptoModule;
     }
 
     public InputStream decryptInputStream(InputStream inputStream) throws PubNubException {
-        return decryptInputStream(inputStream, this.getConfiguration().getCipherKey());
+        return decryptInputStream(inputStream, null);
     }
 
     public InputStream decryptInputStream(InputStream inputStream, String cipherKey) throws PubNubException {
-        return FileEncryptionUtil.decrypt(cipherKey, inputStream);
+        CryptoModule cryptoModule = getCryptoModuleOrThrow(cipherKey);
+        return cryptoModule.decryptStream(inputStream);
     }
 
     /**
@@ -497,7 +517,7 @@ public class PubNub {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
 
-        return encrypt(inputString, this.getConfiguration().getCipherKey());
+        return encrypt(inputString, null);
     }
 
     /**
@@ -514,16 +534,17 @@ public class PubNub {
             throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
 
-        boolean dynamicIV = this.getConfiguration().isUseRandomInitializationVector();
-        return new Crypto(cipherKey, dynamicIV).encrypt(inputString);
+        CryptoModule cryptoModule = getCryptoModuleOrThrow(cipherKey);
+        return CryptoModuleKt.encryptString(cryptoModule, inputString);
     }
 
     public InputStream encryptInputStream(InputStream inputStream) throws PubNubException {
-        return encryptInputStream(inputStream, this.getConfiguration().getCipherKey());
+        return encryptInputStream(inputStream, null);
     }
 
     public InputStream encryptInputStream(InputStream inputStream, String cipherKey) throws PubNubException {
-        return FileEncryptionUtil.encrypt(cipherKey, inputStream);
+        CryptoModule cryptoModule = getCryptoModuleOrThrow(cipherKey);
+        return cryptoModule.encryptStream(inputStream);
     }
 
     public int getTimestamp() {

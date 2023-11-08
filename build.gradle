@@ -10,7 +10,7 @@ plugins {
 }
 group = 'com.pubnub'
 
-version = '6.3.6'
+version = '6.4.1'
 
 description = """"""
 
@@ -70,7 +70,7 @@ dependencies {
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.1'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.1'
     integrationTestImplementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.8'
-    implementation group: 'org.json', name: 'json', version: '20230227'
+    implementation group: 'org.json', name: 'json', version: '20231013'
     testImplementation group: 'io.cucumber', name: 'cucumber-java', version: '6.10.4'
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: '6.10.4'
     testImplementation group: 'io.cucumber', name: 'cucumber-picocontainer', version: '6.10.4'

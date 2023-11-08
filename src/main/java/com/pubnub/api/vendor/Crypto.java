@@ -169,35 +169,6 @@ public class Crypto {
         }
     }
 
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
-    /**
-     * Get MD5
-     *
-     * @param input
-     * @return byte[]
-     * @throws PubNubException
-     */
-    public static byte[] md5(String input) throws PubNubException {
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("MD5");
-            byte[] hashedBytes = digest.digest(input.getBytes(ENCODING_UTF_8));
-            return hashedBytes;
-        } catch (NoSuchAlgorithmException e) {
-            throw PubNubException.builder().pubnubError(newCryptoError(118, e.toString())).errormsg(e.getMessage()).cause(e).build();
-        } catch (UnsupportedEncodingException e) {
-            throw PubNubException.builder().pubnubError(newCryptoError(119, e.toString())).errormsg(e.getMessage()).cause(e).build();
-        }
-    }
-
     /**
      * Get SHA256
      *

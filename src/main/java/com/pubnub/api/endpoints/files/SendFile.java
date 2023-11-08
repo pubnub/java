@@ -4,6 +4,7 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.endpoints.BuilderSteps.ChannelStep;
 import com.pubnub.api.endpoints.files.requiredparambuilder.FilesBuilderSteps.FileIdStep;
 import com.pubnub.api.endpoints.files.requiredparambuilder.FilesBuilderSteps.FileNameStep;
@@ -22,6 +23,7 @@ import com.pubnub.api.models.consumer.files.PNBaseFile;
 import com.pubnub.api.models.consumer.files.PNFileUploadResult;
 import com.pubnub.api.models.consumer.files.PNPublishFileMessageResult;
 import com.pubnub.api.models.server.files.FileUploadRequestDetails;
+import com.pubnub.api.vendor.FileEncryptionUtil;
 import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -55,13 +57,16 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
     private Boolean shouldStore;
     @Setter
     private String cipherKey;
+    private CryptoModule cryptoModule;
 
     SendFile(Builder.SendFileRequiredParams requiredParams,
              GenerateUploadUrl.Factory generateUploadUrlFactory,
              ChannelStep<FileNameStep<FileIdStep<PublishFileMessage>>> publishFileMessageBuilder,
              UploadFile.Factory sendFileToS3Factory,
              ExecutorService executorService,
-             int fileMessagePublishRetryLimit) {
+             int fileMessagePublishRetryLimit,
+             CryptoModule cryptoModule
+    ) {
         this.channel = requiredParams.channel();
         this.fileName = requiredParams.fileName();
         this.content = requiredParams.content();
@@ -72,6 +77,7 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
                 generateUploadUrlFactory,
                 publishFileMessageBuilder,
                 sendFileToS3Factory);
+        this.cryptoModule = FileEncryptionUtil.effectiveCryptoModule(cryptoModule, cipherKey);
     }
 
     public PNFileUploadResult sync() throws PubNubException {
@@ -172,7 +178,7 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
 
     private RemoteAction<Void> sendToS3(FileUploadRequestDetails result,
                                         UploadFile.Factory sendFileToS3Factory) {
-        return sendFileToS3Factory.create(fileName, content, cipherKey, result);
+        return sendFileToS3Factory.create(fileName, content, cryptoModule, result);
     }
 
     public static Builder builder(PubNub pubnub,
@@ -251,7 +257,8 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
                             publishFileMessageBuilder,
                             uploadFileFactory,
                             retrofit.getTransactionClientExecutorService(),
-                            pubnub.getConfiguration().getFileMessagePublishRetryLimit());
+                            pubnub.getConfiguration().getFileMessagePublishRetryLimit(),
+                            pubnub.getCryptoModule());
 
                 } catch (IOException e) {
                     return new SendFile(new SendFileRequiredParams(channelValue,
@@ -262,7 +269,9 @@ public class SendFile implements RemoteAction<PNFileUploadResult> {
                             publishFileMessageBuilder,
                             uploadFileFactory,
                             retrofit.getTransactionClientExecutorService(),
-                            pubnub.getConfiguration().getFileMessagePublishRetryLimit());
+                            pubnub.getConfiguration().getFileMessagePublishRetryLimit(),
+                            pubnub.getCryptoModule()
+                    );
                 }
             }
         }

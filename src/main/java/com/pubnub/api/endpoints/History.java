@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.PubNubErrorBuilder;
+import com.pubnub.api.crypto.CryptoModule;
+import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.managers.RetrofitManager;
@@ -12,7 +14,6 @@ import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
-import com.pubnub.api.vendor.Crypto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import retrofit2.Call;
@@ -189,12 +190,12 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
     }
 
     private JsonElement processMessage(JsonElement message) throws PubNubException {
-        // if we do not have a crypto key, there is no way to process the node; let's return.
-        if (this.getPubnub().getConfiguration().getCipherKey() == null) {
+        // if we do not have a crypto module, there is no way to process the node; let's return.
+        CryptoModule cryptoModule = this.getPubnub().getCryptoModule();
+        if (cryptoModule == null) {
             return message;
         }
 
-        Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey(), this.getPubnub().getConfiguration().isUseRandomInitializationVector());
         MapperManager mapper = getPubnub().getMapper();
         String inputText;
         String outputText;
@@ -206,7 +207,7 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
             inputText = mapper.elementToString(message);
         }
 
-        outputText = crypto.decrypt(inputText);
+        outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
         outputObject = this.getPubnub().getMapper().fromJson(outputText, JsonElement.class);
 
         // inject the decoded response into the payload

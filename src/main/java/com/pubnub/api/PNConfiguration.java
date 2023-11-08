@@ -1,6 +1,7 @@
 package com.pubnub.api;
 
 
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.enums.PNHeartbeatNotificationOptions;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.enums.PNReconnectionPolicy;
@@ -94,8 +95,39 @@ public class PNConfiguration {
      */
     private String publishKey;
     private String secretKey;
-    private String cipherKey;
     private String authKey;
+
+
+    /**
+     * @deprecated Use {@link #cryptoModule} instead.
+     */
+    @Deprecated
+    private String cipherKey;
+
+    /**
+     * @deprecated Use {@link #cryptoModule} instead.
+     */
+    @Deprecated
+    private boolean useRandomInitializationVector;
+
+    /**
+     * CryptoModule is responsible for handling encryption and decryption.
+     * If set, all communications to and from PubNub will be encrypted.
+     */
+    private CryptoModule cryptoModule;
+
+    public CryptoModule getCryptoModule() {
+        if (cryptoModule != null) {
+            return cryptoModule;
+        } else {
+            if (cipherKey != null && !cipherKey.isEmpty()) {
+                log.warning("cipherKey is deprecated. Use CryptoModule instead");
+                return CryptoModule.createLegacyCryptoModule(cipherKey, useRandomInitializationVector);
+            } else {
+                return null;
+            }
+        }
+    }
 
     /**
      * @deprecated Use {@link #getUserId()} instead.
@@ -110,7 +142,7 @@ public class PNConfiguration {
         this.uuid = uuid;
     }
 
-    public UserId getUserId()  {
+    public UserId getUserId() {
         return new UserId(this.uuid);
     }
 
@@ -210,9 +242,6 @@ public class PNConfiguration {
     private boolean dedupOnSubscribe;
     @Setter
     private Integer maximumMessagesCacheSize;
-    @Setter
-    private boolean useRandomInitializationVector;
-
     @Setter
     private int fileMessagePublishRetryLimit;
 

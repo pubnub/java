@@ -1,3 +1,19 @@
+## v6.4.1
+October 30 2023
+
+#### Fixed
+- Updated the JSON lib to version 20231013.
+- Changed license type from MIT to PubNub Software Development Kit License.
+
+## v6.4.0
+October 16 2023
+
+#### Added
+- Add crypto module that allows configure SDK to encrypt and decrypt messages.
+
+#### Fixed
+- Improved security of crypto implementation by adding enhanced AES-CBC cryptor.
+
 ## v6.3.6
 June 19 2023
 

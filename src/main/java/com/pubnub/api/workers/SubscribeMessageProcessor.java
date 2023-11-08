@@ -8,6 +8,8 @@ import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.crypto.CryptoModule;
+import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.managers.DuplicationManager;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.models.consumer.files.PNDownloadableFile;
@@ -18,7 +20,11 @@ import com.pubnub.api.models.consumer.objects_api.membership.PNMembership;
 import com.pubnub.api.models.consumer.objects_api.membership.PNMembershipResult;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadata;
 import com.pubnub.api.models.consumer.objects_api.uuid.PNUUIDMetadataResult;
-import com.pubnub.api.models.consumer.pubsub.*;
+import com.pubnub.api.models.consumer.pubsub.BasePubSubResult;
+import com.pubnub.api.models.consumer.pubsub.PNEvent;
+import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
+import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
+import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
 import com.pubnub.api.models.consumer.pubsub.objects.ObjectPayload;
@@ -27,7 +33,6 @@ import com.pubnub.api.models.server.PublishMetaData;
 import com.pubnub.api.models.server.SubscribeMessage;
 import com.pubnub.api.models.server.files.FileUploadNotification;
 import com.pubnub.api.services.FilesService;
-import com.pubnub.api.vendor.Crypto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -193,8 +198,9 @@ public class SubscribeMessageProcessor {
     private JsonElement processMessage(SubscribeMessage subscribeMessage) throws PubNubException {
         JsonElement input = subscribeMessage.getPayload();
 
-        // if we do not have a crypto key, there is no way to process the node; let's return.
-        if (pubnub.getConfiguration().getCipherKey() == null) {
+        // if we do not have a crypto module, there is no way to process the node; let's return.
+        CryptoModule cryptoModule = pubnub.getCryptoModule();
+        if (cryptoModule == null) {
             return input;
         }
 
@@ -204,8 +210,6 @@ public class SubscribeMessageProcessor {
             return input;
         }
 
-        Crypto crypto = new Crypto(pubnub.getConfiguration().getCipherKey(),
-                pubnub.getConfiguration().isUseRandomInitializationVector());
         MapperManager mapper = this.pubnub.getMapper();
         String inputText;
         String outputText;
@@ -217,7 +221,7 @@ public class SubscribeMessageProcessor {
             inputText = mapper.elementToString(input);
         }
 
-        outputText = crypto.decrypt(inputText);
+        outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
 
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
