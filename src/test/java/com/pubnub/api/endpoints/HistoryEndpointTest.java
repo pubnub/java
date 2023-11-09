@@ -2,9 +2,14 @@ package com.pubnub.api.endpoints;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
@@ -34,6 +39,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static com.pubnub.api.endpoints.FetchMessages.PN_OTHER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 
@@ -438,5 +444,45 @@ public class HistoryEndpointTest extends TestHarness {
         assertTrue(response.getMessages().get(1).getTimetoken().equals(2222L));
         assertEquals((response.getMessages().get(1).getEntry()).getAsJsonObject().get("a").getAsInt(), 33);
         assertEquals((response.getMessages().get(1).getEntry()).getAsJsonObject().get("b").getAsInt(), 44);
+    }
+
+
+    @Test
+    public void testProcessMessageEncryptedWithCrypto() throws PubNubException {
+        pubnub.getConfiguration().setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
+        String message = "Hello world.";
+        String messageEncrypted = "bk8x+ZEg+Roq8ngUo7lfFg==";
+        JsonElement result = partialHistory.processMessage(new JsonPrimitive(messageEncrypted));
+        assertEquals(new JsonPrimitive(message), result);
+    }
+
+    @Test
+    public void testProcessMessageUnencryptedWithCrypto() throws PubNubException {
+        pubnub.getConfiguration().setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
+        String message = "Hello world.";
+        PubNubException exception = assertThrows(PubNubException.class, () -> {
+            partialHistory.processMessage(new JsonPrimitive(message));
+        });
+        assertEquals(exception.getPubnubError(), PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED);
+    }
+
+    @Test
+    public void testProcessMessageWithPnOtherEncryptedWithCrypto() throws PubNubException {
+        pubnub.getConfiguration().setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
+        String message = "Hello world.";
+        String messageEncrypted = "bk8x+ZEg+Roq8ngUo7lfFg==";
+
+        JsonObject messageObject = new JsonObject();
+        messageObject.addProperty("something", "some text");
+        messageObject.addProperty("pn_other", messageEncrypted);
+
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("something", "some text");
+        expectedObject.addProperty("pn_other", message);
+
+        JsonElement result = partialHistory.processMessage(messageObject);
+
+        assertEquals(expectedObject, result);
+
     }
 }

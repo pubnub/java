@@ -18,6 +18,7 @@ import com.pubnub.api.models.consumer.history.PNHistoryResult;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.VisibleForTesting;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -193,7 +194,8 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
         return true;
     }
 
-    private JsonElement processMessage(JsonElement message) throws PubNubException {
+    @VisibleForTesting
+    JsonElement processMessage(JsonElement message) throws PubNubException {
         // if we do not have a crypto module, there is no way to process the node; let's return.
         CryptoModule cryptoModule = this.getPubnub().getCryptoModule();
         if (cryptoModule == null) {
