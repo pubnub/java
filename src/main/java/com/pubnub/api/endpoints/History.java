@@ -136,11 +136,12 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                     JsonElement message;
 
                     if (includeTimetoken || includeMeta) {
+                        JsonElement messageElement = mapper.getField(historyEntry, "message");
                         try {
-                            message = processMessage(mapper.getField(historyEntry, "message"));
+                            message = processMessage(messageElement);
                         } catch (PubNubException e) {
                             if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
-                                message = e.getJso();
+                                message = messageElement;
                                 historyItem.error(e.getPubnubError());
                             } else {
                                 throw e;
@@ -157,7 +158,7 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                             message = processMessage(historyEntry);
                         } catch (PubNubException e) {
                             if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
-                                message = e.getJso();
+                                message = historyEntry;
                                 historyItem.error(e.getPubnubError());
                             } else {
                                 throw e;
@@ -209,7 +210,7 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                 inputText = mapper.elementToString(message, PN_OTHER);
             } else {
                 PubNubError error = logAndReturnDecryptionError();
-                throw new PubNubException(error.getMessage(), error, message, null, 0, null, null);
+                throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
             }
         } else {
             inputText = mapper.elementToString(message);
@@ -233,8 +234,8 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
     }
 
     private PubNubError logAndReturnDecryptionError() {
-        String errorMessage = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED.getMessage();
-        log.warn(errorMessage);
-        return PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
+        PubNubError error = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
+        log.warn(error.getMessage());
+        return error;
     }
 }

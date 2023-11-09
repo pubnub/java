@@ -2,8 +2,11 @@ package com.pubnub.api.endpoints;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import org.junit.*;
 
@@ -30,6 +33,7 @@ public class FetchMessagesEndpointTest extends TestHarness {
         partialHistory = pubnub.fetchMessages();
         wireMockRule.start();
     }
+
 
     @After
     public void afterEach() {
@@ -105,6 +109,15 @@ public class FetchMessagesEndpointTest extends TestHarness {
         Assert.assertTrue(response.getChannels().containsKey("my_channel"));
         Assert.assertEquals(response.getChannels().get("mychannel").size(), 1);
         Assert.assertEquals(response.getChannels().get("my_channel").size(), 1);
+    }
+
+    @Test
+    public void testProcessMessageEncrypted() throws PubNubException {
+        pubnub.getConfiguration().setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
+        String message = "Hello world.";
+        String messageEncrypted = "bk8x+ZEg+Roq8ngUo7lfFg==";
+        JsonElement result = partialHistory.processMessage(new JsonPrimitive(messageEncrypted));
+        assertEquals(new JsonPrimitive(message), result);
     }
 
 }

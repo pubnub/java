@@ -21,6 +21,7 @@ import com.pubnub.api.models.server.FetchMessagesEnvelope;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.VisibleForTesting;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -172,7 +173,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
                     messageItemBuilder.message(processMessage(item.getMessage()));
                 } catch (PubNubException e) {
                     if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
-                        messageItemBuilder.message(e.getJso());
+                        messageItemBuilder.message(item.getMessage());
                         messageItemBuilder.error(e.getPubnubError());
                     } else {
                         throw e;
@@ -215,7 +216,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
         return true;
     }
 
-    private JsonElement processMessage(JsonElement message) throws PubNubException {
+    @VisibleForTesting
+    JsonElement processMessage(JsonElement message) throws PubNubException {
         // if we do not have a crypto module, there is no way to process the node; let's return.
         CryptoModule cryptoModule = this.getPubnub().getCryptoModule();
         if (cryptoModule == null) {
@@ -232,7 +234,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
                 inputText = mapper.elementToString(message, PN_OTHER);
             } else {
                 PubNubError error = logAndReturnDecryptionError();
-                throw new PubNubException(error.getMessage(), error, message, null, 0, null, null);
+                throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
             }
         } else {
             inputText = mapper.elementToString(message);
@@ -242,7 +244,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
             outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
         } catch (com.pubnub.api.crypto.exception.PubNubException e) {
             PubNubError error = logAndReturnDecryptionError();
-            throw new PubNubException(error.getMessage(), error, message, null, 0, null, null);
+            throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
         }
         outputObject = mapper.fromJson(outputText, JsonElement.class);
 
@@ -257,8 +259,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
     }
 
     private PubNubError logAndReturnDecryptionError() {
-        String errorMessage = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED.getMessage();
-        log.warn(errorMessage);
-        return PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
+        PubNubError error = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
+        log.warn(error.getMessage());
+        return error;
     }
 }

@@ -1,5 +1,6 @@
 package com.pubnub.api.integration;
 
+import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.PubNubErrorBuilder;
@@ -344,8 +345,9 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
     public void testReadUnencryptedMessage_FromHistory_WithCrypto() throws PubNubException {
         final String expectedCipherKey = random();
 
-        final PubNub observer = getPubNub();
-        observer.getConfiguration().setCryptoModule(CryptoModule.createLegacyCryptoModule(expectedCipherKey, true));
+        final PNConfiguration config = getBasicPnConfiguration();
+        config.setCryptoModule(CryptoModule.createLegacyCryptoModule(expectedCipherKey, true));;
+        final PubNub observer = getPubNub(config);
 
         final String expectedChannelName = random();
         final int expectedMessageCount = 10;

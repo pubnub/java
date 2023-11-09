@@ -379,7 +379,7 @@ public final class PubNubErrorBuilder {
     /**
      * Used when crypto is configured but the message was not encrypted.
      */
-    public static final int PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED = 177;
+    public static final int PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED = 174;
 
     // Error Objects
     public static final PubNubError PNERROBJ_TIMEOUT = PubNubError.builder()

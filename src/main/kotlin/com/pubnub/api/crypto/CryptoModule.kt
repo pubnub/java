@@ -14,6 +14,7 @@ import com.pubnub.api.vendor.Base64
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.SequenceInputStream
+import java.lang.IllegalArgumentException
 import java.lang.Integer.min
 
 class CryptoModule internal constructor(
@@ -166,8 +167,11 @@ internal fun CryptoModule.encryptString(inputString: String): String =
     String(Base64.encode(encrypt(inputString.toByteArray()), Base64.NO_WRAP))
 
 @Throws(PubNubException::class)
-internal fun CryptoModule.decryptString(inputString: String): String =
+internal fun CryptoModule.decryptString(inputString: String): String = try {
     decrypt(Base64.decode(inputString, Base64.NO_WRAP)).toString(Charsets.UTF_8)
+} catch (e: IllegalArgumentException) {
+    throw PubNubException(e.message, PubNubError.CRYPTO_ERROR, null, 0, null)
+}
 
 // this method read data from stream and allows to read them again in subsequent reads without manual reset or repositioning
 internal fun BufferedInputStream.checkMinSize(size: Int, exceptionBlock: (Int) -> Unit) {
