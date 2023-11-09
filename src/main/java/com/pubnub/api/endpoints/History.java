@@ -219,9 +219,9 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
         }
         try {
             outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
-        } catch (com.pubnub.api.crypto.exception.PubNubException e) {
+        } catch (Exception e) {
             PubNubError error = logAndReturnDecryptionError();
-            throw new PubNubException(error.getMessage(), error, message, null, 0, null, null);
+            throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
         }
         outputObject = this.getPubnub().getMapper().fromJson(outputText, JsonElement.class);
 

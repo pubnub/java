@@ -242,7 +242,7 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
 
         try {
             outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
-        } catch (com.pubnub.api.crypto.exception.PubNubException e) {
+        } catch (Exception e) {
             PubNubError error = logAndReturnDecryptionError();
             throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
         }
