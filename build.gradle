@@ -22,7 +22,7 @@ configurations.all {
 }
 
 lombok {
-    version = "1.18.4"
+    version = "1.18.30"
 }
 
 repositories {
@@ -81,7 +81,7 @@ dependencies {
 }
 
 jacoco {
-    toolVersion = "0.8.2"
+    toolVersion = "0.8.11"
 }
 
 jacocoTestReport {
