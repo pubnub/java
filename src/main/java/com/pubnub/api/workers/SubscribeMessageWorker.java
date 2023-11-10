@@ -68,6 +68,8 @@ public class SubscribeMessageWorker implements Runnable {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 log.trace("take message interrupted", e);
+            } catch (Exception e) { // don't crash the thread on malformed messages
+                log.warn("Unexpected message processing error", e);
             }
         }
     }

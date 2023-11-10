@@ -67,7 +67,7 @@ public class SubscriptionManagerTest extends TestHarness {
 
     @After
     public void afterEach() {
-        pubnub.destroy();
+        pubnub.forceDestroy();
         pubnub = null;
         wireMockRule.stop();
     }

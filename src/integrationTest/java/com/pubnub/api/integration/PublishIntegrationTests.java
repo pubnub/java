@@ -2,9 +2,13 @@ package com.pubnub.api.integration;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubError;
 import com.pubnub.api.PubNubException;
+import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.SubscribeCallback;
+import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.models.consumer.PNStatus;
@@ -20,6 +24,7 @@ import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -35,6 +40,8 @@ import static com.pubnub.api.integration.util.Utils.random;
 import static com.pubnub.api.integration.util.Utils.randomChannel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 public class PublishIntegrationTests extends BaseIntegrationTest {
 
@@ -147,6 +154,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
                 if (status.getOperation() == PNOperationType.PNSubscribeOperation) {
@@ -202,6 +210,98 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
         subscribeToChannel(pubNub, expectedChannel);
 
         Awaitility.await().atMost(Durations.TEN_SECONDS).untilTrue(success);
+    }
+
+    @Test
+    public void testReceiveUnencryptedMessageWithCryptoDoesntCrash() {
+        final AtomicInteger success = new AtomicInteger(0);
+        final String expectedChannel = randomChannel();
+        final JsonObject messagePayload = generateMessage(pubNub);
+
+        final PubNub sender = getPubNub();
+        PNConfiguration config = getBasicPnConfiguration();
+        config.setCryptoModule(CryptoModule.createAesCbcCryptoModule("test", false));
+        final PubNub observer = getPubNub(config);
+
+        observer.addListener(new SubscribeCallback() {
+            @Override
+            public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
+
+            }
+
+            @Override
+            public void status(@NotNull PubNub pubnub, @NotNull PNStatus status) {
+                if (status.getOperation() == PNOperationType.PNSubscribeOperation) {
+                    assert status.getAffectedChannels() != null;
+                    if (status.getAffectedChannels().contains(expectedChannel)) {
+                        // send an unencrypted message first to try to crash the SubscribeMessageProcessor
+                        sender.publish()
+                                .message(messagePayload)
+                                .channel(expectedChannel)
+                                .async((result, status1) -> {
+                                    assertFalse(status1.isError());
+
+                                    // then verify if the subscribe loop is still working by sending an encrypted message
+                                    observer.publish()
+                                            .message(messagePayload)
+                                            .channel(expectedChannel)
+                                            .async((result2, status2) -> assertFalse(status2.isError()));
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void message(@NotNull PubNub pubnub, @NotNull PNMessageResult message) {
+                if (success.get() == 0) {
+                    assertEquals(expectedChannel, message.getChannel());
+                    assertEquals(sender.getConfiguration().getUserId().getValue(), message.getPublisher());
+                    assertEquals(PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED, message.getError());
+                    assertEquals(messagePayload, message.getMessage());
+                    success.incrementAndGet();
+                } else if (success.get() == 1) {
+                    assertEquals(expectedChannel, message.getChannel());
+                    assertEquals(observer.getConfiguration().getUserId().getValue(), message.getPublisher());
+                    assertEquals(messagePayload, message.getMessage());
+                    assertNull(message.getError());
+                    success.incrementAndGet();
+                }
+            }
+
+            @Override
+            public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
+
+            }
+
+            @Override
+            public void signal(@NotNull PubNub pubNub, @NotNull PNSignalResult pnSignalResult) {
+
+            }
+
+            @Override
+            public void uuid(@NotNull final PubNub pubnub, @NotNull final PNUUIDMetadataResult pnUUIDMetadataResult) {
+
+            }
+
+            @Override
+            public void channel(@NotNull final PubNub pubnub, @NotNull final PNChannelMetadataResult pnChannelMetadataResult) {
+
+            }
+
+            @Override
+            public void membership(@NotNull PubNub pubNub, @NotNull PNMembershipResult pnMembershipResult) {
+
+            }
+
+            @Override
+            public void messageAction(@NotNull PubNub pubnub, @NotNull PNMessageActionResult pnActionResult) {
+
+            }
+        });
+
+        subscribeToChannel(observer, expectedChannel);
+
+        Awaitility.await().atMost(Durations.TEN_SECONDS).untilAtomic(success, Matchers.greaterThanOrEqualTo(2));
     }
 
     @Test
@@ -272,6 +372,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -346,6 +447,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -484,6 +586,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -563,6 +666,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 
@@ -651,6 +755,7 @@ public class PublishIntegrationTests extends BaseIntegrationTest {
             public void file(@NotNull PubNub pubnub, @NotNull PNFileEventResult pnFileEventResult) {
 
             }
+
             @Override
             public void status(@NotNull PubNub pubnub, @NotNull PNStatus pnStatus) {
 

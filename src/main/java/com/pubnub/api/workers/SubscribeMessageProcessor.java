@@ -6,8 +6,10 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.PubNubError;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
+import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.managers.DuplicationManager;
@@ -110,7 +112,18 @@ public class SubscribeMessageProcessor {
 
             return pnPresenceEventResult;
         } else {
-            JsonElement extractedMessage = processMessage(message);
+            JsonElement extractedMessage;
+            PubNubError error = null;
+            try {
+                extractedMessage = processMessage(message);
+            } catch (PubNubException e) {
+                if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
+                    extractedMessage = message.getPayload();
+                    error = e.getPubnubError();
+                } else {
+                    throw e;
+                }
+            }
 
             if (extractedMessage == null) {
                 log.debug("unable to parse payload on #processIncomingMessages");
@@ -129,9 +142,9 @@ public class SubscribeMessageProcessor {
                     .build();
 
             if (message.getType() == null) {
-                return new PNMessageResult(result, extractedMessage);
+                return new PNMessageResult(result, extractedMessage, error);
             } else if (message.getType() == TYPE_MESSAGE) {
-                return new PNMessageResult(result, extractedMessage);
+                return new PNMessageResult(result, extractedMessage, error);
             } else if (message.getType() == typeSignal) {
                 return new PNSignalResult(result, extractedMessage);
             } else if (message.getType() == typeObject) {
@@ -215,14 +228,26 @@ public class SubscribeMessageProcessor {
         String outputText;
         JsonElement outputObject;
 
-        if (mapper.isJsonObject(input) && mapper.hasField(input, PN_OTHER)) {
-            inputText = mapper.elementToString(input, PN_OTHER);
-        } else {
+        if (mapper.isJsonObject(input)) {
+            if (mapper.hasField(input, PN_OTHER)) {
+                inputText = mapper.elementToString(input, PN_OTHER);
+            } else {
+                throw logAndGetDecryptionException();
+            }
+        } else if (input.isJsonPrimitive() && input.getAsJsonPrimitive().isString()) {
+            // String may represent not encrypted string or encrypted data. We will check this when decrypting.
             inputText = mapper.elementToString(input);
+        } else {
+            // Input represents some other Json structure, such as JsonArray
+            throw logAndGetDecryptionException();
         }
 
-        outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
-        outputObject = mapper.fromJson(outputText, JsonElement.class);
+        try {
+            outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
+            outputObject = mapper.fromJson(outputText, JsonElement.class);
+        } catch (Exception e) {
+            throw logAndGetDecryptionException();
+        }
 
         // inject the decoded response into the payload
         if (mapper.isJsonObject(input) && mapper.hasField(input, PN_OTHER)) {
@@ -232,6 +257,12 @@ public class SubscribeMessageProcessor {
         }
 
         return outputObject;
+    }
+
+    private PubNubException logAndGetDecryptionException() {
+        PubNubError error = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
+        log.warn(error.getMessage());
+        return new PubNubException(error.getMessage(), error, null, null, 0, null, null);
     }
 
     @SuppressWarnings("RegExpRedundantEscape")
