@@ -37,6 +37,7 @@ import com.pubnub.api.models.server.files.FileUploadNotification;
 import com.pubnub.api.services.FilesService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,9 +72,8 @@ public class SubscribeMessageProcessor {
         if (this.pubnub.getConfiguration().isDedupOnSubscribe()) {
             if (this.duplicationManager.isDuplicate(message)) {
                 return null;
-            } else {
-                this.duplicationManager.addEntry(message);
             }
+            this.duplicationManager.addEntry(message);
         }
 
         if (message.getChannel().endsWith("-pnpres")) {
@@ -90,7 +90,6 @@ public class SubscribeMessageProcessor {
             }
 
             JsonElement isHereNowRefresh = message.getPayload().getAsJsonObject().get("here_now_refresh");
-
             PNPresenceEventResult pnPresenceEventResult = PNPresenceEventResult.builder()
                     .event(presencePayload.getAction())
                     // deprecated
@@ -115,7 +114,11 @@ public class SubscribeMessageProcessor {
             JsonElement extractedMessage;
             PubNubError error = null;
             try {
-                extractedMessage = processMessage(message);
+                if (!message.supportsEncryption()) {
+                    extractedMessage = message.getPayload();
+                } else {
+                    extractedMessage = tryDecryptMessage(message.getPayload(), pubnub.getCryptoModule(), pubnub.getMapper());
+                }
             } catch (PubNubException e) {
                 if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
                     extractedMessage = message.getPayload();
@@ -124,7 +127,6 @@ public class SubscribeMessageProcessor {
                     throw e;
                 }
             }
-
             if (extractedMessage == null) {
                 log.debug("unable to parse payload on #processIncomingMessages");
             }
@@ -203,27 +205,17 @@ public class SubscribeMessageProcessor {
                         .jsonMessage(jsonMessage)
                         .build();
             }
-
         }
         return null;
     }
 
-    private JsonElement processMessage(SubscribeMessage subscribeMessage) throws PubNubException {
-        JsonElement input = subscribeMessage.getPayload();
-
+    @VisibleForTesting
+    public static JsonElement tryDecryptMessage(JsonElement input, CryptoModule cryptoModule, MapperManager mapper) throws PubNubException {
         // if we do not have a crypto module, there is no way to process the node; let's return.
-        CryptoModule cryptoModule = pubnub.getCryptoModule();
         if (cryptoModule == null) {
             return input;
         }
 
-        // if the message couldn't possibly be encrypted in the first place, there is no way to process the node; let's
-        // return.
-        if (!subscribeMessage.supportsEncryption()) {
-            return input;
-        }
-
-        MapperManager mapper = this.pubnub.getMapper();
         String inputText;
         String outputText;
         JsonElement outputObject;
@@ -259,7 +251,7 @@ public class SubscribeMessageProcessor {
         return outputObject;
     }
 
-    private PubNubException logAndGetDecryptionException() {
+    private static PubNubException logAndGetDecryptionException() {
         PubNubError error = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
         log.warn(error.getMessage());
         return new PubNubException(error.getMessage(), error, null, null, 0, null, null);

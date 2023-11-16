@@ -1,13 +1,9 @@
 package com.pubnub.api.endpoints;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.PubNubErrorBuilder;
-import com.pubnub.api.crypto.CryptoModule;
-import com.pubnub.api.crypto.CryptoModuleKt;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.managers.MapperManager;
 import com.pubnub.api.managers.RetrofitManager;
@@ -15,10 +11,10 @@ import com.pubnub.api.managers.TelemetryManager;
 import com.pubnub.api.managers.token_manager.TokenManager;
 import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
+import com.pubnub.api.workers.SubscribeMessageProcessor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.VisibleForTesting;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -27,8 +23,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static com.pubnub.api.endpoints.FetchMessages.PN_OTHER;
 
 @Slf4j
 @Accessors(chain = true, fluent = true)
@@ -139,7 +133,7 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                     if (includeTimetoken || includeMeta) {
                         JsonElement messageElement = mapper.getField(historyEntry, "message");
                         try {
-                            message = processMessage(messageElement);
+                            message = SubscribeMessageProcessor.tryDecryptMessage(messageElement, getPubnub().getCryptoModule(), mapper);
                         } catch (PubNubException e) {
                             if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
                                 message = messageElement;
@@ -156,7 +150,7 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
                         }
                     } else {
                         try {
-                            message = processMessage(historyEntry);
+                            message = SubscribeMessageProcessor.tryDecryptMessage(historyEntry, getPubnub().getCryptoModule(), mapper);
                         } catch (PubNubException e) {
                             if (e.getPubnubError() == PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED) {
                                 message = historyEntry;
@@ -192,52 +186,5 @@ public class History extends Endpoint<JsonElement, PNHistoryResult> {
     @Override
     protected boolean isAuthRequired() {
         return true;
-    }
-
-    @VisibleForTesting
-    JsonElement processMessage(JsonElement message) throws PubNubException {
-        // if we do not have a crypto module, there is no way to process the node; let's return.
-        CryptoModule cryptoModule = this.getPubnub().getCryptoModule();
-        if (cryptoModule == null) {
-            return message;
-        }
-
-        MapperManager mapper = getPubnub().getMapper();
-        String inputText;
-        String outputText;
-        JsonElement outputObject;
-
-        if (mapper.isJsonObject(message)) {
-            if (mapper.hasField(message, PN_OTHER)) {
-                inputText = mapper.elementToString(message, PN_OTHER);
-            } else {
-                PubNubError error = logAndReturnDecryptionError();
-                throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
-            }
-        } else {
-            inputText = mapper.elementToString(message);
-        }
-        try {
-            outputText = CryptoModuleKt.decryptString(cryptoModule, inputText);
-        } catch (Exception e) {
-            PubNubError error = logAndReturnDecryptionError();
-            throw new PubNubException(error.getMessage(), error, null, null, 0, null, null);
-        }
-        outputObject = this.getPubnub().getMapper().fromJson(outputText, JsonElement.class);
-
-        // inject the decoded response into the payload
-        if (mapper.isJsonObject(message) && mapper.hasField(message, PN_OTHER)) {
-            JsonObject objectNode = mapper.getAsObject(message);
-            mapper.putOnObject(objectNode, PN_OTHER, outputObject);
-            outputObject = objectNode;
-        }
-
-        return outputObject;
-    }
-
-    private PubNubError logAndReturnDecryptionError() {
-        PubNubError error = PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED;
-        log.warn(error.getMessage());
-        return error;
     }
 }

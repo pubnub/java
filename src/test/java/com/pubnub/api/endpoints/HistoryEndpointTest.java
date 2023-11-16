@@ -13,6 +13,7 @@ import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.history.PNHistoryResult;
+import com.pubnub.api.workers.SubscribeMessageProcessor;
 import org.awaitility.Awaitility;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -452,7 +453,7 @@ public class HistoryEndpointTest extends TestHarness {
         pubnub.getConfiguration().setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
         String message = "Hello world.";
         String messageEncrypted = "bk8x+ZEg+Roq8ngUo7lfFg==";
-        JsonElement result = partialHistory.processMessage(new JsonPrimitive(messageEncrypted));
+        JsonElement result = SubscribeMessageProcessor.tryDecryptMessage(new JsonPrimitive(messageEncrypted), pubnub.getCryptoModule(), pubnub.getMapper());
         assertEquals(new JsonPrimitive(message), result);
     }
 
@@ -461,7 +462,7 @@ public class HistoryEndpointTest extends TestHarness {
         pubnub.getConfiguration().setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
         String message = "Hello world.";
         PubNubException exception = assertThrows(PubNubException.class, () -> {
-            partialHistory.processMessage(new JsonPrimitive(message));
+            SubscribeMessageProcessor.tryDecryptMessage(new JsonPrimitive(message), pubnub.getCryptoModule(), pubnub.getMapper());
         });
         assertEquals(exception.getPubnubError(), PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED);
     }
@@ -480,7 +481,7 @@ public class HistoryEndpointTest extends TestHarness {
         expectedObject.addProperty("something", "some text");
         expectedObject.addProperty("pn_other", message);
 
-        JsonElement result = partialHistory.processMessage(messageObject);
+        JsonElement result = SubscribeMessageProcessor.tryDecryptMessage(messageObject, pubnub.getCryptoModule(), pubnub.getMapper());
 
         assertEquals(expectedObject, result);
 
