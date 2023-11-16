@@ -209,7 +209,6 @@ public class SubscribeMessageProcessor {
         return null;
     }
 
-    @VisibleForTesting
     public static JsonElement tryDecryptMessage(JsonElement input, CryptoModule cryptoModule, MapperManager mapper) throws PubNubException {
         // if we do not have a crypto module, there is no way to process the node; let's return.
         if (cryptoModule == null) {
