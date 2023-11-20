@@ -37,7 +37,6 @@ import com.pubnub.api.models.server.files.FileUploadNotification;
 import com.pubnub.api.services.FilesService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
