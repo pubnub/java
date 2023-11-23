@@ -22,8 +22,7 @@ public final class PubNubErrorBuilder {
     public static final int PNERR_CONNECT_EXCEPTION = 102;
 
     /**
-     * Please check network connectivity. Please contact support with error
-     * details if issue persists.
+     * Please check network connectivity.
      */
     public static final int PNERR_HTTP_ERROR = 103;
 

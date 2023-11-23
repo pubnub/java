@@ -68,7 +68,7 @@ enum class PubNubError(private val code: Int, val message: String) {
 
     HTTP_ERROR(
         103,
-        "HTTP Error. Please check network connectivity. Please contact support with error details if the issue persists."
+        "HTTP Error. Please check network connectivity."
     ),
 
     MESSAGE_MISSING(
