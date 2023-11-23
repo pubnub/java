@@ -1,3 +1,9 @@
+## v6.4.2
+November 23 2023
+
+#### Fixed
+- Handle unencrypted message in subscribe and history when crypto configured (error flag is set on message result).
+
 ## v6.4.1
 October 30 2023
 
