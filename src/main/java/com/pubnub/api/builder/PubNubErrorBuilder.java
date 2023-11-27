@@ -756,7 +756,7 @@ public final class PubNubErrorBuilder {
 
     public static final PubNubError PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED = PubNubError.builder()
             .errorCode(PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED)
-            .message("Crypto is configured but message is not encrypted.")
+            .message("Message decryption failed using the current crypto configuration.")
             .build();
 
     private PubNubErrorBuilder() {

@@ -162,6 +162,24 @@ public class SubscribeMessageProcessorTest {
     }
 
     @Test
+    public void testProcessFileUnencryptedWithCrypto() throws PubNubException {
+        //given
+        Gson gson = new Gson();
+        PNConfiguration config = config();
+        config.setCryptoModule(CryptoModule.createAesCbcCryptoModule("enigma", false));
+        SubscribeMessageProcessor subscribeMessageProcessor = subscribeMessageProcessor(config);
+        JsonElement jsonMessage = new JsonPrimitive("thisIsMessage");
+
+        //when
+        PNEvent result = subscribeMessageProcessor.processIncomingPayload(gson.fromJson(fileMessage(jsonMessage.toString()), SubscribeMessage.class));
+
+        //then
+        assertThat(result, is(instanceOf(PNFileEventResult.class)));
+        assertThat(((PNFileEventResult) result).getJsonMessage(), is(jsonMessage));
+        assertThat(((PNFileEventResult) result).getError(), is(PubNubErrorBuilder.PNERROBJ_PNERR_CRYPTO_IS_CONFIGURED_BUT_MESSAGE_IS_NOT_ENCRYPTED));
+    }
+
+    @Test
     public void testProcessMessageEncryptedWithCrypto() throws PubNubException {
         //given
         Gson gson = new Gson();

@@ -202,6 +202,7 @@ public class SubscribeMessageProcessor {
                         .publisher(message.getIssuingClientId())
                         .timetoken(publishMetaData.getPublishTimetoken())
                         .jsonMessage(jsonMessage)
+                        .error(error)
                         .build();
             }
         }
