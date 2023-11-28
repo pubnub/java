@@ -1,3 +1,9 @@
+## v6.4.3
+November 28 2023
+
+#### Added
+- Add `error` field to `PNFileEventResult` and set it in case of decryption failure.
+
 ## v6.4.2
 November 23 2023
 
