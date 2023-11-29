@@ -86,7 +86,7 @@ public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMess
 
     @Override
     protected Call<List<Object>> doWork(Map<String, String> baseParams) throws PubNubException {
-        String stringifiedMessage = mapper.toJsonUsinJackson(new FileUploadNotification(this.message, pnFile));
+        String stringifiedMessage = mapper.toJson(new FileUploadNotification(this.message, pnFile));
         String messageAsString;
         CryptoModule cryptoModule = getPubnub().getCryptoModule();
         if (cryptoModule != null) {
@@ -99,7 +99,7 @@ public class PublishFileMessage extends Endpoint<List<Object>, PNPublishFileMess
         final HashMap<String, String> params = new HashMap<>(baseParams);
 
         if (meta != null) {
-            String stringifiedMeta = mapper.toJsonUsinJackson(meta);
+            String stringifiedMeta = mapper.toJson(meta);
             stringifiedMeta = PubNubUtil.urlEncode(stringifiedMeta);
             params.put("meta", stringifiedMeta);
         }

@@ -100,11 +100,11 @@ sdks:
                   license-url: https://github.com/google/gson/blob/gson-parent-2.9.0/LICENSE
                   is-required: Required
                 -
-                  name: jackson-databind
-                  min-version: 2.14.2
-                  location: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.14.2/jackson-databind-2.14.2.jar
-                  license: Apache License, Version 2.0
-                  license-url: hhttps://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.14.2/README.md
+                  name: cbor
+                  min-version: "0.9"
+                  location: https://repo.maven.apache.org/maven2/co/nstant/in/cbor/0.9
+                  license: The Apache Software License, Version 2.0
+                  license-url: https://www.apache.org/licenses/LICENSE-2.0.txt
                   is-required: Required
                 -
                   name: json

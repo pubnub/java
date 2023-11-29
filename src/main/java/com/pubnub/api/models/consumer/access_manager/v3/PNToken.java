@@ -1,8 +1,5 @@
 package com.pubnub.api.models.consumer.access_manager.v3;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pubnub.api.models.TokenBitmask;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,7 +7,6 @@ import lombok.NonNull;
 import java.util.Map;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PNToken {
     private final int version;
     private final long timestamp;
@@ -22,20 +18,18 @@ public class PNToken {
     @NonNull
     private final PNTokenResources patterns;
 
-    @JsonCreator
     public static PNToken of(
-            @JsonProperty("v") final int v,
-            @JsonProperty("t") final long t,
-            @JsonProperty("ttl") final long ttl,
-            @JsonProperty("res") final PNTokenResources res,
-            @JsonProperty("pat") final PNTokenResources pat,
-            @JsonProperty("uuid") final String uuid,
-            @JsonProperty("meta") final Object meta) {
+            final int v,
+            final long t,
+            final long ttl,
+            final PNTokenResources res,
+            final PNTokenResources pat,
+            final String uuid,
+            final Object meta) {
         return new PNToken(v, t, ttl, uuid, meta, res, pat);
     }
 
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PNTokenResources {
         @NonNull
         private final Map<String, PNResourcePermissions> channels;
@@ -44,10 +38,9 @@ public class PNToken {
         @NonNull
         private final Map<String, PNResourcePermissions> uuids;
 
-        @JsonCreator
-        public static PNTokenResources of(@JsonProperty("chan") final Map<String, PNResourcePermissions> chan,
-                                          @JsonProperty("grp") final Map<String, PNResourcePermissions> grp,
-                                          @JsonProperty("uuid") final Map<String, PNResourcePermissions> uuid) {
+        public static PNTokenResources of(final Map<String, PNResourcePermissions> chan,
+                                          final Map<String, PNResourcePermissions> grp,
+                                          final Map<String, PNResourcePermissions> uuid) {
             return new PNTokenResources(chan, grp, uuid);
         }
 
@@ -63,7 +56,6 @@ public class PNToken {
         private final boolean update;
         private final boolean join;
 
-        @JsonCreator
         public static PNResourcePermissions of(int grant) {
             return new PNResourcePermissions(
                     (grant & TokenBitmask.READ) != 0,

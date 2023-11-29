@@ -1,7 +1,5 @@
 package com.pubnub.api.managers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -37,8 +35,6 @@ public class MapperManager {
     private final Gson objectMapper;
     @Getter
     private final Converter.Factory converterFactory;
-
-    private final ObjectMapper jacksonObjectMapper = new ObjectMapper();
 
     public MapperManager() {
         TypeAdapter<Boolean> booleanAsIntAdapter = getBooleanTypeAdapter();
@@ -152,18 +148,6 @@ public class MapperManager {
         try {
             return this.objectMapper.toJson(input);
         } catch (JsonParseException e) {
-            throw PubNubException.builder()
-                    .pubnubError(PubNubErrorBuilder.PNERROBJ_JSON_ERROR)
-                    .errormsg(e.getMessage())
-                    .cause(e)
-                    .build();
-        }
-    }
-
-    public String toJsonUsinJackson(Object input) throws PubNubException {
-        try {
-            return this.jacksonObjectMapper.writeValueAsString(input);
-        } catch (JsonProcessingException e) {
             throw PubNubException.builder()
                     .pubnubError(PubNubErrorBuilder.PNERROBJ_JSON_ERROR)
                     .errormsg(e.getMessage())
