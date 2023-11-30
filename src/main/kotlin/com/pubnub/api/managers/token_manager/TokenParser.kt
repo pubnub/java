@@ -10,10 +10,6 @@ import com.pubnub.api.models.consumer.access_manager.v3.PNToken
 import com.pubnub.api.vendor.Base64
 import java.math.BigInteger
 import java.nio.charset.StandardCharsets
-import kotlin.collections.Map
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 import co.nstant.`in`.cbor.model.Map as CborMap
 
 internal class TokenParser {
