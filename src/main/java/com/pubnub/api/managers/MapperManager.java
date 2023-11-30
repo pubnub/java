@@ -150,9 +150,9 @@ public class MapperManager {
         try {
             if (input instanceof List && input.getClass().isAnonymousClass()) {
                 return this.objectMapper.toJson(input, List.class);
-            } if (input instanceof Map && input.getClass().isAnonymousClass()) {
+            } else if (input instanceof Map && input.getClass().isAnonymousClass()) {
                 return this.objectMapper.toJson(input, Map.class);
-            } if (input instanceof Set && input.getClass().isAnonymousClass()) {
+            } else if (input instanceof Set && input.getClass().isAnonymousClass()) {
                 return this.objectMapper.toJson(input, Set.class);
             } else {
                 return this.objectMapper.toJson(input);
