@@ -119,12 +119,7 @@ changelog:
     version: v6.4.4
     changes:
       - type: bug
-        text: "Bring back compatibility with Android 6+ by removing the Jackson library dependency."  - date: 2023-11-28
-    version: v6.4.3
-    changes:
-      - type: feature
-        text: "Add `error` field to `PNFileEventResult` and set it in case of decryption failure."
-  - date: 2023-11-23
+        text: "Bring back compatibility with Android 6+ by removing the Jackson library dependency."  - date: 2023-11-23
     version: v6.4.2
     changes:
       - type: bug
