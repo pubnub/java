@@ -119,12 +119,7 @@ changelog:
     version: v6.4.4
     changes:
       - type: bug
-        text: "Bring back compatibility with Android 6+ by removing the Jackson library dependency."  - date: 2023-11-23
-    version: v6.4.2
-    changes:
-      - type: bug
-        text: "Handle unencrypted message in subscribe and history when crypto configured (error flag is set on message result)."
-  - date: 2023-10-30
+        text: "Bring back compatibility with Android 6+ by removing the Jackson library dependency."  - date: 2023-10-30
     version: v6.4.1
     changes:
       - type: bug
