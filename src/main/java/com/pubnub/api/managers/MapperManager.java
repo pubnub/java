@@ -27,7 +27,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MapperManager {
 
@@ -146,7 +148,15 @@ public class MapperManager {
 
     public String toJson(Object input) throws PubNubException {
         try {
-            return this.objectMapper.toJson(input);
+            if (input instanceof List && input.getClass().isAnonymousClass()) {
+                return this.objectMapper.toJson(input, List.class);
+            } if (input instanceof Map && input.getClass().isAnonymousClass()) {
+                return this.objectMapper.toJson(input, Map.class);
+            } if (input instanceof Set && input.getClass().isAnonymousClass()) {
+                return this.objectMapper.toJson(input, Set.class);
+            } else {
+                return this.objectMapper.toJson(input);
+            }
         } catch (JsonParseException e) {
             throw PubNubException.builder()
                     .pubnubError(PubNubErrorBuilder.PNERROBJ_JSON_ERROR)
