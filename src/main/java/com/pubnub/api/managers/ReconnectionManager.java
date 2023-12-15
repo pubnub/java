@@ -9,7 +9,9 @@ import com.pubnub.api.models.consumer.PNTimeResult;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,10 +20,12 @@ import java.util.TimerTask;
 public class ReconnectionManager {
 
     private static final int LINEAR_INTERVAL = 3;
-    private static final int MIN_EXPONENTIAL_BACKOFF = 1;
+    private static final int MAX_RANDOM = 3;
+    private static final int MIN_EXPONENTIAL_BACKOFF = 2;
     private static final int MAX_EXPONENTIAL_BACKOFF = 32;
 
     private static final int MILLISECONDS = 1000;
+    public static final int MAXIMUM_RECONNECTION_RETRIES_DEFAULT = 10;
 
     private ReconnectionCallback callback;
     private PubNub pubnub;
@@ -31,6 +35,7 @@ public class ReconnectionManager {
 
     private PNReconnectionPolicy pnReconnectionPolicy;
     private int maxConnectionRetries;
+    private Random random = new Random();
 
     /**
      * Timer for heartbeat operations.
@@ -40,7 +45,16 @@ public class ReconnectionManager {
     public ReconnectionManager(PubNub pubnub) {
         this.pubnub = pubnub;
         this.pnReconnectionPolicy = pubnub.getConfiguration().getReconnectionPolicy();
-        this.maxConnectionRetries = pubnub.getConfiguration().getMaximumReconnectionRetries();
+        this.maxConnectionRetries = getMaximumReconnectionRetries();
+    }
+
+    private int getMaximumReconnectionRetries() {
+        int maximumReconnectionRetries = pubnub.getConfiguration().getMaximumReconnectionRetries();
+        if (maximumReconnectionRetries < 0 || maximumReconnectionRetries > MAXIMUM_RECONNECTION_RETRIES_DEFAULT) {
+            maximumReconnectionRetries = MAXIMUM_RECONNECTION_RETRIES_DEFAULT;
+        }
+        log.debug("maximumReconnectionRetries is: " + maximumReconnectionRetries);
+        return maximumReconnectionRetries;
     }
 
     public void setReconnectionListener(ReconnectionCallback reconnectionCallback) {
@@ -55,10 +69,10 @@ public class ReconnectionManager {
         exponentialMultiplier = 1;
         failedCalls = 0;
 
-        registerHeartbeatTimer();
+        registerRetryTimer();
     }
 
-    private void registerHeartbeatTimer() {
+    private void registerRetryTimer() {
         // make sure only one timer is running at a time.
         stopHeartbeatTimer();
 
@@ -66,7 +80,7 @@ public class ReconnectionManager {
             return;
         }
 
-        if (maxConnectionRetries != -1 && failedCalls >= maxConnectionRetries) { // _what's -1?
+        if (failedCalls >= maxConnectionRetries) {
             callback.onMaxReconnectionExhaustion();
             return;
         }
@@ -78,10 +92,10 @@ public class ReconnectionManager {
             public void run() {
                 callTime();
             }
-        }, getNextInterval() * MILLISECONDS);
+        }, getNextIntervalInMilliSeconds());
     }
 
-    int getNextInterval() {
+    int getNextIntervalInMilliSeconds() {
         int timerInterval = LINEAR_INTERVAL;
         failedCalls++;
 
@@ -95,14 +109,24 @@ public class ReconnectionManager {
             } else if (timerInterval < 1) {
                 timerInterval = MIN_EXPONENTIAL_BACKOFF;
             }
-            log.debug("timerInterval = " + timerInterval + " at: " + Calendar.getInstance().getTime().toString());
+            timerInterval = (int) ((timerInterval + getRandomDelay()) * MILLISECONDS);
+            log.debug("timerInterval = " + timerInterval + "ms at: " + Calendar.getInstance().getTime().toString());
         }
 
         if (pnReconnectionPolicy == PNReconnectionPolicy.LINEAR) {
-            timerInterval = LINEAR_INTERVAL;
+            timerInterval = (int) ((LINEAR_INTERVAL + getRandomDelay()) * MILLISECONDS);
         }
-
         return timerInterval;
+    }
+
+    private double getRandomDelay() {
+        double randomDelay = MAX_RANDOM * random.nextDouble();
+        return roundTo3DecimalPlaces(randomDelay);
+    }
+
+    private double roundTo3DecimalPlaces(double value) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+        return Double.parseDouble(decimalFormat.format(value));
     }
 
     private void stopHeartbeatTimer() {
@@ -121,7 +145,7 @@ public class ReconnectionManager {
                     callback.onReconnection();
                 } else {
                     log.debug("callTime() at: " + Calendar.getInstance().getTime().toString());
-                    registerHeartbeatTimer();
+                    registerRetryTimer();
                 }
             }
         });

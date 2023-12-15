@@ -38,6 +38,7 @@ public class PNConfiguration {
     private static final int SUBSCRIBE_TIMEOUT = 310;
     private static final int CONNECT_TIMEOUT = 5;
     private static final int FILE_MESSAGE_PUBLISH_RETRY_LIMIT = 5;
+    private static final int MAXIMUM_RECONNECTION_RETRIES = 10;
 
     @Getter
     private SSLSocketFactory sslSocketFactory;
@@ -201,7 +202,9 @@ public class PNConfiguration {
     private PNReconnectionPolicy reconnectionPolicy;
 
     /**
-     * Set how many times the reconneciton manager will try to connect before giving app
+     * Set how many times the reconnection manager will try to connect before giving up.
+     * Max allowed value is 10.
+     * Default is 10.
      */
     @Setter
     private int maximumReconnectionRetries;
@@ -284,7 +287,7 @@ public class PNConfiguration {
 
         startSubscriberThread = true;
 
-        maximumReconnectionRetries = -1;
+        maximumReconnectionRetries = MAXIMUM_RECONNECTION_RETRIES;
 
         dedupOnSubscribe = false;
         suppressLeaveEvents = false;
