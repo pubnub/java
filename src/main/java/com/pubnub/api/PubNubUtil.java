@@ -249,14 +249,13 @@ public class PubNubUtil {
 
     }
 
-    public static String removeTrailingEqualSigns(String signature) {
-        String cleanSignature = signature;
-
-        while ((cleanSignature.charAt(cleanSignature.length() - 1) == '=')) {
-            cleanSignature = cleanSignature.substring(0, cleanSignature.length() - 1);
-        }
-        return cleanSignature;
+public static String removeTrailingEqualSigns(String signature) {
+    StringBuilder cleanSignatureBuilder = new StringBuilder(signature);
+    while (cleanSignatureBuilder.charAt(cleanSignatureBuilder.length() - 1) == '=') {
+        cleanSignatureBuilder.setLength(cleanSignatureBuilder.length() - 1);
     }
+    return cleanSignatureBuilder.toString();
+}
 
     private static String requestBodyToString(final Request request) {
         if (request.body() == null) {
