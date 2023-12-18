@@ -9,7 +9,6 @@ import com.pubnub.api.models.consumer.PNTimeResult;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.Timer;
@@ -19,13 +18,13 @@ import java.util.TimerTask;
 @Slf4j
 public class ReconnectionManager {
 
-    private static final int LINEAR_INTERVAL = 3;
-    private static final int MAX_RANDOM = 3;
+    private static final int BASE_LINEAR_INTERVAL_IN_MILLISECONDS = 3000;
     private static final int MIN_EXPONENTIAL_BACKOFF = 2;
     private static final int MAX_EXPONENTIAL_BACKOFF = 32;
 
-    private static final int MILLISECONDS = 1000;
-    public static final int MAXIMUM_RECONNECTION_RETRIES_DEFAULT = 10;
+    private static final int BOUND = 1000;
+    private static final int MILLISECONDS = BOUND;
+    private static final int MAXIMUM_RECONNECTION_RETRIES_DEFAULT = 10;
 
     private ReconnectionCallback callback;
     private PubNub pubnub;
@@ -35,7 +34,7 @@ public class ReconnectionManager {
 
     private PNReconnectionPolicy pnReconnectionPolicy;
     private int maxConnectionRetries;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     /**
      * Timer for heartbeat operations.
@@ -96,7 +95,7 @@ public class ReconnectionManager {
     }
 
     int getNextIntervalInMilliSeconds() {
-        int timerInterval = LINEAR_INTERVAL;
+        int timerInterval = 0;
         failedCalls++;
 
         if (pnReconnectionPolicy == PNReconnectionPolicy.EXPONENTIAL) {
@@ -105,29 +104,24 @@ public class ReconnectionManager {
             if (timerInterval > MAX_EXPONENTIAL_BACKOFF) {
                 timerInterval = MIN_EXPONENTIAL_BACKOFF;
                 exponentialMultiplier = 1;
-                log.debug("timerInterval > MAXEXPONENTIALBACKOFF at: " + Calendar.getInstance().getTime().toString());
+                log.debug("timerInterval > MAXEXPONENTIALBACKOFF at: " + Calendar.getInstance().getTime());
             } else if (timerInterval < 1) {
                 timerInterval = MIN_EXPONENTIAL_BACKOFF;
             }
-            timerInterval = (int) ((timerInterval + getRandomDelay()) * MILLISECONDS);
-            log.debug("timerInterval = " + timerInterval + "ms at: " + Calendar.getInstance().getTime().toString());
+            timerInterval = (int) ((timerInterval * MILLISECONDS) + getRandomDelayInMilliSeconds());
+            log.debug("timerInterval = " + timerInterval + "ms at: " + Calendar.getInstance().getTime());
         }
 
         if (pnReconnectionPolicy == PNReconnectionPolicy.LINEAR) {
-            timerInterval = (int) ((LINEAR_INTERVAL + getRandomDelay()) * MILLISECONDS);
+            timerInterval = (int) (BASE_LINEAR_INTERVAL_IN_MILLISECONDS + getRandomDelayInMilliSeconds());
         }
         return timerInterval;
     }
 
-    private double getRandomDelay() {
-        double randomDelay = MAX_RANDOM * random.nextDouble();
-        return roundTo3DecimalPlaces(randomDelay);
+    private double getRandomDelayInMilliSeconds() {
+        return random.nextInt(BOUND);
     }
 
-    private double roundTo3DecimalPlaces(double value) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.###");
-        return Double.parseDouble(decimalFormat.format(value));
-    }
 
     private void stopHeartbeatTimer() {
         if (timer != null) {
