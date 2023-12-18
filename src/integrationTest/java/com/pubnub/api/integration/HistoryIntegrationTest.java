@@ -8,6 +8,7 @@ import com.pubnub.api.crypto.CryptoModule;
 import com.pubnub.api.integration.util.BaseIntegrationTest;
 import com.pubnub.api.integration.util.RandomGenerator;
 import com.pubnub.api.models.consumer.PNPublishResult;
+import com.pubnub.api.models.consumer.history.HistoryMessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessageItem;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
 import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
@@ -659,5 +660,24 @@ public class HistoryIntegrationTest extends BaseIntegrationTest {
         assertNotNull(v3HistoryWithActionsResult.getChannels().get(channel).get(0).getMeta());
 
         // three responses from three different APIs will return a non-null meta field
+    }
+
+    @Test
+    public void testFetchSingleChannel_includeMessageTypeIsFalse() throws PubNubException {
+        final String expectedChannelName = random();
+
+        publishMixed(pubNub, 10, expectedChannelName);
+
+        final PNFetchMessagesResult fetchMessagesResult = pubNub.fetchMessages()
+                .channels(Collections.singletonList(expectedChannelName))
+                .includeMessageType(false)
+                .sync();
+
+        pause(3);
+
+        assert fetchMessagesResult != null;
+        for (PNFetchMessageItem messageItem : fetchMessagesResult.getChannels().get(expectedChannelName)) {
+            assertEquals(null ,messageItem.getMessageType());
+        }
     }
 }

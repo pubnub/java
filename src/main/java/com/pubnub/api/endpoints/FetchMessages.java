@@ -188,6 +188,8 @@ public class FetchMessages extends Endpoint<FetchMessagesEnvelope, PNFetchMessag
                 } else {
                     messageItemBuilder.actions(null);
                 }
+                messageItemBuilder.includeMessageType(includeMessageType);
+
                 items.add(messageItemBuilder.build());
             }
 

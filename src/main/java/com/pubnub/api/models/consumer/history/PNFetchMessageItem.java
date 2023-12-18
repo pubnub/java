@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,14 @@ public class PNFetchMessageItem {
     @Getter(AccessLevel.NONE)
     private final Integer messageType;
 
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private final boolean includeMessageType;
+
     public HistoryMessageType getMessageType() {
+        if (!includeMessageType) {
+            return null;
+        }
         try {
             return HistoryMessageType.of(messageType);
         } catch (PubNubException e) {

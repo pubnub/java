@@ -207,7 +207,47 @@ public class FetchMessagesEndpointTest extends TestHarness {
                 .sync();
         assertEquals(
                 response.getChannels().values().stream().flatMap(items -> items.stream().map(item -> item.getMessageType())).collect(Collectors.toList()),
-                Lists.newArrayList(HistoryMessageType.Message, HistoryMessageType.Message, HistoryMessageType.File)
+                Lists.newArrayList(HistoryMessageType.MESSAGE, HistoryMessageType.MESSAGE, HistoryMessageType.FILE)
+        );
+    }
+
+    @Test
+    public void testMessageTypesAreNull_includeMessageTypeIsFalse() throws PubNubException {
+        stubFor(
+                get(urlPathEqualTo("/v3/history/sub-key/mySubscribeKey/channel/myChannel")).willReturn(
+                        aResponse().withBody(
+                                "{\n" +
+                                        "          \"status\": 200,\n" +
+                                        "          \"error\": false,\n" +
+                                        "          \"error_message\": \"\",\n" +
+                                        "          \"channels\": {\n" +
+                                        "            \"myChannel\": [\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage1\",\n" +
+                                        "                \"timetoken\": \"14797423056306675\"\n" +
+                                        "              },\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage1\",\n" +
+                                        "                \"timetoken\": \"14797423056306675\"\n" +
+                                        "              },\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage2\",\n" +
+                                        "                \"timetoken\": \"14797423056306676\"\n" +
+                                        "              }\n" +
+                                        "            ]\n" +
+                                        "          }\n" +
+                                        "        }"
+                        )
+                )
+        );
+
+        @Nullable PNFetchMessagesResult response = pubnub.fetchMessages()
+                .channels(Collections.singletonList("myChannel"))
+                .includeMessageType(false)
+                .sync();
+        assertEquals(
+                response.getChannels().values().stream().flatMap(items -> items.stream().map(item -> item.getMessageType())).collect(Collectors.toList()),
+                Lists.newArrayList(null, null, null)
         );
     }
 }
