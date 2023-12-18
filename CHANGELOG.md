@@ -4,6 +4,8 @@ November 30 2023
 #### Fixed
 - Bring back compatibility with Android 6+ by removing the Jackson library dependency.
 
+
+
 ## v6.4.3
 November 28 2023
 
