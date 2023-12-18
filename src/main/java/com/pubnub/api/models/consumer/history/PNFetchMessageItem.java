@@ -3,10 +3,12 @@ package com.pubnub.api.models.consumer.history;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +32,20 @@ public class PNFetchMessageItem {
 
     @SerializedName("message_type")
     @Getter(AccessLevel.NONE)
-    private final String messageType;
-    private int getMessageType() {
-        if (messageType == null || messageType.isEmpty()) {
-            return 0;
-        } else {
-            return Integer.parseInt(messageType);
+    private final Integer messageType;
+
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private final boolean includeMessageType;
+
+    public HistoryMessageType getMessageType() {
+        if (!includeMessageType) {
+            return null;
+        }
+        try {
+            return HistoryMessageType.of(messageType);
+        } catch (PubNubException e) {
+            return null;
         }
     }
 

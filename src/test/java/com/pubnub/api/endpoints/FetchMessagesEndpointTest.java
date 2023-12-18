@@ -2,6 +2,7 @@ package com.pubnub.api.endpoints;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -9,14 +10,28 @@ import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.PubNubErrorBuilder;
 import com.pubnub.api.crypto.CryptoModule;
+import com.pubnub.api.models.consumer.history.HistoryMessageType;
 import com.pubnub.api.models.consumer.history.PNFetchMessagesResult;
-import org.junit.*;
+import org.jetbrains.annotations.Nullable;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -153,5 +168,86 @@ public class FetchMessagesEndpointTest extends TestHarness {
 
     }
 
+    @Test
+    public void testMessageTypesAreProperlyDeserialized() throws PubNubException {
+        stubFor(
+                get(urlPathEqualTo("/v3/history/sub-key/mySubscribeKey/channel/myChannel")).willReturn(
+                        aResponse().withBody(
+                                "{\n" +
+                                        "          \"status\": 200,\n" +
+                                        "          \"error\": false,\n" +
+                                        "          \"error_message\": \"\",\n" +
+                                        "          \"channels\": {\n" +
+                                        "            \"myChannel\": [\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage1\",\n" +
+                                        "                \"timetoken\": \"14797423056306675\",\n" +
+                                        "                \"message_type\": 0\n" +
+                                        "              },\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage1\",\n" +
+                                        "                \"timetoken\": \"14797423056306675\",\n" +
+                                        "                \"message_type\": null\n" +
+                                        "              },\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage2\",\n" +
+                                        "                \"timetoken\": \"14797423056306676\",\n" +
+                                        "                \"message_type\": 4\n" +
+                                        "              }\n" +
+                                        "            ]\n" +
+                                        "          }\n" +
+                                        "        }"
+                        )
+                )
+        );
 
+        @Nullable PNFetchMessagesResult response = pubnub.fetchMessages()
+                .channels(Collections.singletonList("myChannel"))
+                .includeMessageType(true)
+                .sync();
+        assertEquals(
+                response.getChannels().values().stream().flatMap(items -> items.stream().map(item -> item.getMessageType())).collect(Collectors.toList()),
+                Lists.newArrayList(HistoryMessageType.MESSAGE, HistoryMessageType.MESSAGE, HistoryMessageType.FILE)
+        );
+    }
+
+    @Test
+    public void testMessageTypesAreNull_includeMessageTypeIsFalse() throws PubNubException {
+        stubFor(
+                get(urlPathEqualTo("/v3/history/sub-key/mySubscribeKey/channel/myChannel")).willReturn(
+                        aResponse().withBody(
+                                "{\n" +
+                                        "          \"status\": 200,\n" +
+                                        "          \"error\": false,\n" +
+                                        "          \"error_message\": \"\",\n" +
+                                        "          \"channels\": {\n" +
+                                        "            \"myChannel\": [\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage1\",\n" +
+                                        "                \"timetoken\": \"14797423056306675\"\n" +
+                                        "              },\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage1\",\n" +
+                                        "                \"timetoken\": \"14797423056306675\"\n" +
+                                        "              },\n" +
+                                        "              {\n" +
+                                        "                \"message\": \"thisIsMessage2\",\n" +
+                                        "                \"timetoken\": \"14797423056306676\"\n" +
+                                        "              }\n" +
+                                        "            ]\n" +
+                                        "          }\n" +
+                                        "        }"
+                        )
+                )
+        );
+
+        @Nullable PNFetchMessagesResult response = pubnub.fetchMessages()
+                .channels(Collections.singletonList("myChannel"))
+                .includeMessageType(false)
+                .sync();
+        assertEquals(
+                response.getChannels().values().stream().flatMap(items -> items.stream().map(item -> item.getMessageType())).collect(Collectors.toList()),
+                Lists.newArrayList(null, null, null)
+        );
+    }
 }
