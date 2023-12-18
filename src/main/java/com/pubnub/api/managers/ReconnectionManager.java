@@ -44,16 +44,7 @@ public class ReconnectionManager {
     public ReconnectionManager(PubNub pubnub) {
         this.pubnub = pubnub;
         this.pnReconnectionPolicy = pubnub.getConfiguration().getReconnectionPolicy();
-        this.maxConnectionRetries = getMaximumReconnectionRetries();
-    }
-
-    private int getMaximumReconnectionRetries() {
-        int maximumReconnectionRetries = pubnub.getConfiguration().getMaximumReconnectionRetries();
-        if (maximumReconnectionRetries < 0 || maximumReconnectionRetries > MAXIMUM_RECONNECTION_RETRIES_DEFAULT) {
-            maximumReconnectionRetries = MAXIMUM_RECONNECTION_RETRIES_DEFAULT;
-        }
-        log.debug("maximumReconnectionRetries is: " + maximumReconnectionRetries);
-        return maximumReconnectionRetries;
+        this.maxConnectionRetries = pubnub.getConfiguration().getMaximumReconnectionRetries();
     }
 
     public void setReconnectionListener(ReconnectionCallback reconnectionCallback) {
@@ -79,7 +70,7 @@ public class ReconnectionManager {
             return;
         }
 
-        if (failedCalls >= maxConnectionRetries) {
+        if (maxConnectionIsNotSetToInfinite() && failedCalls >= maxConnectionRetries) {
             callback.onMaxReconnectionExhaustion();
             return;
         }
@@ -92,6 +83,10 @@ public class ReconnectionManager {
                 callTime();
             }
         }, getNextIntervalInMilliSeconds());
+    }
+
+    private boolean maxConnectionIsNotSetToInfinite() {
+        return maxConnectionRetries != -1;
     }
 
     int getNextIntervalInMilliSeconds() {
@@ -121,7 +116,6 @@ public class ReconnectionManager {
     private double getRandomDelayInMilliSeconds() {
         return random.nextInt(BOUND);
     }
-
 
     private void stopHeartbeatTimer() {
         if (timer != null) {
