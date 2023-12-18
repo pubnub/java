@@ -1,3 +1,10 @@
+## v6.4.5
+December 18 2023
+
+#### Fixed
+- Added reading message type from fetch messages response.
+- Added random value 0.001-0.999s to delay between retries both for Linear and Exponential reconnection policies.
+
 ## v6.4.4
 November 30 2023
 
