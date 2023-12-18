@@ -64,7 +64,7 @@ public class DelayedReconnectionManager {
         return false;
     }
 
-    private double getRandomDelayInMilliSeconds() {
+    private int getRandomDelayInMilliSeconds() {
        return random.nextInt(BOUND);
     }
 

@@ -203,8 +203,7 @@ public class PNConfiguration {
 
     /**
      * Set how many times the reconnection manager will try to connect before giving up.
-     * Max allowed value is 10.
-     * Default is 10.
+     * Default is -1 which means to retry infinitely.
      */
     @Setter
     private int maximumReconnectionRetries;

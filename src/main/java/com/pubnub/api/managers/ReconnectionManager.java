@@ -70,7 +70,7 @@ public class ReconnectionManager {
             return;
         }
 
-        if (maxConnectionIsNotSetToInfinite() && failedCalls >= maxConnectionRetries) {
+        if (!maxConnectionIsSetToInfinite() && failedCalls >= maxConnectionRetries) {
             callback.onMaxReconnectionExhaustion();
             return;
         }
@@ -85,8 +85,8 @@ public class ReconnectionManager {
         }, getNextIntervalInMilliSeconds());
     }
 
-    private boolean maxConnectionIsNotSetToInfinite() {
-        return maxConnectionRetries != -1;
+    private boolean maxConnectionIsSetToInfinite() {
+        return maxConnectionRetries == -1;
     }
 
     int getNextIntervalInMilliSeconds() {
@@ -113,7 +113,7 @@ public class ReconnectionManager {
         return timerInterval;
     }
 
-    private double getRandomDelayInMilliSeconds() {
+    private int getRandomDelayInMilliSeconds() {
         return random.nextInt(BOUND);
     }
 
