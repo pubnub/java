@@ -8,13 +8,15 @@ on:
 jobs:
   check-release:
     name: Check release required
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default Larger Runners
+      labels: ubuntu-latest-m
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -27,17 +29,19 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
   publish:
     name: Publish package
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default Larger Runners
+      labels: ubuntu-latest-m
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # This should be the same as the one specified for on.pull_request.branches
           ref: master
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
