@@ -5,17 +5,19 @@ import com.pubnub.api.callbacks.ReconnectionCallback;
 import com.pubnub.api.enums.PNReconnectionPolicy;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 @Slf4j
 public class DelayedReconnectionManager {
-    private static final int DELAY_SECONDS = 3;
-    private static final int MILLISECONDS = 1000;
+    private static final int BASE_DELAY_MILLISECONDS = 2000;
+    private static final int BOUND = 1000;
 
     private final PNReconnectionPolicy pnReconnectionPolicy;
     private ReconnectionCallback callback;
     private PubNub pubnub;
+    private final Random random = new Random();
 
     /**
      * Timer for heartbeat operations.
@@ -34,12 +36,13 @@ public class DelayedReconnectionManager {
         }
 
         timer = new Timer("Delayed Reconnection Manager timer", true);
+        int effectiveDelayInMilliSeconds = (int) (BASE_DELAY_MILLISECONDS + getRandomDelayInMilliSeconds());
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 callTime();
             }
-        }, DELAY_SECONDS * MILLISECONDS);
+        }, effectiveDelayInMilliSeconds);
     }
 
     public void setReconnectionListener(ReconnectionCallback reconnectionCallback) {
@@ -59,6 +62,10 @@ public class DelayedReconnectionManager {
             return true;
         }
         return false;
+    }
+
+    private int getRandomDelayInMilliSeconds() {
+       return random.nextInt(BOUND);
     }
 
     private void callTime() {

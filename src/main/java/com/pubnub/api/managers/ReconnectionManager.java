@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,11 +18,13 @@ import java.util.TimerTask;
 @Slf4j
 public class ReconnectionManager {
 
-    private static final int LINEAR_INTERVAL = 3;
-    private static final int MIN_EXPONENTIAL_BACKOFF = 1;
+    private static final int BASE_LINEAR_INTERVAL_IN_MILLISECONDS = 3000;
+    private static final int MIN_EXPONENTIAL_BACKOFF = 2;
     private static final int MAX_EXPONENTIAL_BACKOFF = 32;
 
-    private static final int MILLISECONDS = 1000;
+    private static final int BOUND = 1000;
+    private static final int MILLISECONDS = BOUND;
+    private static final int MAXIMUM_RECONNECTION_RETRIES_DEFAULT = 10;
 
     private ReconnectionCallback callback;
     private PubNub pubnub;
@@ -31,6 +34,7 @@ public class ReconnectionManager {
 
     private PNReconnectionPolicy pnReconnectionPolicy;
     private int maxConnectionRetries;
+    private final Random random = new Random();
 
     /**
      * Timer for heartbeat operations.
@@ -55,10 +59,10 @@ public class ReconnectionManager {
         exponentialMultiplier = 1;
         failedCalls = 0;
 
-        registerHeartbeatTimer();
+        registerRetryTimer();
     }
 
-    private void registerHeartbeatTimer() {
+    private void registerRetryTimer() {
         // make sure only one timer is running at a time.
         stopHeartbeatTimer();
 
@@ -66,7 +70,7 @@ public class ReconnectionManager {
             return;
         }
 
-        if (maxConnectionRetries != -1 && failedCalls >= maxConnectionRetries) { // _what's -1?
+        if (!maxConnectionIsSetToInfinite() && failedCalls >= maxConnectionRetries) {
             callback.onMaxReconnectionExhaustion();
             return;
         }
@@ -78,11 +82,15 @@ public class ReconnectionManager {
             public void run() {
                 callTime();
             }
-        }, getNextInterval() * MILLISECONDS);
+        }, getNextIntervalInMilliSeconds());
     }
 
-    int getNextInterval() {
-        int timerInterval = LINEAR_INTERVAL;
+    private boolean maxConnectionIsSetToInfinite() {
+        return maxConnectionRetries == -1;
+    }
+
+    int getNextIntervalInMilliSeconds() {
+        int timerInterval = 0;
         failedCalls++;
 
         if (pnReconnectionPolicy == PNReconnectionPolicy.EXPONENTIAL) {
@@ -91,18 +99,22 @@ public class ReconnectionManager {
             if (timerInterval > MAX_EXPONENTIAL_BACKOFF) {
                 timerInterval = MIN_EXPONENTIAL_BACKOFF;
                 exponentialMultiplier = 1;
-                log.debug("timerInterval > MAXEXPONENTIALBACKOFF at: " + Calendar.getInstance().getTime().toString());
+                log.debug("timerInterval > MAXEXPONENTIALBACKOFF at: " + Calendar.getInstance().getTime());
             } else if (timerInterval < 1) {
                 timerInterval = MIN_EXPONENTIAL_BACKOFF;
             }
-            log.debug("timerInterval = " + timerInterval + " at: " + Calendar.getInstance().getTime().toString());
+            timerInterval = (int) ((timerInterval * MILLISECONDS) + getRandomDelayInMilliSeconds());
+            log.debug("timerInterval = " + timerInterval + "ms at: " + Calendar.getInstance().getTime());
         }
 
         if (pnReconnectionPolicy == PNReconnectionPolicy.LINEAR) {
-            timerInterval = LINEAR_INTERVAL;
+            timerInterval = (int) (BASE_LINEAR_INTERVAL_IN_MILLISECONDS + getRandomDelayInMilliSeconds());
         }
-
         return timerInterval;
+    }
+
+    private int getRandomDelayInMilliSeconds() {
+        return random.nextInt(BOUND);
     }
 
     private void stopHeartbeatTimer() {
@@ -121,7 +133,7 @@ public class ReconnectionManager {
                     callback.onReconnection();
                 } else {
                     log.debug("callTime() at: " + Calendar.getInstance().getTime().toString());
-                    registerHeartbeatTimer();
+                    registerRetryTimer();
                 }
             }
         });

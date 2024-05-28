@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ReconnectionManagerTest {
@@ -20,10 +19,11 @@ public class ReconnectionManagerTest {
         pnConfiguration.setReconnectionPolicy(PNReconnectionPolicy.LINEAR);
         final ReconnectionManager reconnectionManagerUnderTest = new ReconnectionManager(pubNub);
 
-        int firstInterval = reconnectionManagerUnderTest.getNextInterval();
-        int secondInterval = reconnectionManagerUnderTest.getNextInterval();
+        int firstInterval = reconnectionManagerUnderTest.getNextIntervalInMilliSeconds();
+        int secondInterval = reconnectionManagerUnderTest.getNextIntervalInMilliSeconds();
 
-        assertEquals(secondInterval, firstInterval);
+        assertTrue(firstInterval >= 3000 && firstInterval <= 6000);
+        assertTrue(secondInterval >= 3000 && secondInterval <= 6000);
     }
 
     @Test
@@ -33,9 +33,9 @@ public class ReconnectionManagerTest {
         PubNub pubNub = new PubNub(pnConfiguration);
         final ReconnectionManager reconnectionManagerUnderTest = new ReconnectionManager(pubNub);
 
-        int firstInterval = reconnectionManagerUnderTest.getNextInterval();
-        int secondInterval = reconnectionManagerUnderTest.getNextInterval();
-        int thirdInterval = reconnectionManagerUnderTest.getNextInterval();
+        int firstInterval = reconnectionManagerUnderTest.getNextIntervalInMilliSeconds();
+        int secondInterval = reconnectionManagerUnderTest.getNextIntervalInMilliSeconds();
+        int thirdInterval = reconnectionManagerUnderTest.getNextIntervalInMilliSeconds();
 
         assertTrue(firstInterval < secondInterval);
         assertTrue(secondInterval < thirdInterval);

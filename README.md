@@ -1,3 +1,11 @@
+**!!!!!!!!!!**
+
+**PubNub Java SDK development has moved to the [PubNub Kotlin SDK](https://github.com/pubnub/kotlin) repository.**
+
+**This repository is no longer being updated.**
+-This repository does not need any changes.
+**!!!!!!!!!!**
+
 # PubNub Java-based SDKs for Java / Android
 
 [![Build Status](https://travis-ci.com/pubnub/java.svg?branch=master)](https://travis-ci.com/pubnub/java)
@@ -22,13 +30,13 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
      <dependency>
        <groupId>com.pubnub</groupId>
        <artifactId>pubnub-gson</artifactId>
-       <version>6.4.4</version>
+       <version>6.4.5</version>
      </dependency>
      ```
 
    * for Gradle, add the following dependency in your `gradle.build`:
      ```groovy
-     implementation 'com.pubnub:pubnub-gson:6.4.4'
+     implementation 'com.pubnub:pubnub-gson:6.4.5'
      ```
 
 2. Configure your keys:
