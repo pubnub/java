@@ -8,10 +8,9 @@ on:
 jobs:
   check-release:
     name: Check release required
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
+    runs-on:
+      group: Default
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
@@ -29,11 +28,10 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
   publish:
     name: Publish package
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
+    runs-on:
+      group: Default
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
