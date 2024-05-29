@@ -1,3 +1,11 @@
+**!!!!!!!!!!**
+
+**PubNub Java SDK development has moved to the [PubNub Kotlin SDK](https://github.com/pubnub/kotlin) repository.**
+
+**This repository is no longer being updated.**
+
+**!!!!!!!!!!**
+
 # PubNub Java-based SDKs for Java / Android
 
 [![Build Status](https://travis-ci.com/pubnub/java.svg?branch=master)](https://travis-ci.com/pubnub/java)
