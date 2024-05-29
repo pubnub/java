@@ -13,20 +13,21 @@ defaults:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default
     env:
-      SUB_KEY: ${{ secrets.SUB_KEY }}
-      PUB_KEY: ${{ secrets.PUB_KEY }}
-      PAM_SUB_KEY: ${{ secrets.PAM_SUB_KEY }}
-      PAM_PUB_KEY: ${{ secrets.PAM_PUB_KEY }}
-      PAM_SEC_KEY: ${{ secrets.PAM_SEC_KEY }}
+      SUB_KEY: ${{ secrets.SDK_SUB_KEY }}
+      PUB_KEY: ${{ secrets.SDK_PUB_KEY }}
+      PAM_SUB_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
+      PAM_PUB_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
+      PAM_SEC_KEY: ${{ secrets.SDK_PAM_SEC_KEY }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_TOKEN }}
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -41,7 +42,8 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   acceptance-tests:
     name: Acceptance tests
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default
     env:
       pubKey: somePubKey
       subKey: someSubKey
@@ -53,9 +55,9 @@ jobs:
       dataFileLocation: "src/test/resources/sdk-specifications/features/data"
     steps:
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout mock-server action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -66,7 +68,7 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
       - name: Cache Gradle
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -82,7 +84,7 @@ jobs:
       - name: Run acceptance tests (required)
         run: ./gradlew cucumber --tests RunMainCucumberTest -Dcucumber.features="sdk-specifications/features/" -i
       - name: Expose acceptance tests reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: acceptance-test-reports
@@ -93,8 +95,9 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-tests:
     name: Tests
-    runs-on: ubuntu-latest
     needs: [tests, acceptance-tests]
+    runs-on:
+      group: Default
     steps:
       - name: Tests summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
